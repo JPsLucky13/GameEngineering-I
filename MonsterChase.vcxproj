@@ -146,6 +146,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\GitHub\Assignment1.01\MonsterChase\MonsterChase\Monster.cpp" />
+    <ClCompile Include="..\..\..\GitHub\Assignment1.01\MonsterChase\MonsterChase\MonsterChase.cpp" />
+    <ClCompile Include="..\..\..\GitHub\Assignment1.01\MonsterChase\MonsterChase\Player.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\GitHub\Assignment1.01\MonsterChase\MonsterChase\Monster.h" />
+    <ClInclude Include="..\..\..\GitHub\Assignment1.01\MonsterChase\MonsterChase\Player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
