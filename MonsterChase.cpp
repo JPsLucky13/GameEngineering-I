@@ -100,7 +100,7 @@ void NameMonsters(int monsterNumber)
 void PlaceMonsters(Monster monstersArray[])
 {
 	//Seed the random number
-	srand(time(NULL));
+	srand(time_t(NULL));
 
 	//Cycle through the monsters and randomize their positions
 	for (int i = 0; i < monsterNumber; i++) {
@@ -208,7 +208,7 @@ char PlayerOptions()
 void MoveMonsters()
 {
 	//Seed the random number
-	srand(time(NULL));
+	srand(time_t(NULL));
 
 	//Cycle through the monsters and randomize their positions
 	for (int i = 0; i < monsterNumber; i++) {
