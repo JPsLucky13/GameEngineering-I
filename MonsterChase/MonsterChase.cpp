@@ -7,9 +7,12 @@
 #include <ctime> //For calling a seed of random numbers
 #include "Monster.h"
 #include "Player.h"
+//#include "Engine.h"
+
+
 
 //The number of monsters
-int monsterNumber = 0;
+int monsterNumber = -1;
 
 //Create the array of Monsters
 Monster monsters[100];
@@ -45,14 +48,17 @@ void CheckMonsterPosition();
 //The prototype to destroy the monster 
 void DestroyMonster();
 
+//The prototype to ask for the number of monsters
+void AskforNumberOfMonsters();
+
 
 int main()
 {
 	
+	srand(time_t(0));
 
-	//Ask user for the number of monsters
-	printf("How many monsters would you like to add?:");
-	scanf_s("%d", &monsterNumber);
+	//QUery the user for the number of monsters
+	AskforNumberOfMonsters();
 
 	//Query user for names of monsters
 	NameMonsters(monsterNumber);
@@ -64,7 +70,7 @@ int main()
 	PlayerChooseName();
 
 	
-
+	
 	//Start of the main game loop
 
 	//Show the monster and player positions
@@ -100,12 +106,12 @@ void NameMonsters(int monsterNumber)
 void PlaceMonsters(Monster monstersArray[])
 {
 	//Seed the random number
-	srand(time_t(NULL));
+	//srand(time_t(NULL));
 
 	//Cycle through the monsters and randomize their positions
 	for (int i = 0; i < monsterNumber; i++) {
-		monsters[i].SetMonsterPositionX(rand() % 101);
-		monsters[i].SetMonsterPositionY(rand() % 101);
+		monsters[i].monsterPosition = Engine::Vector2D((float)(rand() % 101), (float)(rand() % 101));
+		
 	}
 	
 
@@ -129,21 +135,45 @@ void DisplayMonsters()
 
 	//Print the monster position and format the position
 	for (int i = 0; i < monsterNumber; i++) {
-		if ((monsters[i].GetMonsterPositionX() < 10 && monsters[i].GetMonsterPositionX() > -10) || (monsters[i].GetMonsterPositionY() < 10 && monsters[i].GetMonsterPositionY() > -10))
-			printf("Monster %s is at position: [0%d][0%d]\n", monsters[i].GetMonsterName(), monsters[i].GetMonsterPositionX(), monsters[i].GetMonsterPositionY());
-		else
-			printf("Monster %s is at position: [%d][%d]\n", monsters[i].GetMonsterName(), monsters[i].GetMonsterPositionX(), monsters[i].GetMonsterPositionY());
+		char * tempX = "\0";
+		char * tempY = "\0";
+
+
+		if (monsters[i].monsterPosition.x() < 10.0f && monsters[i].monsterPosition.x() > -10.0f)
+		{
+			tempX = "0";
+		}
+
+		if (monsters[i].monsterPosition.y() < 10.0f && monsters[i].monsterPosition.y() > -10.0f)
+		{
+			tempY = "0";
+		}
+
+
+
+			printf("Monster %s is at position: [%s%d][%s%d]\n", monsters[i].GetMonsterName(), tempX,(int)monsters[i].monsterPosition.x(), tempY,(int)monsters[i].monsterPosition.y());
 	}
 }
 
 //The definition to display player position
 void DisplayPlayer()
 {
-	//Print the player position and format the position
-	if((player.GetPlayerPositionX() < 10 && player.GetPlayerPositionX() > -10)|| (player.GetPlayerPositionY() < 10 && player.GetPlayerPositionY() > -10))
-		printf("%s is at position: [0%d][0%d]\n", player.GetPlayerName(), player.GetPlayerPositionX(), player.GetPlayerPositionY());
-	else
-		printf("%s is at position: [%d][%d]\n", player.GetPlayerName(), player.GetPlayerPositionX(), player.GetPlayerPositionY());
+
+	char * tempX = "\0";
+	char * tempY = "\0";
+
+	if (player.playerPosition.x() < 10.0f && player.playerPosition.x() > -10.0f)
+	{
+		tempX = "0";
+	}
+
+	if (player.playerPosition.y() < 10.0f && player.playerPosition.y() > -10.0f)
+	{
+		tempY = "0";
+	}
+		printf("%s is at position: [%s%d][%s%d]\n", player.GetPlayerName(),tempX,(int)player.playerPosition.x(),tempY, (int)player.playerPosition.y());
+	
+		
 }
 
 //The definition to display the player's options
@@ -157,41 +187,41 @@ char PlayerOptions()
 
 	//Move the player left
 	if (input == 'a') {
-		player.SetPlayerPositionX(player.GetPlayerPositionX() - 1);
+		player.playerPosition = player.playerPosition - Engine::Vector2D(1.0f,0.0f);
 
 		//Restrict the player movement to no go over 0
-		if (player.GetPlayerPositionX() < 0)
-			player.SetPlayerPositionX(0);
+		if (player.playerPosition.x() < 0.0f)
+			player.playerPosition.x(0.0f);
 
 	}
 	//Move the player right
 	else if (input == 'd')
 	{
-		player.SetPlayerPositionX(player.GetPlayerPositionX() + 1);
+		player.playerPosition = player.playerPosition + Engine::Vector2D(1.0f, 0.0f);
 
 		//Restrict the player movement to no go over 100
-		if (player.GetPlayerPositionX() > 100)
-			player.SetPlayerPositionX(100);
+		if (player.playerPosition.x() > 100.0f)
+			player.playerPosition.x(100.0f);
 	}
 
 	//Move the player up
 	else if (input == 'w')
 	{
-		player.SetPlayerPositionY(player.GetPlayerPositionY() + 1);
+		player.playerPosition = player.playerPosition + Engine::Vector2D(0.0f, 1.0f);
 
 		//Restrict the player movement to no go over 100
-		if (player.GetPlayerPositionY() > 100)
-			player.SetPlayerPositionY(100);
+		if (player.playerPosition.y() > 100.0f)
+			player.playerPosition.y(100.0f);
 	}
 
 	//Move the player down
 	else if (input == 's')
 	{
-		player.SetPlayerPositionY(player.GetPlayerPositionY() - 1);
+		player.playerPosition = player.playerPosition - Engine::Vector2D(0.0f, 1.0f);
 
 		//Restrict the player movement to no go over 100
-		if (player.GetPlayerPositionY() < 0)
-			player.SetPlayerPositionY(0);
+		if (player.playerPosition.y() < 0.0f)
+			player.playerPosition.y(0.0f);
 	}
 
 	//Destroy a monster
@@ -208,28 +238,32 @@ char PlayerOptions()
 void MoveMonsters()
 {
 	//Seed the random number
-	srand(time_t(NULL));
+	//srand(time_t(NULL));
 
 	//Cycle through the monsters and randomize their positions
 	for (int i = 0; i < monsterNumber; i++) {
-		monsters[i].SetMonsterPositionX(monsters[i].GetMonsterPositionX() + (rand() % 3)-1);//Generates -1,0 or 1
-		monsters[i].SetMonsterPositionY(monsters[i].GetMonsterPositionY() + (rand() % 3)-1);
+		
+		Engine::Vector2D delta = Engine::Vector2D((float)(rand() % 3) - 1, (float)(rand() % 3) - 1);
+
+		//printf("%s - %d  MONSTER:%f, %f\t\tDELTA:%f, %f\n", __FUNCTION__, __LINE__ , monsters[i].monsterPosition.x(), monsters[i].monsterPosition.y(), delta.x(), delta.y());
+		monsters[i].monsterPosition = monsters[i].monsterPosition + delta;
+		//printf("%s - %d  MONSTER:%f, %f\t\tDELTA:%f, %f\n", __FUNCTION__, __LINE__, monsters[i].monsterPosition.x(), monsters[i].monsterPosition.y(), delta.x(), delta.y());
 
 		//Restrict the monster movement to a 100 * 100 grind
-		if (monsters[i].GetMonsterPositionX() < 0) {
-			monsters[i].SetMonsterPositionX(0);
+		if (monsters[i].monsterPosition.x() < 0.0f) {
+			monsters[i].monsterPosition.x(0.0f);
 		}
 
-		if (monsters[i].GetMonsterPositionY() < 0) {
-			monsters[i].SetMonsterPositionY(0);
+		if (monsters[i].monsterPosition.y() < 0.0f) {
+			monsters[i].monsterPosition.y(0.0f);
 		}
 
-		if (monsters[i].GetMonsterPositionX() > 100) {
-			monsters[i].SetMonsterPositionX(100);
+		if (monsters[i].monsterPosition.x() > 100.0f) {
+			monsters[i].monsterPosition.x(100.0f);
 		}
 
-		if (monsters[i].GetMonsterPositionY() > 100) {
-			monsters[i].SetMonsterPositionY(100);
+		if (monsters[i].monsterPosition.y() > 100.0f) {
+			monsters[i].monsterPosition.y(100.0f);
 		}
 
 	}
@@ -241,23 +275,21 @@ void CheckMonsterPosition() {
 
 	for (int i = 0; i < monsterNumber -1; i++) {
 		//First monster
-		int x1 = monsters[i].GetMonsterPositionX();
-		int y1 = monsters[i].GetMonsterPositionY();
+		Engine::Vector2D tempMonster1 = monsters[i].monsterPosition;
 
 		//Second monster
-		int x2 = monsters[i+1].GetMonsterPositionX();
-		int y2 = monsters[i+1].GetMonsterPositionY();
+		Engine::Vector2D tempMonster2 = monsters[i+1].monsterPosition;
 
 		//Check if a new monster has to be created
-		if (x1 == x2 && y1 == y2)
+		if (tempMonster1 == tempMonster2)
 		{
+			
 			char name[10];
 			printf("A new Monster has appeared! How shall you name it?:");
 			scanf_s("%s", name, 10);
-			monsterNumber++; //Increase the maximum number of monsters
 			monsters[monsterNumber].SetMonsterName(name);
-			monsters[monsterNumber].SetMonsterPositionX(rand() % 101);
-			monsters[monsterNumber].SetMonsterPositionY(rand() % 101);
+			monsters[monsterNumber].monsterPosition = Engine::Vector2D((float)(rand() % 101), (float)(rand() % 101));
+			monsterNumber++; //Increase the maximum number of monsters
 		}
 		
 	}
@@ -269,8 +301,7 @@ void DestroyMonster() {
 	if(monsterNumber > 0)
 	{
 		monsters[monsterNumber].SetMonsterName("");
-		monsters[monsterNumber].SetMonsterPositionX(0);
-		monsters[monsterNumber].SetMonsterPositionY(0);
+		monsters[monsterNumber].monsterPosition = Engine::Vector2D(0.0f, 0.0f);
 		monsterNumber--;
 	}
 	else
@@ -279,4 +310,25 @@ void DestroyMonster() {
 	}
 	
 
+}
+
+
+void AskforNumberOfMonsters()
+{
+
+	//Ask user for the number of monsters
+
+	while (monsterNumber < 0) {
+
+		printf("How many monsters would you like to add?:");
+		scanf_s("%d", &monsterNumber);
+
+		//Check that the user has inputed a positive number of monsters
+		if (monsterNumber < 0)
+		{
+			printf("Please enter a positive number!!\n");
+		}
+
+
+	}
 }
