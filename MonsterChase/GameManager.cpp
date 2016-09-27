@@ -4,7 +4,7 @@
 #include <conio.h>
 #include <assert.h>
 
-/*
+
 #ifdef _DEBUG
 #define DEBUG_LOG_MESSAGE(fmt,...) Engine::PrintDebugMessage(__FILE__,__FUNCTION__,__LINE__,fmt,__VA_ARGS__)
 #define ASSERT(cond,message) assert((cond))
@@ -12,7 +12,7 @@
 #define DEBUG_LOG_MESSAGE(fmt,...) void(0)
 #define ASSERT_MONSTER_NUMBER(cond,message) void (0)
 #endif
-*/
+
 
 
 void GameManager::NameMonsters(int monsterNumber)
@@ -200,11 +200,11 @@ void GameManager::AskforNumberOfMonsters()
 		scanf_s("%d", &monsterNumber);
 
 		//Check that the user has inputed a positive number of monsters
-		//ASSERT(monsterNumber>0, "Woops monster number is not positive");
+		ASSERT(monsterNumber>0, "Woops monster number is not positive");
 
 
 
-		//DEBUG_LOG_MESSAGE("The number of monsters is: %d\n", monsterNumber);
+		DEBUG_LOG_MESSAGE("The number of monsters is: %d\n", monsterNumber);
 	}
 }
 
