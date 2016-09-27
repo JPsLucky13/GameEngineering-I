@@ -5,14 +5,14 @@
 class Monster {
 
 private:
-	
+
 	char monsterName[30];
 
 public:
 
-
 	//The monster's position
 	Engine::Vector2D monsterPosition;
+
 
 	//Get the monster name
 	const char* GetMonsterName()const;
