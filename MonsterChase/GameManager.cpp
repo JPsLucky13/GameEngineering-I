@@ -11,6 +11,7 @@
 #else
 #define DEBUG_LOG_MESSAGE(fmt,...) void(0)
 #define ASSERT_MONSTER_NUMBER(cond,message) void (0)
+
 #endif
 
 
@@ -23,6 +24,7 @@ void GameManager::NameMonsters(int monsterNumber)
 		printf("What name will you give monster %d ?:", i);
 		scanf_s("%s", name, 10);
 		monsters[i].SetMonsterName(name);
+		
 	}
 
 }
@@ -32,7 +34,8 @@ void GameManager::PlaceMonsters()
 	//Cycle through the monsters and randomize their positions
 	for (int i = 0; i < monsterNumber; i++) {
 		monsters[i].monsterPosition = Engine::Vector2D((float)(rand() % 101), (float)(rand() % 101));
-
+		ASSERT(monsters[i].monsterPosition.x() >= 0.0f && monsters[i].monsterPosition.x() <= 100.0f, "Woops monster is out of bounds");
+		ASSERT(monsters[i].monsterPosition.y() >= 0.0f && monsters[i].monsterPosition.y() <= 100.0f, "Woops monster is out of bounds");
 	}
 }
 
@@ -113,6 +116,7 @@ char GameManager::PlayerOptions()
 		DestroyMonster();
 	}
 
+	DEBUG_LOG_MESSAGE("The user's input is: %c\n", input);
 
 	return input;
 }
@@ -121,6 +125,8 @@ void GameManager::MoveMonsters()
 {
 	//Cycle through the monsters and randomize their positions
 	for (int i = 0; i < monsterNumber; i++) {
+
+		DEBUG_LOG_MESSAGE("The position of the monster is: X: %d, Y: %d\n", monsters[i].monsterPosition.x(), monsters[i].monsterPosition.y());
 
 		Engine::Vector2D delta = Engine::Vector2D((float)(rand() % 3) - 1, (float)(rand() % 3) - 1);
 
@@ -144,6 +150,8 @@ void GameManager::MoveMonsters()
 		if (monsters[i].monsterPosition.y() > 100.0f) {
 			monsters[i].monsterPosition.y(100.0f);
 		}
+
+		DEBUG_LOG_MESSAGE("The position of the monster is: X: %d, Y: %d\n", monsters[i].monsterPosition.x(), monsters[i].monsterPosition.y());
 
 	}
 
@@ -178,9 +186,12 @@ void GameManager::DestroyMonster()
 {
 	if (monsterNumber > 0)
 	{
+		DEBUG_LOG_MESSAGE("The number of monsters is: %d\n", monsterNumber);
 		monsters[monsterNumber].SetMonsterName("");
 		monsters[monsterNumber].monsterPosition = Engine::Vector2D(0.0f, 0.0f);
+		DEBUG_LOG_MESSAGE("The position of the monster is: X: %d, Y: %d\n", monsters[monsterNumber].monsterPosition.x(), monsters[monsterNumber].monsterPosition.y());
 		monsterNumberDecrease();
+		DEBUG_LOG_MESSAGE("The number of monsters is: %d\n", monsterNumber);
 	}
 	else
 	{
@@ -201,8 +212,6 @@ void GameManager::AskforNumberOfMonsters()
 
 		//Check that the user has inputed a positive number of monsters
 		ASSERT(monsterNumber>0, "Woops monster number is not positive");
-
-
 
 		DEBUG_LOG_MESSAGE("The number of monsters is: %d\n", monsterNumber);
 	}
