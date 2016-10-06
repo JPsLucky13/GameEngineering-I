@@ -18,7 +18,7 @@ int main()
 	BlockAllocator blockAllocator;
 
 	//Creating the block allocator
-	blockAllocator.create(4096,10);
+	blockAllocator.create(1024,10);
 
 	//printf("Size: %d", sizeof(BlockAllocator::BlockDescriptor));
 	
@@ -28,13 +28,27 @@ int main()
 	for (int i = 0; i < 10; i++)
 	{
 		//blockAllocator._alloc(pow(16.0, i + 1));
-		blockAllocator._alloc(16);
-		
+		if (blockAllocator._alloc(128) != NULL)
+		{
+			blockAllocator.PrintBlockDescriptors();
+			//Halt the operation
+			_getch();
 
-		blockAllocator.PrintBlockDescriptors();
-		//Halt the operation
-		_getch();
-		
+		}
+
+		//Ran out of block descriptors
+		else {
+
+
+			//The case where the unused block descriptors are all used
+			if(blockAllocator.unusedDescriptorsHeadGetter() == NULL)
+			printf("There are no more unused block descriptors available\n");
+			else
+			printf("There is not more free memory available\n");
+			_getch();
+			break;
+		}
+	
 	}
 
 

@@ -44,6 +44,14 @@ public:
 	size_t getTotalFreeMemory() const;
 	void PrintBlockDescriptors();
 
+	//Getters
+	BlockDescriptor * unusedDescriptorsHeadGetter() { return unusedDescriptorsHead; }
+	BlockDescriptor * freeDescriptorsHeadGetter() { return freeDescriptorsHead; }
+	BlockDescriptor * outstandingDescriptorsHeadGetter() { return outstandingDescriptorsHead; }
+
+
+
+
 private:
 	void BlockAllocator::InitializeUnusedDescriptors(size_t i_sizeMemory, unsigned int i_numDescriptors);
 

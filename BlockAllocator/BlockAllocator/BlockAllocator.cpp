@@ -37,16 +37,41 @@ void BlockAllocator::destroy()
 void * BlockAllocator::_alloc(size_t i_size)
 {
 
-	void * endPtr = (char*)freeDescriptorsHead->m_pBlockBase + freeDescriptorsHead->m_sizeBlock - i_size;
 
-	outstandingDescriptorsHead = unusedDescriptorsHead;
-	outstandingDescriptorsHead->m_pBlockBase = endPtr;
-	outstandingDescriptorsHead->m_sizeBlock = i_size;
+	//Check that there are unused block descriptors and the amount of memory available is greater than what is requested
+	if(unusedDescriptorsHead != NULL && getLargestFreeBlock() >= i_size)
+	{ 
+
+	void * endPtr = (char*)freeDescriptorsHead->m_pBlockBase + freeDescriptorsHead->m_sizeBlock - i_size;
+	
+
+	BlockDescriptor* ptr = unusedDescriptorsHead;
 	unusedDescriptorsHead = unusedDescriptorsHead->m_pNext;
+
+	ptr->m_pBlockBase = endPtr;
+	ptr->m_sizeBlock = i_size;
+
+	
+	ptr->m_pNext = outstandingDescriptorsHead;
+	outstandingDescriptorsHead = ptr;
+	
 
 	freeDescriptorsHead->m_sizeBlock = freeDescriptorsHead->m_sizeBlock - i_size;
 
 	return endPtr;
+
+	}
+
+	//There are no more unused block descriptors
+	else
+	{
+
+		return NULL;
+
+	}
+
+
+
 }
 
 bool BlockAllocator::_free(void * i_ptr)
@@ -112,11 +137,17 @@ void BlockAllocator::PrintBlockDescriptors()
 	}
 
 	printf("-------------------------------------------------------------------------------------------\n");
+	printf("-------------------------------------------------------------------------------------------\n");
+	printf("-------------------------------------------------------------------------------------------\n");
+	printf("-------------------------------------------------------------------------------------------\n");
+	printf("-------------------------------------------------------------------------------------------\n");
+	printf("-------------------------------------------------------------------------------------------\n");
 	
 }
 
 void BlockAllocator::InitializeUnusedDescriptors(size_t i_sizeMemory, unsigned int i_numDescriptors)
 {
+	totalBlockDescriptors = i_numDescriptors;
 
 	//Split the memory to create a pool of block descriptors
 	char *poolOfBlockDescriptors = ((char*)startOfMemory + i_sizeMemory) - (sizeof(BlockDescriptor) * i_numDescriptors);
@@ -131,7 +162,7 @@ void BlockAllocator::InitializeUnusedDescriptors(size_t i_sizeMemory, unsigned i
 		newDescriptor->m_id = totalBlockDescriptors;
 		#endif // DEBUG
 
-		totalBlockDescriptors++;
+		totalBlockDescriptors--;
 		newDescriptor->m_pNext = unusedDescriptorsHead;
 		unusedDescriptorsHead = newDescriptor;
 		
