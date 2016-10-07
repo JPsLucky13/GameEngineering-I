@@ -18,7 +18,11 @@ int main()
 	BlockAllocator blockAllocator;
 
 	//Creating the block allocator
+<<<<<<< HEAD
 	blockAllocator.create(1024, 10);
+=======
+	blockAllocator.create(1024,10);
+>>>>>>> 836e5fea4cb4c7d6d489ce4bbc3a15d2b3bac17a
 
 	//printf("Size: %d", sizeof(BlockAllocator::BlockDescriptor));
 
@@ -41,6 +45,7 @@ int main()
 
 
 			//The case where the unused block descriptors are all used
+<<<<<<< HEAD
 			if (blockAllocator.unusedDescriptorsHeadGetter() == NULL)
 				printf("There are no more unused block descriptors available\n");
 			else
@@ -49,6 +54,16 @@ int main()
 			break;
 		}
 
+=======
+			if(blockAllocator.unusedDescriptorsHeadGetter() == NULL)
+			printf("There are no more unused block descriptors available\n");
+			else
+			printf("There is not more free memory available\n");
+			_getch();
+			break;
+		}
+	
+>>>>>>> 836e5fea4cb4c7d6d489ce4bbc3a15d2b3bac17a
 	}
 
 
