@@ -21,9 +21,9 @@ public:
 		BlockDescriptor * m_pNext;
 
 		//Keep track of the ids of the block descriptors
-		#ifdef _DEBUG
+#ifdef _DEBUG
 		unsigned int m_id = 0;
-		#endif//DEBUG
+#endif//DEBUG
 	};
 
 	//Constructor
@@ -43,6 +43,14 @@ public:
 	size_t getLargestFreeBlock() const;
 	size_t getTotalFreeMemory() const;
 	void PrintBlockDescriptors();
+
+	//Getters
+	BlockDescriptor * unusedDescriptorsHeadGetter() { return unusedDescriptorsHead; }
+	BlockDescriptor * freeDescriptorsHeadGetter() { return freeDescriptorsHead; }
+	BlockDescriptor * outstandingDescriptorsHeadGetter() { return outstandingDescriptorsHead; }
+
+
+
 
 private:
 	void BlockAllocator::InitializeUnusedDescriptors(size_t i_sizeMemory, unsigned int i_numDescriptors);
