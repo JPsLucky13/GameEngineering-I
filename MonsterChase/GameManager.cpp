@@ -126,7 +126,7 @@ void GameManager::MoveMonsters()
 	//Cycle through the monsters and randomize their positions
 	for (int i = 0; i < monsterNumber; i++) {
 
-		DEBUG_LOG_MESSAGE("The position of the monster is: X: %d, Y: %d\n", monsters[i].monsterPosition.x(), monsters[i].monsterPosition.y());
+		DEBUG_LOG_MESSAGE("The position of the monster is: X: %f, Y: %f\n", monsters[i].monsterPosition.x(), monsters[i].monsterPosition.y());
 
 		Engine::Vector2D delta = Engine::Vector2D((float)(rand() % 3) - 1, (float)(rand() % 3) - 1);
 
@@ -151,7 +151,7 @@ void GameManager::MoveMonsters()
 			monsters[i].monsterPosition.y(100.0f);
 		}
 
-		DEBUG_LOG_MESSAGE("The position of the monster is: X: %d, Y: %d\n", monsters[i].monsterPosition.x(), monsters[i].monsterPosition.y());
+		DEBUG_LOG_MESSAGE("The new position of the monster is: X: %f, Y: %f\n", monsters[i].monsterPosition.x(), monsters[i].monsterPosition.y());
 
 	}
 
@@ -189,7 +189,7 @@ void GameManager::DestroyMonster()
 		DEBUG_LOG_MESSAGE("The number of monsters is: %d\n", monsterNumber);
 		monsters[monsterNumber].SetMonsterName("");
 		monsters[monsterNumber].monsterPosition = Engine::Vector2D(0.0f, 0.0f);
-		DEBUG_LOG_MESSAGE("The position of the monster is: X: %d, Y: %d\n", monsters[monsterNumber].monsterPosition.x(), monsters[monsterNumber].monsterPosition.y());
+		DEBUG_LOG_MESSAGE("The position of the monster is: X: %f, Y: %f\n", monsters[monsterNumber].monsterPosition.x(), monsters[monsterNumber].monsterPosition.y());
 		monsterNumberDecrease();
 		DEBUG_LOG_MESSAGE("The number of monsters is: %d\n", monsterNumber);
 	}
