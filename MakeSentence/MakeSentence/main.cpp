@@ -3,19 +3,23 @@
 #include <stdlib.h>
 #include <crtdbg.h>
 #include <stdio.h>
+#include <conio.h>
 
 #else
 #include <stdlib.h>
+#include <crtdbg.h>
+#include <stdio.h>
+#include <conio.h>
 #endif // _DEBUG
 
 //The number of words the user will introduce
-int words;
+int words = 0;
 
 //Stores the complete length of the sentence
-int completeLength;
+int completeLength = 0;
 
 //Array of pointers to keep all of the words
-char * allWords[100];
+char* allWords[100];
 
 //Ask the user for the amount of words they would like to write in the 
 //sentence
@@ -53,15 +57,15 @@ void FillOutWords()
 		}
 		allWords[i][length] = '\0';
 		completeLength += length;
-		completeLength += words;
-	}
 
+	}
+	completeLength += words;
 }
 
 
 
 //Makes the sentence of the array of words
-char * MakeSentence(char * strings[])
+char * MakeSentence( const char ** strings)
 {
 	char  * sentence = (char*)malloc(sizeof(char) * (completeLength + 1));
 	int sentenceIndex = 0;
@@ -102,22 +106,10 @@ void main(int i_argc, char ** i_argl)
 	//Ask the user to introduce the words
 	FillOutWords();
 
-
-	/*
-	const char * strings[] = {
-	"This",
-	"is",
-	"a",
-	"test",
-	NULL
-	};
-	*/
-
-
-	char * pSentence = MakeSentence(allWords);
+	char * pSentence = MakeSentence((const char**)allWords);
 
 	printf("The Sentence is: %s", pSentence);
-	scanf_s("%s", 10);
+	_getch();
 
 	//Free the memory occupied by the sentence
 	free(pSentence);
