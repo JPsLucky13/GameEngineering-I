@@ -37,6 +37,7 @@ namespace Engine {
 
 	void BlockAllocator::destroy()
 	{
+		_aligned_free(startOfMemory);
 	}
 
 	void * BlockAllocator::_alloc(size_t i_size)

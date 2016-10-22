@@ -10,7 +10,7 @@
 #include "Player.h"
 #include "GameManager.h"
 #include "BlockAllocator.h"
-
+#include <malloc.h>
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -18,6 +18,8 @@
 
 int main()
 {
+
+
 #ifdef _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif // _DEBUG
@@ -167,7 +169,7 @@ int main()
 	//Halt the operation
 	_getch();
 	
-
+	blockAllocator.destroy();
 	_CrtDumpMemoryLeaks();
 
 
