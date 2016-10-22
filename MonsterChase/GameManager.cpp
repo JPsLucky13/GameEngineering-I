@@ -11,6 +11,7 @@
 #else
 #define DEBUG_LOG_MESSAGE(fmt,...) void(0)
 #define ASSERT_MONSTER_NUMBER(cond,message) void (0)
+#define ASSERT(cond,message) void(0)
 
 #endif
 

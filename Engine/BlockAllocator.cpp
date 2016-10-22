@@ -1,5 +1,7 @@
 #include "BlockAllocator.h"
 #include <malloc.h>
+#include <string.h>
+
 namespace Engine {
 	//Constructor for the block allocator
 	BlockAllocator::BlockAllocator() {
@@ -14,7 +16,8 @@ namespace Engine {
 	void BlockAllocator::create(size_t i_sizeMemory, unsigned int i_numDescriptors)
 	{
 		//Get the block of memory and set the size
-		startOfMemory = _aligned_malloc(i_sizeMemory, alignment);
+		startOfMemory = reinterpret_cast<unsigned char*>(_aligned_malloc(i_sizeMemory, alignment));
+		memset(startOfMemory, 64, i_sizeMemory);
 
 		InitializeUnusedDescriptors(i_sizeMemory, i_numDescriptors);
 
@@ -75,9 +78,18 @@ namespace Engine {
 			//Give the user the entire block
 			if (tempSelected->m_sizeBlock < i_size + minimumSize)
 			{
-				tempPrevSelected->m_pNext = tempSelected->m_pNext;
-				tempSelected->m_pNext = outstandingDescriptorsHead;
-				outstandingDescriptorsHead = tempSelected;
+
+				//The selected element is the head of the free list
+				if (tempPrevSelected == tempSelected)
+				{
+					freeDescriptorsHead = tempSelected->m_pNext;
+
+				}
+					tempPrevSelected->m_pNext = tempSelected->m_pNext;
+					tempSelected->m_pNext = outstandingDescriptorsHead;
+					outstandingDescriptorsHead = tempSelected;
+				
+
 
 				//Pointer to return to the user
 				basePtr = tempSelected->m_pBlockBase;
@@ -106,6 +118,7 @@ namespace Engine {
 					basePtr = ptr->m_pBlockBase;
 
 				}
+
 
 			}
 
@@ -174,7 +187,7 @@ namespace Engine {
 						freeDescriptorsHead = tempSelected;											
 					}
 					//Run the garbage collector
-					GarabageCollector();
+					//GarabageCollector();
 					//printf("Free Successful %d\n", k);
 					return true;
 					break;
@@ -261,6 +274,7 @@ namespace Engine {
 
 		return total;
 	}
+#ifdef _DEBUG
 
 	void BlockAllocator::PrintBlockDescriptors()
 	{
@@ -273,7 +287,7 @@ namespace Engine {
 		//Print the list of unused block allocators with their ID and Block Size
 		for (BlockDescriptor * ptr = unusedDescriptorsHead; ptr != NULL; ptr = ptr->m_pNext)
 		{
-			printf("BD: id = %d, Block_size = %zu\n", ptr->m_id, ptr->m_sizeBlock);
+			printf("BD: id = %d, Block_size = %zu, Block_Base + Size = %p\n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, (char*)ptr->m_pBlockBase + ptr->m_sizeBlock);
 		}
 
 		printf("-------------------------------------------------------------------------------------------\n");
@@ -282,7 +296,7 @@ namespace Engine {
 		//Print the list of free block allocators with their ID and Block Size
 		for (BlockDescriptor * ptr = freeDescriptorsHead; ptr != NULL; ptr = ptr->m_pNext)
 		{
-			printf("BD: id = %d, Block_size = %zu\n", ptr->m_id, ptr->m_sizeBlock);
+			printf("BD: id = %d, Block_size = %zu, Block_Base = %p, Block_Base + Size = %p\n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, (char*)ptr->m_pBlockBase + ptr->m_sizeBlock);
 		}
 
 		printf("-------------------------------------------------------------------------------------------\n");
@@ -291,7 +305,7 @@ namespace Engine {
 		//Print the list of free block allocators with their ID and Block Size
 		for (BlockDescriptor * ptr = outstandingDescriptorsHead; ptr != NULL; ptr = ptr->m_pNext)
 		{
-			printf("BD: id = %d, Block_size = %zu\n", ptr->m_id, ptr->m_sizeBlock);
+			printf("BD: id = %d, Block_size = %zu, Block_Base = %p, Block_Base + Size = %p \n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, (char*)ptr->m_pBlockBase + ptr->m_sizeBlock);
 		}
 
 		printf("-------------------------------------------------------------------------------------------\n");
@@ -302,6 +316,9 @@ namespace Engine {
 		printf("-------------------------------------------------------------------------------------------\n");
 
 	}
+#endif // _DEBUG
+
+	
 
 	void BlockAllocator::InitializeUnusedDescriptors(size_t i_sizeMemory, unsigned int i_numDescriptors)
 	{
@@ -442,10 +459,11 @@ namespace Engine {
 				while (iterTemp != NULL){
 				
 					//To wrap the memory around if the right side is reached
+					/*
 					if (pointerRightSide == endOfRightSideOfMemory) {
 						pointerRightSide = startOfMemory;
 					}
-
+					*/
 
 					//printf("Block Base %d, size %zu, address %p, addressNext %p\n", iterTemp->m_id,iterTemp->m_sizeBlock, iterTemp->m_pBlockBase, iterTemp->m_pNext);
 					//The block descriptors are adjacent
@@ -460,12 +478,18 @@ namespace Engine {
 							previousIterTemp = previousIterTemp->m_pNext;
 						}
 
-						//Assign the next of the previous to the next block descriptor of the selected block descriptor
-						previousIterTemp->m_pNext = iterTemp->m_pNext;
+						if (iterTemp == freeDescriptorsHead)
+						{
+							freeDescriptorsHead = iterTemp->m_pNext;
+						}
+						else
+						{
+							//Assign the next of the previous to the next block descriptor of the selected block descriptor
+							previousIterTemp->m_pNext = iterTemp->m_pNext;
+						}
 
 						//Increase the size of the new free block descriptor
-						temp->m_sizeBlock += iterTemp->m_sizeBlock;
-						
+						temp->m_sizeBlock += iterTemp->m_sizeBlock;						
 
 						//Assign the block descriptor to the unused list of block descriptor
 						iterTemp->m_pNext = unusedDescriptorsHead;
@@ -481,7 +505,7 @@ namespace Engine {
 						//Reset the index
 						indexForMerge = 0;
 
-						continue;
+						break;
 
 					}
 					indexForMerge++;
@@ -491,7 +515,9 @@ namespace Engine {
 				indexForMerge = 0;
 				iterTemp = freeDescriptorsHead;
 				temp = temp->m_pNext;
+				
 			}
+
 		
 	}
 

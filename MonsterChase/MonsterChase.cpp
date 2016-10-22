@@ -12,8 +12,18 @@
 #include "BlockAllocator.h"
 
 
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
 int main()
 {
+#ifdef _DEBUG
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif // _DEBUG
+
+
+
 	//For Monster Chase
 	/*
 	srand(time_t(0));
@@ -81,7 +91,7 @@ int main()
 	}
 
 	*/
-
+	
 	//Testing for part 2
 
 	char * pointersToTest[5];
@@ -89,13 +99,19 @@ int main()
 	//Test allocating memory
 	for (int i = 0; i < 5; i++)
 	{
-
-		pointersToTest[i] =(char*) blockAllocator._alloc(32 + i);
+		size_t requestSize = 32 + i;
+		pointersToTest[i] =(char*) blockAllocator._alloc(requestSize);
 
 		//blockAllocator._alloc(pow(16.0, i + 1));
 		if (pointersToTest[i] != NULL)
 		{
+			for (unsigned int j = 0; j < requestSize; ++j)
+			{
+				pointersToTest[i][j] = i + 65;
+			}
+#ifdef _DEBUG
 			blockAllocator.PrintBlockDescriptors();
+#endif
 			//Halt the operation
 			_getch();
 		}
@@ -116,18 +132,43 @@ int main()
 	}
 
 	for (int i = 0; i < 5; i++) {
+		for (unsigned int j = 0; j < (32 + i); ++j)
+		{
+			pointersToTest[i][j] = 64;
+		}
 	
 		blockAllocator._free(pointersToTest[i]);
 
-		blockAllocator.k++;
+		//blockAllocator.k++;
 
+#ifdef _DEBUG
 		blockAllocator.PrintBlockDescriptors();
+#endif
+		
 		//Halt the operation
 		_getch();
-
 	}
 
+	
+	blockAllocator._alloc(36);
+	
+#ifdef _DEBUG
+	blockAllocator.PrintBlockDescriptors();
+#endif
 
+	//Halt the operation
+	_getch();
+
+	blockAllocator.GarabageCollector();
+
+#ifdef _DEBUG
+	blockAllocator.PrintBlockDescriptors();
+#endif
+	//Halt the operation
+	_getch();
+	
+
+	_CrtDumpMemoryLeaks();
 
 
 	return 0;

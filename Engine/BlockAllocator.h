@@ -51,7 +51,10 @@ namespace Engine {
 
 		size_t getLargestFreeBlock() const;
 		size_t getTotalFreeMemory() const;
+
+#ifdef _DEBUG
 		void PrintBlockDescriptors();
+#endif//DEBUG
 
 		//Getters
 		BlockDescriptor * unusedDescriptorsHeadGetter() { return unusedDescriptorsHead; }
@@ -59,17 +62,17 @@ namespace Engine {
 		BlockDescriptor * outstandingDescriptorsHeadGetter() { return outstandingDescriptorsHead; }
 
 		
-
+		void BlockAllocator::GarabageCollector();
 
 	private:
 		void BlockAllocator::InitializeUnusedDescriptors(size_t i_sizeMemory, unsigned int i_numDescriptors);
 		void BlockAllocator::SelectionSortBlockDescriptorPointer(BlockDescriptor * bd_pointer);
 		void BlockAllocator::SwapBlockDescriptorInfo(BlockDescriptor * lhs_bd_pointer, BlockDescriptor * rhs_bd_pointer);
-		void BlockAllocator::GarabageCollector();
+		
 	private:
-		const size_t minimumSize = 12;
+		const size_t minimumSize = 8;
 		const size_t alignment = 4;
-		void * startOfMemory;
+		unsigned char * startOfMemory;
 		void * endOfRightSideOfMemory;
 		BlockDescriptor * unusedDescriptorsHead;
 		BlockDescriptor * freeDescriptorsHead;
