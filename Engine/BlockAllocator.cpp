@@ -32,7 +32,7 @@ namespace Engine {
 		freeDescriptorsHead->m_pBlockBase = startOfMemory;
 		freeDescriptorsHead->m_sizeBlock = i_sizeMemory - (sizeof(BlockDescriptor) * i_numDescriptors);
 
-		endOfRightSideOfMemory = (char*)startOfMemory + (i_sizeMemory - (sizeof(BlockDescriptor) * i_numDescriptors));
+		endOfRightSideOfMemory = startOfMemory + (i_sizeMemory - (sizeof(BlockDescriptor) * i_numDescriptors));
 	}
 
 	void BlockAllocator::destroy()
@@ -106,7 +106,7 @@ namespace Engine {
 					BlockDescriptor* ptr = unusedDescriptorsHead;
 					unusedDescriptorsHead = unusedDescriptorsHead->m_pNext;
 
-					ptr->m_pBlockBase = (char *)tempSelected->m_pBlockBase + (tempSelected->m_sizeBlock - i_size);
+					ptr->m_pBlockBase = reinterpret_cast<unsigned char*>(tempSelected->m_pBlockBase) + (tempSelected->m_sizeBlock - i_size);
 					ptr->m_sizeBlock = i_size;
 
 					ptr->m_pNext = outstandingDescriptorsHead;
@@ -130,7 +130,7 @@ namespace Engine {
 		//Check that there are unused block descriptors and the amount of memory available is greater than what is requested
 		if (unusedDescriptorsHead != NULL && getLargestFreeBlock() >= i_size)
 		{
-			return (void*)basePtr;
+			return basePtr;
 
 		}
 
@@ -216,7 +216,7 @@ namespace Engine {
 			while (temp != NULL)
 			{
 
-				if (pointer >= temp->m_pBlockBase && pointer <= (char*)temp->m_pBlockBase + temp->m_sizeBlock)
+				if (pointer >= temp->m_pBlockBase && pointer <= reinterpret_cast<unsigned char *>(temp->m_pBlockBase) + temp->m_sizeBlock)
 				{
 					return true;
 					break;
@@ -288,7 +288,7 @@ namespace Engine {
 		//Print the list of unused block allocators with their ID and Block Size
 		for (BlockDescriptor * ptr = unusedDescriptorsHead; ptr != NULL; ptr = ptr->m_pNext)
 		{
-			printf("BD: id = %d, Block_size = %zu, Block_Base + Size = %p\n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, (char*)ptr->m_pBlockBase + ptr->m_sizeBlock);
+			printf("BD: id = %d, Block_size = %zu, Block_Base + Size = %p\n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<unsigned char *>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
 		}
 
 		printf("-------------------------------------------------------------------------------------------\n");
@@ -297,7 +297,7 @@ namespace Engine {
 		//Print the list of free block allocators with their ID and Block Size
 		for (BlockDescriptor * ptr = freeDescriptorsHead; ptr != NULL; ptr = ptr->m_pNext)
 		{
-			printf("BD: id = %d, Block_size = %zu, Block_Base = %p, Block_Base + Size = %p\n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, (char*)ptr->m_pBlockBase + ptr->m_sizeBlock);
+			printf("BD: id = %d, Block_size = %zu, Block_Base = %p, Block_Base + Size = %p\n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<unsigned char *>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
 		}
 
 		printf("-------------------------------------------------------------------------------------------\n");
@@ -306,7 +306,7 @@ namespace Engine {
 		//Print the list of free block allocators with their ID and Block Size
 		for (BlockDescriptor * ptr = outstandingDescriptorsHead; ptr != NULL; ptr = ptr->m_pNext)
 		{
-			printf("BD: id = %d, Block_size = %zu, Block_Base = %p, Block_Base + Size = %p \n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, (char*)ptr->m_pBlockBase + ptr->m_sizeBlock);
+			printf("BD: id = %d, Block_size = %zu, Block_Base = %p, Block_Base + Size = %p \n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<unsigned char *>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
 		}
 
 		printf("-------------------------------------------------------------------------------------------\n");
@@ -326,11 +326,11 @@ namespace Engine {
 		totalBlockDescriptors = i_numDescriptors;
 
 		//Split the memory to create a pool of block descriptors
-		char *poolOfBlockDescriptors = ((char*)startOfMemory + i_sizeMemory) - (sizeof(BlockDescriptor) * i_numDescriptors);
+		unsigned char *poolOfBlockDescriptors = (startOfMemory + i_sizeMemory) - (sizeof(BlockDescriptor) * i_numDescriptors);
 
 		for (unsigned int i = 0; i < i_numDescriptors; i++)
 		{
-			BlockDescriptor* newDescriptor = (BlockDescriptor*)poolOfBlockDescriptors + i;
+			BlockDescriptor* newDescriptor = reinterpret_cast<BlockDescriptor*>(poolOfBlockDescriptors) + i;
 			newDescriptor->m_pBlockBase = NULL;
 			newDescriptor->m_sizeBlock = 0;
 
@@ -455,16 +455,10 @@ namespace Engine {
 			while (temp != NULL) {
 
 
-				pointerRightSide = (char *)temp->m_pBlockBase + temp->m_sizeBlock;
+				pointerRightSide = reinterpret_cast<unsigned char*>(temp->m_pBlockBase) + temp->m_sizeBlock;
 
 				while (iterTemp != NULL){
 				
-					//To wrap the memory around if the right side is reached
-					/*
-					if (pointerRightSide == endOfRightSideOfMemory) {
-						pointerRightSide = startOfMemory;
-					}
-					*/
 
 					//printf("Block Base %d, size %zu, address %p, addressNext %p\n", iterTemp->m_id,iterTemp->m_sizeBlock, iterTemp->m_pBlockBase, iterTemp->m_pNext);
 					//The block descriptors are adjacent

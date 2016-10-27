@@ -102,7 +102,7 @@ int main()
 	for (int i = 0; i < 5; i++)
 	{
 		size_t requestSize = 32 + i;
-		pointersToTest[i] =(char*) blockAllocator._alloc(requestSize);
+		pointersToTest[i] =reinterpret_cast<char *> (blockAllocator._alloc(requestSize));
 
 		//blockAllocator._alloc(pow(16.0, i + 1));
 		if (pointersToTest[i] != NULL)
