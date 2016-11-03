@@ -20,7 +20,7 @@ extern void MonsterChase_UnitTest();
 
 int main()
 {
-	MonsterChase_UnitTest();
+	//MonsterChase_UnitTest();
 
 
 
@@ -57,12 +57,10 @@ int main()
 	//For blockAllocator Testing
 
 	//The block allocator
-	//Engine::BlockAllocator blockAllocator;
+	Engine::BlockAllocator blockAllocator;
 
 	//Creating the block allocator
-	//blockAllocator.create(1024, 10);
-
-	//printf("Size: %d", sizeof(BlockAllocator::BlockDescriptor));
+	blockAllocator.create(1024, 10);
 	
 	//Testing for Part 1
 
@@ -101,7 +99,7 @@ int main()
 	*/
 	
 	//Testing for part 2
-	/*
+	
 	char * pointersToTest[5];
 
 	//Test allocating memory
@@ -176,10 +174,6 @@ int main()
 	_getch();
 	
 	blockAllocator.destroy();
-
-
-	*/
-
 
 	_CrtDumpMemoryLeaks();
 

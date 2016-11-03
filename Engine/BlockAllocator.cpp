@@ -42,6 +42,13 @@ namespace Engine {
 
 	void * BlockAllocator::_alloc(const size_t i_size)
 	{
+		
+#ifdef _DEBUG
+		//Extra size allocate for the user to support guardbands
+		size_t guardBand = i_size + 12;
+#else
+		size_t guardBand = i_size;
+#endif
 
 		void * basePtr;
 
@@ -60,8 +67,11 @@ namespace Engine {
 			//Block descriptor to find the previous block descriptor to sleected to link it to the next of the selected one
 			BlockDescriptor * tempPrevSelected = freeDescriptorsHead;
 
+
+
+
 			//Cyle throught the free list until the size of the current block is appropriate
-			while (tempSelected->m_sizeBlock < i_size)
+			while (tempSelected->m_sizeBlock < guardBand)
 			{
 
 				selectedIndex++;
@@ -77,7 +87,7 @@ namespace Engine {
 
 
 			//Give the user the entire block
-			if (tempSelected->m_sizeBlock < i_size + minimumSize)
+			if (tempSelected->m_sizeBlock < guardBand + minimumSize)
 			{
 
 				//The selected element is the head of the free list
@@ -86,11 +96,15 @@ namespace Engine {
 					freeDescriptorsHead = tempSelected->m_pNext;
 
 				}
+
+				//Guard Banding
+
+
+
+
 					tempPrevSelected->m_pNext = tempSelected->m_pNext;
 					tempSelected->m_pNext = outstandingDescriptorsHead;
 					outstandingDescriptorsHead = tempSelected;
-				
-
 
 				//Pointer to return to the user
 				basePtr = tempSelected->m_pBlockBase;

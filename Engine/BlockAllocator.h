@@ -49,6 +49,7 @@ namespace Engine {
 		//isAllocator Adjacent
 		bool _isAllocated(const void* pointer)const;
 
+
 		size_t getLargestFreeBlock() const;
 		size_t getTotalFreeMemory() const;
 
