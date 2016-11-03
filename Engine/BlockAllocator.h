@@ -68,10 +68,11 @@ namespace Engine {
 		void BlockAllocator::InitializeUnusedDescriptors(const size_t i_sizeMemory, const unsigned int i_numDescriptors);
 		void BlockAllocator::SelectionSortBlockDescriptorPointer(BlockDescriptor *  const bd_pointer);
 		void BlockAllocator::SwapBlockDescriptorInfo(BlockDescriptor * lhs_bd_pointer, BlockDescriptor * rhs_bd_pointer);
-		
+
 	private:
 		const size_t minimumSize = 8;
 		const size_t alignment = 4;
+		const size_t guardBandSize = 4;
 		unsigned char * startOfMemory;
 		void * endOfRightSideOfMemory;
 		BlockDescriptor * unusedDescriptorsHead;
