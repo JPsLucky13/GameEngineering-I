@@ -28,11 +28,12 @@ namespace Engine {
 
 	};
 
-	Vector2D operator+(const Vector2D & input1, const Vector2D & input2);
-	Vector2D operator-(const Vector2D & input1, const Vector2D & input2);
-	bool operator==(const Vector2D & input1, const Vector2D & input2);
+	inline Vector2D operator+(const Vector2D & input1, const Vector2D & input2);
+	inline Vector2D operator-(const Vector2D & input1, const Vector2D & input2);
+	inline bool operator==(const Vector2D & input1, const Vector2D & input2);
+	
 	void PrintDebugMessage(const char* file, const char* function, const int line,const char* fmt, ...);
 
 
-
 }
+#include "Vector2D-inl.h"

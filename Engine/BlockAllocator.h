@@ -33,40 +33,39 @@ namespace Engine {
 		BlockAllocator();
 
 		//Create a new block allocator
-		void create(size_t i_sizeMemory, unsigned int i_numDescriptors);
+		void create(const size_t i_sizeMemory,const unsigned int i_numDescriptors);
 		//Destroys the block allocator
 		void destroy();
 
 		//Allocate
-		void * _alloc(size_t i_size);
+		void * _alloc(const size_t i_size);
 
 		//free
-		bool _free(void * i_ptr);
+		bool _free(const void * i_ptr);
 
 		//contains
-		bool _contains(void* pointer) const;
+		bool _contains(const void* pointer) const;
 
 		//isAllocator Adjacent
-		bool _isAllocated(void* pointer)const;
+		bool _isAllocated(const void* pointer)const;
 
 		size_t getLargestFreeBlock() const;
 		size_t getTotalFreeMemory() const;
 
 #ifdef _DEBUG
-		void PrintBlockDescriptors();
+		void PrintBlockDescriptors() const;
 #endif//DEBUG
 
-		//Getters
-		BlockDescriptor * unusedDescriptorsHeadGetter() { return unusedDescriptorsHead; }
-		BlockDescriptor * freeDescriptorsHeadGetter() { return freeDescriptorsHead; }
-		BlockDescriptor * outstandingDescriptorsHeadGetter() { return outstandingDescriptorsHead; }
+		inline BlockDescriptor * unusedDescriptorsHeadGetter() const;
+		inline BlockDescriptor * freeDescriptorsHeadGetter() const;
+		inline BlockDescriptor * outstandingDescriptorsHeadGetter() const;
 
 		
 		void BlockAllocator::GarabageCollector();
 
 	private:
-		void BlockAllocator::InitializeUnusedDescriptors(size_t i_sizeMemory, unsigned int i_numDescriptors);
-		void BlockAllocator::SelectionSortBlockDescriptorPointer(BlockDescriptor * bd_pointer);
+		void BlockAllocator::InitializeUnusedDescriptors(const size_t i_sizeMemory, const unsigned int i_numDescriptors);
+		void BlockAllocator::SelectionSortBlockDescriptorPointer(BlockDescriptor *  const bd_pointer);
 		void BlockAllocator::SwapBlockDescriptorInfo(BlockDescriptor * lhs_bd_pointer, BlockDescriptor * rhs_bd_pointer);
 		
 	private:
@@ -81,4 +80,7 @@ namespace Engine {
 
 
 	};
+
 }
+
+#include "BlockAllocator-inl.h"

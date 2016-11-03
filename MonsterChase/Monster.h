@@ -15,11 +15,13 @@ public:
 
 
 	//Get the monster name
-	const char* GetMonsterName()const;
+	inline const char* GetMonsterName()const;
 
 	//Set the monster name
-	void SetMonsterName(char* name);
+	inline void SetMonsterName(char* name);
 
 
 
 };
+
+#include "Monster-inl.h"

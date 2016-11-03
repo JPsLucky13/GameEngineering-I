@@ -1,5 +1,4 @@
 #pragma once
-#include "Vector2D.h"
 #include <stdio.h>
 #include "Monster.h"
 #include "Player.h"
@@ -20,18 +19,18 @@ private:
 public:
 	
 	//adder
-	void monsterNumberAdd(){monsterNumber++;}
+	inline void monsterNumberAdd();
 	//substract
-	void monsterNumberDecrease() { monsterNumber--; }
+	inline void monsterNumberDecrease();
 
 	//The prototype of the monster naming method
-	void NameMonsters(int monsterNumber);
+	void NameMonsters(int &monsterNumber);
 
 	//The prototype of placing the monsters randomly on a grid
 	void PlaceMonsters();
 
 	//The prototype to display the monster positions
-	void DisplayMonsters();
+	void DisplayMonsters() const;
 
 	//The prototype to display the player movement options
 	char PlayerOptions();
@@ -51,7 +50,7 @@ public:
 	//The prototype to ask for the number of monsters
 	void InitializeGame();
 
-	void updateGameManager();
+	void UpdateGameManager();
 };
 
-
+#include "GameManager-inl.h"

@@ -10,20 +10,26 @@
 #include "Player.h"
 #include "GameManager.h"
 #include "BlockAllocator.h"
-#include <malloc.h>
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
 
+extern void MonsterChase_UnitTest();
+
+
 int main()
 {
+	MonsterChase_UnitTest();
+
 
 
 #ifdef _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif // _DEBUG
 
+
+	//Run the monster chase unit test
 
 
 	//For Monster Chase
@@ -51,10 +57,10 @@ int main()
 	//For blockAllocator Testing
 
 	//The block allocator
-	Engine::BlockAllocator blockAllocator;
+	//Engine::BlockAllocator blockAllocator;
 
 	//Creating the block allocator
-	blockAllocator.create(1024, 10);
+	//blockAllocator.create(1024, 10);
 
 	//printf("Size: %d", sizeof(BlockAllocator::BlockDescriptor));
 	
@@ -95,11 +101,11 @@ int main()
 	*/
 	
 	//Testing for part 2
-
+	/*
 	char * pointersToTest[5];
 
 	//Test allocating memory
-	for (int i = 0; i < 5; i++)
+	for (unsigned int i = 0; i < 5; i++)
 	{
 		size_t requestSize = 32 + i;
 		pointersToTest[i] =reinterpret_cast<char *> (blockAllocator._alloc(requestSize));
@@ -133,7 +139,7 @@ int main()
 
 	}
 
-	for (int i = 0; i < 5; i++) {
+	for (unsigned int i = 0; i < 5; i++) {
 		for (unsigned int j = 0; j < (32 + i); ++j)
 		{
 			pointersToTest[i][j] = 64;
@@ -170,6 +176,11 @@ int main()
 	_getch();
 	
 	blockAllocator.destroy();
+
+
+	*/
+
+
 	_CrtDumpMemoryLeaks();
 
 

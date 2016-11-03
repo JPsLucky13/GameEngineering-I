@@ -1,4 +1,5 @@
 #include "GameManager.h"
+#include "Vector2D.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <conio.h>
@@ -17,7 +18,7 @@
 
 
 
-void GameManager::NameMonsters(int monsterNumber)
+void GameManager::NameMonsters(int &monsterNumber)
 {
 	//Cycle through the monsters to assign them names
 	for (int i = 0; i < monsterNumber; i++) {
@@ -40,7 +41,7 @@ void GameManager::PlaceMonsters()
 	}
 }
 
-void GameManager::DisplayMonsters()
+void GameManager::DisplayMonsters() const
 {
 	//Print the monster position and format the position
 	for (int i = 0; i < monsterNumber; i++) {
@@ -57,8 +58,6 @@ void GameManager::DisplayMonsters()
 		{
 			tempY = "0";
 		}
-
-
 
 		printf("Monster %s is at position: [%s%d][%s%d]\n", monsters[i].GetMonsterName(), tempX, (int)monsters[i].monsterPosition.x(), tempY, (int)monsters[i].monsterPosition.y());
 	}
@@ -235,7 +234,7 @@ void GameManager::InitializeGame()
 
 }
 
-void GameManager::updateGameManager()
+void GameManager::UpdateGameManager()
 {
 	MoveMonsters();
 	DisplayMonsters();

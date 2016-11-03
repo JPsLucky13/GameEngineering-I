@@ -13,7 +13,7 @@ namespace Engine {
 	}
 
 	//Creates the block allocator and splits it
-	void BlockAllocator::create(size_t i_sizeMemory, unsigned int i_numDescriptors)
+	void BlockAllocator::create(const size_t i_sizeMemory,const unsigned int i_numDescriptors)
 	{
 		//Get the block of memory and set the size
 		startOfMemory = reinterpret_cast<unsigned char*>(_aligned_malloc(i_sizeMemory, alignment));
@@ -40,7 +40,7 @@ namespace Engine {
 		_aligned_free(startOfMemory);
 	}
 
-	void * BlockAllocator::_alloc(size_t i_size)
+	void * BlockAllocator::_alloc(const size_t i_size)
 	{
 
 		void * basePtr;
@@ -145,7 +145,7 @@ namespace Engine {
 
 	}
 
-	bool BlockAllocator::_free(void * i_ptr)
+	bool BlockAllocator::_free(const void * i_ptr)
 	{
 		
 		//The block descriptor to select the outstanding block descriptor to compare
@@ -187,8 +187,7 @@ namespace Engine {
 						tempSelected->m_pNext = freeDescriptorsHead;
 						freeDescriptorsHead = tempSelected;											
 					}
-					//Run the garbage collector
-					//GarabageCollector();
+
 					//printf("Free Successful %d\n", k);
 					return true;
 					break;
@@ -204,7 +203,7 @@ namespace Engine {
 
 
 
-	bool BlockAllocator::_contains(void * pointer) const
+	bool BlockAllocator::_contains(const void * pointer) const
 	{
 		BlockDescriptor * temp = outstandingDescriptorsHead;
 
@@ -229,7 +228,7 @@ namespace Engine {
 		}
 	}
 
-	bool BlockAllocator::_isAllocated(void * pointer) const
+	bool BlockAllocator::_isAllocated(const void * pointer) const
 	{
 		BlockDescriptor * temp = outstandingDescriptorsHead;
 		if (outstandingDescriptorsHead == NULL)
@@ -277,7 +276,7 @@ namespace Engine {
 	}
 #ifdef _DEBUG
 
-	void BlockAllocator::PrintBlockDescriptors()
+	void BlockAllocator::PrintBlockDescriptors() const
 	{
 		//Print the heading of the block allocator
 		printf("Block allocator: Total free memory %zu, Lagest Free Block %zu, number of Block descriptors %d\n", getTotalFreeMemory(), getLargestFreeBlock(), totalBlockDescriptors);
@@ -288,7 +287,7 @@ namespace Engine {
 		//Print the list of unused block allocators with their ID and Block Size
 		for (BlockDescriptor * ptr = unusedDescriptorsHead; ptr != NULL; ptr = ptr->m_pNext)
 		{
-			printf("BD: id = %d, Block_size = %zu, Block_Base + Size = %p\n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<unsigned char *>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
+			printf("BD: id = %d, Block_size = %zu,Block_Base = %p, Block_Base + Size = %p\n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<unsigned char *>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
 		}
 
 		printf("-------------------------------------------------------------------------------------------\n");
@@ -321,7 +320,7 @@ namespace Engine {
 
 	
 
-	void BlockAllocator::InitializeUnusedDescriptors(size_t i_sizeMemory, unsigned int i_numDescriptors)
+	void BlockAllocator::InitializeUnusedDescriptors(const size_t i_sizeMemory, const unsigned int i_numDescriptors)
 	{
 		totalBlockDescriptors = i_numDescriptors;
 
@@ -347,7 +346,7 @@ namespace Engine {
 
 	}
 
-	void BlockAllocator::SelectionSortBlockDescriptorPointer(BlockDescriptor * bd_pointer)
+	void BlockAllocator::SelectionSortBlockDescriptorPointer(BlockDescriptor * const bd_pointer)
 	{
 		//start pointer
 		BlockDescriptor * startPointer = bd_pointer;
