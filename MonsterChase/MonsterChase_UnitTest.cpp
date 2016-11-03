@@ -10,7 +10,7 @@ void MonsterChase_UnitTest() {
 	Engine::Vector2D result;
 
 	//Test the addition
-	result = one + two;
+	result = two + one;
 
 	//Test the substraction
 	result = one - two;
