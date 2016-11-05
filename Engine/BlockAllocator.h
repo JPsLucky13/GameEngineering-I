@@ -16,7 +16,7 @@ namespace Engine {
 	public:
 		//FOr testing
 		int k = 0;
-
+		void* tempPtr;
 		struct BlockDescriptor
 		{
 			void * m_pBlockBase;
@@ -44,7 +44,7 @@ namespace Engine {
 		bool _free(const void * i_ptr);
 
 		//contains
-		bool _contains(const void* pointer) const;
+		inline bool _contains(const void* pointer) const;
 
 		//isAllocator Adjacent
 		bool _isAllocated(const void* pointer)const;
@@ -68,6 +68,7 @@ namespace Engine {
 		void BlockAllocator::InitializeUnusedDescriptors(const size_t i_sizeMemory, const unsigned int i_numDescriptors);
 		void BlockAllocator::SelectionSortBlockDescriptorPointer(BlockDescriptor *  const bd_pointer);
 		void BlockAllocator::SwapBlockDescriptorInfo(BlockDescriptor * lhs_bd_pointer, BlockDescriptor * rhs_bd_pointer);
+		void BlockAllocator::SortFreeBlockListByAddress(BlockDescriptor * const bd_pointer);
 
 	private:
 		const size_t minimumSize = 8;

@@ -74,7 +74,7 @@ bool HeapManager_UnitTest()
 	{
 		const size_t		maxTestAllocationSize = 1024;
 
-		const unsigned int	alignments[] = { 4, 8, 16, 32, 64 };
+		const unsigned int	alignments[] = { 4, 4, 4, 4, 4 };
 
 		unsigned int	index = rand() % (sizeof(alignments) / sizeof(alignments[0]));
 
@@ -112,7 +112,7 @@ bool HeapManager_UnitTest()
 			void * pPtr = AllocatedAddresses.back();
 			AllocatedAddresses.pop_back();
 
-			bool success = pHeapManager._free(pPtr);
+			bool success = pHeapManager._free(pPtr);			
 			assert(success);
 
 			numFrees++;
@@ -121,7 +121,7 @@ bool HeapManager_UnitTest()
 		if ((rand() % garbageCollectAboutEvery) == 0)
 		{
 			pHeapManager.GarabageCollector();
-
+			
 			numCollects++;
 		}
 
@@ -134,7 +134,9 @@ bool HeapManager_UnitTest()
 #endif // __TRACK_ALLOCATIONS
 
 	printf("\n");
-
+	if (std::find(AllocatedAddresses.begin(), AllocatedAddresses.end(), pHeapManager.tempPtr) != AllocatedAddresses.end()) {
+		int a = 0;
+	}
 	// now free those blocks in a random order
 	if (!AllocatedAddresses.empty())
 	{

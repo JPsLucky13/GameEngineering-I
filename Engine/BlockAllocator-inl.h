@@ -6,5 +6,8 @@ namespace Engine{
 inline BlockAllocator::BlockDescriptor * BlockAllocator::unusedDescriptorsHeadGetter() const { return unusedDescriptorsHead; }
 inline BlockAllocator::BlockDescriptor * BlockAllocator::freeDescriptorsHeadGetter() const { return freeDescriptorsHead; }
 inline BlockAllocator::BlockDescriptor * BlockAllocator::outstandingDescriptorsHeadGetter() const { return outstandingDescriptorsHead; }
-
+inline bool BlockAllocator::_contains(const void * pointer) const
+{
+	return (pointer >= startOfMemory && pointer < endOfRightSideOfMemory);
+}
 }

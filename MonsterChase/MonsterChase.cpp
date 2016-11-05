@@ -180,12 +180,9 @@ int main()
 	
 	blockAllocator.destroy();
 
-
-
-	*/
 	_CrtDumpMemoryLeaks();
 
-
+	*/
 	return 0;
 
 }
