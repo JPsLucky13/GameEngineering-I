@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="HeapManager_UnitTest.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="MonsterChase.cpp" />
     <ClCompile Include="MonsterChase_UnitTest.cpp" />

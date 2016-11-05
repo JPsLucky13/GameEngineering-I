@@ -72,7 +72,13 @@ namespace Engine {
 	private:
 		const size_t minimumSize = 8;
 		const size_t alignment = 4;
+
+#ifdef _DEBUG
+
 		const size_t guardBandSize = 4;
+#else
+		const size_t guardBandSize = 0;
+#endif
 		unsigned char * startOfMemory;
 		void * endOfRightSideOfMemory;
 		BlockDescriptor * unusedDescriptorsHead;

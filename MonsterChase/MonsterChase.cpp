@@ -15,8 +15,11 @@
 #include <stdlib.h>
 #include <crtdbg.h>
 
+//Monster Chase Unit Test
 extern void MonsterChase_UnitTest();
 
+//Block allocator unit test
+extern bool HeapManager_UnitTest();
 
 int main()
 {
@@ -29,8 +32,10 @@ int main()
 #endif // _DEBUG
 
 
-	//Run the monster chase unit test
+	//Run the block allocator unit test
+	HeapManager_UnitTest();
 
+	_getch();
 
 	//For Monster Chase
 	/*
@@ -57,10 +62,10 @@ int main()
 	//For blockAllocator Testing
 
 	//The block allocator
-	Engine::BlockAllocator blockAllocator;
+	//Engine::BlockAllocator blockAllocator;
 
 	//Creating the block allocator
-	blockAllocator.create(1024, 10);
+	//blockAllocator.create(1024, 10);
 	
 	//Testing for Part 1
 
@@ -99,7 +104,7 @@ int main()
 	*/
 	
 	//Testing for part 2
-	
+	/*
 	char * pointersToTest[5];
 
 	//Test allocating memory
@@ -175,6 +180,9 @@ int main()
 	
 	blockAllocator.destroy();
 
+
+
+	*/
 	_CrtDumpMemoryLeaks();
 
 

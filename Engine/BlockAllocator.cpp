@@ -50,7 +50,7 @@ namespace Engine {
 		size_t guardBand = i_size;
 #endif
 
-		void * basePtr;
+		void * basePtr = NULL;
 
 		//The index to get to the selected free block descriptor
 		int selectedIndex = 0;
@@ -62,7 +62,7 @@ namespace Engine {
 		bool guardBandedSuccessfully = false;
 
 
-		if (getLargestFreeBlock() >= i_size)
+		if (getLargestFreeBlock() >= guardBand)
 		{
 
 			//Sort bi size the free block descriptor linked list.
@@ -75,178 +75,273 @@ namespace Engine {
 			BlockDescriptor * tempPrevSelected = freeDescriptorsHead;
 
 
-
-
-
-
-
-			//Cyle throught the free list until the size of the current block is appropriate
-			while (tempSelected->m_sizeBlock < guardBand)
+			while (tempSelected != NULL)
 			{
 
-				selectedIndex++;
-				tempSelected = tempSelected->m_pNext;
-			}
 
-			//Traverse to the previous block descriptor to the selected one
-			for (int i = 0;i < selectedIndex-1;i++)
-			{
-				tempPrevSelected = tempPrevSelected->m_pNext;
-
-			}
-
-
-			//Give the user the entire block
-			if (tempSelected->m_sizeBlock < guardBand + minimumSize)
-			{
-
-				//Go to the right side of the size of memory given and substract the guardband size
-				unsigned char * guardBandptr = reinterpret_cast<unsigned char*>(tempSelected->m_pBlockBase) + tempSelected->m_sizeBlock - guardBandSize;
-
-				//Shift left the size the user requested
-				guardBandptr -= i_size;
-
-
-				//Check that the pointer to user memory is aligned
-				alignmentRemainder = reinterpret_cast<uintptr_t>(guardBandptr) % 4;
-
-				if (alignmentRemainder == 0)
+				//Cyle throught the free list until the size of the current block is appropriate
+				while (tempSelected->m_sizeBlock < guardBand)
 				{
-					//The pointer is aligned 
 
-					unsigned char * leftguardBandCheck = guardBandptr - guardBandSize;
-
-					if (leftguardBandCheck <= tempSelected->m_pBlockBase)
-					{
-						//Write the left guardband
-						for (int i = 0; i < 4; i++)
-						{
-							//Store G character for guardband
-							leftguardBandCheck[0] = 71;
-
-							//Shift towards the right
-							leftguardBandCheck += 1;
-						}
-
-						//Set the pointer to return to the user
-						basePtr = leftguardBandCheck;
-
-						//Write the right guardband
-						for (int i = 0; i < 4; i++)
-						{
-							//Store G character for guardband
-							leftguardBandCheck[0] = 71;
-
-							//Shift towards the right
-							leftguardBandCheck += 1;
-						}
-
-						guardBandedSuccessfully = true;
-					}
-
-					else {
-					
-						guardBandedSuccessfully = false;
-
-						//Repeat and check for the next block descriptor
-						tempSelected = tempSelected->m_pNext;
-					}
+					selectedIndex++;
+					tempSelected = tempSelected->m_pNext;
 				}
 
-				//The alignment did not succeed
+				//Traverse to the previous block descriptor to the selected one
+				for (int i = 0;i < selectedIndex-1;i++)
+				{
+					tempPrevSelected = tempPrevSelected->m_pNext;
+
+				}
+
+
+				//Give the user the entire block
+				if (tempSelected->m_sizeBlock < guardBand + minimumSize)
+				{
+
+					//Go to the right side of the size of memory given and substract the guardband size
+					unsigned char * guardBandptr = reinterpret_cast<unsigned char*>(tempSelected->m_pBlockBase) + tempSelected->m_sizeBlock - guardBandSize;
+
+					//Shift left the size the user requested
+					guardBandptr -= i_size;
+
+
+					//Check that the pointer to user memory is aligned
+					alignmentRemainder = reinterpret_cast<uintptr_t>(guardBandptr) % 4;
+
+					if (alignmentRemainder == 0)
+					{
+						//The pointer is aligned 
+
+						unsigned char * leftguardBandCheck = guardBandptr - guardBandSize;
+
+						if (leftguardBandCheck <= tempSelected->m_pBlockBase)
+						{
+							//Write the left guardband
+							for (int i = 0; i < guardBandSize; i++)
+							{
+								*(leftguardBandCheck + i) = 71;
+							}
+
+							//Set the pointer to return to the user
+							basePtr = leftguardBandCheck;
+
+							//Shift left the size of the user
+							leftguardBandCheck += i_size;
+
+
+							//Write the right guardband
+							for (int i = 0; i < guardBandSize; i++)
+							{
+								*(leftguardBandCheck + i) = 71;
+							}
+
+							guardBandedSuccessfully = true;
+						}
+
+						else {
+					
+							guardBandedSuccessfully = false;
+
+							//Repeat and check for the next block descriptor
+							tempSelected = tempSelected->m_pNext;
+
+							continue;
+						}
+					}
+
+					//The alignment did not succeed
+					else {
+				
+						//The realign the pointer 
+						unsigned char * leftguardBandCheck = guardBandptr - alignmentRemainder - guardBandSize;
+				
+						if (leftguardBandCheck <= tempSelected->m_pBlockBase)
+						{
+							//Write the left guardband
+							for (int i = 0; i < 4; i++)
+							{
+								*(leftguardBandCheck + i) = 71;
+							}
+
+							//Set the pointer to return to the user
+							basePtr = leftguardBandCheck;
+
+							//Shift left the size of the user
+							leftguardBandCheck += i_size;
+
+
+							//Write the right guardband
+							for (int i = 0; i < 4; i++)
+							{
+								*(leftguardBandCheck + i) = 71;
+							}
+
+							guardBandedSuccessfully = true;
+
+						}
+
+						else {
+
+							guardBandedSuccessfully = false;
+
+							//Repeat and check for the next block descriptor
+							tempSelected = tempSelected->m_pNext;
+							continue;
+						}
+					}
+
+
+					if(guardBandedSuccessfully){
+
+						//The selected element is the head of the free list
+						if (tempPrevSelected == tempSelected)
+						{
+							freeDescriptorsHead = tempSelected->m_pNext;
+
+						}
+							tempPrevSelected->m_pNext = tempSelected->m_pNext;
+							tempSelected->m_pNext = outstandingDescriptorsHead;
+							outstandingDescriptorsHead = tempSelected;
+							break;
+
+					}
+
+				}
+
+				//Divide the block
 				else {
 				
-					//The realign the pointer 
-					unsigned char * leftguardBandCheck = guardBandptr - alignmentRemainder - guardBandSize;
-				
-					if (leftguardBandCheck <= tempSelected->m_pBlockBase)
+					if (unusedDescriptorsHead != NULL)
 					{
-						//Write the left guardband
-						for (int i = 0; i < 4; i++)
-						{
-							//Store G character for guardband
-							leftguardBandCheck[0] = 71;
 
-							//Shift towards the right
-							leftguardBandCheck += 1;
+						//Assign an unused block descriptor the memory the user requested
+						BlockDescriptor* ptr = unusedDescriptorsHead;
+						
+	
+
+						//Temporary pointer
+						unsigned char * guardBandptr = reinterpret_cast<unsigned char *>(tempSelected->m_pBlockBase) + tempSelected->m_sizeBlock - guardBandSize - i_size;
+
+
+						//Check that the pointer to user memory is aligned
+						alignmentRemainder = reinterpret_cast<uintptr_t>(guardBandptr) % 4;
+
+						if (alignmentRemainder == 0)
+						{
+							//The pointer is aligned 
+
+							unsigned char * leftguardBandCheck = guardBandptr - guardBandSize;
+
+							if (leftguardBandCheck <= tempSelected->m_pBlockBase)
+							{
+								//Write the left guardband
+								for (int i = 0; i < guardBandSize; i++)
+								{
+									*(leftguardBandCheck + i) = 71;
+								}
+
+								//Set the pointer to return to the user
+								basePtr = leftguardBandCheck;
+
+								//Shift left the size of the user
+								leftguardBandCheck += i_size;
+
+
+								//Write the right guardband
+								for (int i = 0; i < guardBandSize; i++)
+								{
+									*(leftguardBandCheck + i) = 71;
+								}
+
+								guardBandedSuccessfully = true;
+							}
+
+							else {
+
+								guardBandedSuccessfully = false;
+
+								//Repeat and check for the next block descriptor
+								tempSelected = tempSelected->m_pNext;
+
+								continue;
+							}
+
+
+							
 						}
 
-						//Set the pointer to return to the user
-						basePtr = leftguardBandCheck;
+						else {
+						
+							//The pointer is not aligned
+							unsigned char * leftguardBandCheck = guardBandptr - alignmentRemainder - guardBandSize;
 
-						//Write the right guardband
-						for (int i = 0; i < 4; i++)
-						{
-							//Store G character for guardband
-							leftguardBandCheck[0] = 71;
+							if (leftguardBandCheck <= tempSelected->m_pBlockBase)
+							{
+								//Write the left guardband
+								for (int i = 0; i < guardBandSize; i++)
+								{
+									*(leftguardBandCheck + i) = 71;
+								}
 
-							//Shift towards the right
-							leftguardBandCheck += 1;
+								//Set the pointer to return to the user
+								basePtr = leftguardBandCheck;
+
+								//Shift left the size of the user
+								leftguardBandCheck += i_size;
+
+
+								//Write the right guardband
+								for (int i = 0; i < guardBandSize; i++)
+								{
+									*(leftguardBandCheck + i) = 71;
+								}
+
+								guardBandedSuccessfully = true;
+							}
+
+							else {
+
+								guardBandedSuccessfully = false;
+
+								//Repeat and check for the next block descriptor
+								tempSelected = tempSelected->m_pNext;
+
+								continue;
+							}
 						}
 
-						guardBandedSuccessfully = true;
 
-					}
+						if(guardBandedSuccessfully){
 
-					else {
-
-						guardBandedSuccessfully = false;
-
-						//Repeat and check for the next block descriptor
-						tempSelected = tempSelected->m_pNext;
-					}
-				}
+							unusedDescriptorsHead = unusedDescriptorsHead->m_pNext;
 
 
-				if(guardBandedSuccessfully){
+							//Set the gaurdbands
+							ptr->m_pBlockBase = basePtr;
+							ptr->m_sizeBlock = i_size + (guardBandSize *2) + alignmentRemainder;
 
-					//The selected element is the head of the free list
-					if (tempPrevSelected == tempSelected)
-					{
-						freeDescriptorsHead = tempSelected->m_pNext;
+							ptr->m_pNext = outstandingDescriptorsHead;
+							outstandingDescriptorsHead = ptr;
 
-					}
-						tempPrevSelected->m_pNext = tempSelected->m_pNext;
-						tempSelected->m_pNext = outstandingDescriptorsHead;
-						outstandingDescriptorsHead = tempSelected;
+							//Reduce the size of the free block that stays in the list
+							tempSelected->m_sizeBlock -= (i_size + (guardBandSize * 2) + alignmentRemainder);
+
+							break;
+						}
 					
+
+					}
+
+
 				}
 
 			}
-
-			//Divide the block
-			else {
-				
-				if (unusedDescriptorsHead != NULL)
-				{
-
-					//Assign an unused block descriptor the memory the user requested
-					BlockDescriptor* ptr = unusedDescriptorsHead;
-					unusedDescriptorsHead = unusedDescriptorsHead->m_pNext;
-
-					ptr->m_pBlockBase = reinterpret_cast<unsigned char*>(tempSelected->m_pBlockBase) + (tempSelected->m_sizeBlock - i_size);
-					ptr->m_sizeBlock = i_size;
-
-					ptr->m_pNext = outstandingDescriptorsHead;
-					outstandingDescriptorsHead = ptr;
-
-					//Reduce the size of the free block that stays in the list
-					tempSelected->m_sizeBlock -= i_size;
-
-					//Give the user the pointer to write to
-					basePtr = ptr->m_pBlockBase;
-
-				}
-
-
-			}
-
-		}
 		
-
+		 }//end of while loop
 
 		//Check that there are unused block descriptors and the amount of memory available is greater than what is requested
-		if (unusedDescriptorsHead != NULL && getLargestFreeBlock() >= i_size)
+		if (unusedDescriptorsHead != NULL && getLargestFreeBlock() >= guardBand)
 		{
 			return basePtr;
 
