@@ -26,7 +26,6 @@ void GameManager::NameMonsters(int &monsterNumber)
 		printf("What name will you give monster %d ?:", i);
 		scanf_s("%s", name, 10);
 		monsters[i].SetMonsterName(name);
-		
 	}
 
 }
@@ -35,9 +34,9 @@ void GameManager::PlaceMonsters()
 {
 	//Cycle through the monsters and randomize their positions
 	for (int i = 0; i < monsterNumber; i++) {
-		monsters[i].monsterPosition = Engine::Vector2D((float)(rand() % 101), (float)(rand() % 101));
-		ASSERT(monsters[i].monsterPosition.x() >= 0.0f && monsters[i].monsterPosition.x() <= 100.0f, "Woops monster is out of bounds");
-		ASSERT(monsters[i].monsterPosition.y() >= 0.0f && monsters[i].monsterPosition.y() <= 100.0f, "Woops monster is out of bounds");
+		monsters[i].SetPosition(Engine::Vector2D((float)(rand() % 101), (float)(rand() % 101)));
+		ASSERT(monsters[i].GetPosition().x() >= 0.0f && monsters[i].GetPosition().x() <= 100.0f, "Woops monster is out of bounds");
+		ASSERT(monsters[i].GetPosition().y() >= 0.0f && monsters[i].GetPosition().y() <= 100.0f, "Woops monster is out of bounds");
 	}
 }
 
@@ -49,109 +48,57 @@ void GameManager::DisplayMonsters() const
 		char * tempY = "\0";
 
 
-		if (monsters[i].monsterPosition.x() < 10.0f && monsters[i].monsterPosition.x() > -10.0f)
+		if (monsters[i].GetPosition().x() < 10.0f && monsters[i].GetPosition().x() > -10.0f)
 		{
 			tempX = "0";
 		}
 
-		if (monsters[i].monsterPosition.y() < 10.0f && monsters[i].monsterPosition.y() > -10.0f)
+		if (monsters[i].GetPosition().y() < 10.0f && monsters[i].GetPosition().y() > -10.0f)
 		{
 			tempY = "0";
 		}
 
-		printf("Monster %s is at position: [%s%d][%s%d]\n", monsters[i].GetMonsterName(), tempX, (int)monsters[i].monsterPosition.x(), tempY, (int)monsters[i].monsterPosition.y());
+		printf("Monster %s is at position: [%s%d][%s%d]\n", monsters[i].GetMonsterName(), tempX, static_cast<int>(monsters[i].GetPosition().x()), tempY, static_cast<int>(monsters[i].GetPosition().y()));
 	}
 }
 
-char GameManager::PlayerOptions()
+void GameManager::ReadPlayerInput()
 {
-	//char option[2];
+	
 	printf("Press A to move left, D to move right, W to move up or S to move Down.\nPress M to kill a monster or press Q to quit.");
-	//scanf_s("%s", option,2);
 	printf("\n\n");
+
+	player.UpdatePlayer();
+	player.PositionFormat();
+}
+
+char GameManager::ReadAdditionalInput()
+{
 	int input = _getch();
 
-	//Move the player left
-	if (input == 'a') {
-		player.playerPosition = player.playerPosition - Engine::Vector2D(1.0f, 0.0f);
-
-		//Restrict the player movement to no go over 0
-		if (player.playerPosition.x() < 0.0f)
-			player.playerPosition.x(0.0f);
-
-	}
-	//Move the player right
-	else if (input == 'd')
-	{
-		player.playerPosition = player.playerPosition + Engine::Vector2D(1.0f, 0.0f);
-
-		//Restrict the player movement to no go over 100
-		if (player.playerPosition.x() > 100.0f)
-			player.playerPosition.x(100.0f);
-	}
-
-	//Move the player up
-	else if (input == 'w')
-	{
-		player.playerPosition = player.playerPosition + Engine::Vector2D(0.0f, 1.0f);
-
-		//Restrict the player movement to no go over 100
-		if (player.playerPosition.y() > 100.0f)
-			player.playerPosition.y(100.0f);
-	}
-
-	//Move the player down
-	else if (input == 's')
-	{
-		player.playerPosition = player.playerPosition - Engine::Vector2D(0.0f, 1.0f);
-
-		//Restrict the player movement to no go over 100
-		if (player.playerPosition.y() < 0.0f)
-			player.playerPosition.y(0.0f);
-	}
-
-	//Destroy a monster
-	else if (input == 'm')
+	if (input == 'm')
 	{
 		DestroyMonster();
 	}
 
-	DEBUG_LOG_MESSAGE("The user's input is: %c\n", input);
-
 	return input;
 }
+
+
+
+
 
 void GameManager::MoveMonsters()
 {
 	//Cycle through the monsters and randomize their positions
 	for (int i = 0; i < monsterNumber; i++) {
 
-		DEBUG_LOG_MESSAGE("The position of the monster is: X: %d, Y: %d\n", monsters[i].monsterPosition.x(), monsters[i].monsterPosition.y());
+		DEBUG_LOG_MESSAGE("The position of the monster is: X: %d, Y: %d\n", static_cast<int>(monsters[i].GetPosition().x()), static_cast<int>(monsters[i].GetPosition().y()));
 
-		Engine::Vector2D delta = Engine::Vector2D((float)(rand() % 3) - 1, (float)(rand() % 3) - 1);
+		monsters[i].UpdateMonster();
+		monsters[i].PositionFormat();
 
-		//printf("%s - %d  MONSTER:%f, %f\t\tDELTA:%f, %f\n", __FUNCTION__, __LINE__ , monsters[i].monsterPosition.x(), monsters[i].monsterPosition.y(), delta.x(), delta.y());
-		monsters[i].monsterPosition = monsters[i].monsterPosition + delta;
-		//printf("%s - %d  MONSTER:%f, %f\t\tDELTA:%f, %f\n", __FUNCTION__, __LINE__, monsters[i].monsterPosition.x(), monsters[i].monsterPosition.y(), delta.x(), delta.y());
-
-		//Restrict the monster movement to a 100 * 100 grind
-		if (monsters[i].monsterPosition.x() < 0.0f) {
-			monsters[i].monsterPosition.x(0.0f);
-		}
-
-		if (monsters[i].monsterPosition.y() < 0.0f) {
-			monsters[i].monsterPosition.y(0.0f);
-		}
-
-		if (monsters[i].monsterPosition.x() > 100.0f) {
-			monsters[i].monsterPosition.x(100.0f);
-		}
-
-		if (monsters[i].monsterPosition.y() > 100.0f) {
-			monsters[i].monsterPosition.y(100.0f);
-		}
-
-		DEBUG_LOG_MESSAGE("The position of the monster is: X: %d, Y: %d\n", monsters[i].monsterPosition.x(), monsters[i].monsterPosition.y());
+		DEBUG_LOG_MESSAGE("The position of the monster is: X: %d, Y: %d\n", static_cast<int>(monsters[i].GetPosition().x()), static_cast<int>(monsters[i].GetPosition().y()));
 
 	}
 
@@ -162,10 +109,10 @@ void GameManager::CheckMonsterPosition()
 {
 	for (int i = 0; i < monsterNumber - 1; i++) {
 		//First monster
-		Engine::Vector2D tempMonster1 = monsters[i].monsterPosition;
+		Engine::Vector2D tempMonster1 = monsters[i].GetPosition();
 
 		//Second monster
-		Engine::Vector2D tempMonster2 = monsters[i + 1].monsterPosition;
+		Engine::Vector2D tempMonster2 = monsters[i + 1].GetPosition();
 
 		//Check if a new monster has to be created
 		if (tempMonster1 == tempMonster2)
@@ -175,7 +122,7 @@ void GameManager::CheckMonsterPosition()
 			printf("A new Monster has appeared! How shall you name it?:");
 			scanf_s("%s", name, 10);
 			monsters[monsterNumber].SetMonsterName(name);
-			monsters[monsterNumber].monsterPosition = Engine::Vector2D((float)(rand() % 101), (float)(rand() % 101));
+			monsters[monsterNumber].SetPosition(Engine::Vector2D((float)(rand() % 101), (float)(rand() % 101)));
 			monsterNumberAdd(); //Increase the maximum number of monsters
 		}
 
@@ -188,8 +135,8 @@ void GameManager::DestroyMonster()
 	{
 		DEBUG_LOG_MESSAGE("The number of monsters is: %d\n", monsterNumber);
 		monsters[monsterNumber].SetMonsterName("");
-		monsters[monsterNumber].monsterPosition = Engine::Vector2D(0.0f, 0.0f);
-		DEBUG_LOG_MESSAGE("The position of the monster is: X: %d, Y: %d\n", monsters[monsterNumber].monsterPosition.x(), monsters[monsterNumber].monsterPosition.y());
+		monsters[monsterNumber].SetPosition(Engine::Vector2D(0.0f, 0.0f));
+		DEBUG_LOG_MESSAGE("The position of the monster is: X: %d, Y: %d\n", static_cast<int>(monsters[monsterNumber].GetPosition().x()), static_cast<int>(monsters[monsterNumber].GetPosition().y()));
 		monsterNumberDecrease();
 		DEBUG_LOG_MESSAGE("The number of monsters is: %d\n", monsterNumber);
 	}
@@ -240,4 +187,5 @@ void GameManager::UpdateGameManager()
 	DisplayMonsters();
 	player.DisplayPlayer();
 	CheckMonsterPosition();
+	ReadPlayerInput();
 }

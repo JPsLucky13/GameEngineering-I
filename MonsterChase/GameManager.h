@@ -17,11 +17,15 @@ private:
 	Player player;
 
 public:
-	
+
+
 	//adder
 	inline void monsterNumberAdd();
 	//substract
 	inline void monsterNumberDecrease();
+
+	inline Player GetPlayer() const { return player; }
+
 
 	//The prototype of the monster naming method
 	void NameMonsters(int &monsterNumber);
@@ -33,7 +37,10 @@ public:
 	void DisplayMonsters() const;
 
 	//The prototype to display the player movement options
-	char PlayerOptions();
+	void ReadPlayerInput();
+
+	//The prototype for additional game inputs
+	char ReadAdditionalInput();
 
 	//The prototype to move the monsters
 	void MoveMonsters();

@@ -33,12 +33,14 @@ int main()
 
 
 	//Run the block allocator unit test
-	HeapManager_UnitTest();
+	//HeapManager_UnitTest();
 
-	_getch();
+	//_getch();
+
+
+
 
 	//For Monster Chase
-	/*
 	srand(time_t(0));
 
 	//Create reference to a game manager object
@@ -46,18 +48,24 @@ int main()
 
 	//Initialize the game
 	gameManager.InitializeGame();
+
+
+
 	
 	//Start of the main game loop
 	do
 	{
-		gameManager.updateGameManager();
+		gameManager.UpdateGameManager();
 
-	}while (gameManager.PlayerOptions() != 'q');
+	}while (gameManager.ReadAdditionalInput() != 'q');
 
 
     return 0;
 
-	*/
+
+
+
+
 
 	//For blockAllocator Testing
 

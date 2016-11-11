@@ -20,19 +20,25 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GargoyleController.cpp" />
     <ClCompile Include="HeapManager_UnitTest.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="MonsterChase.cpp" />
     <ClCompile Include="MonsterChase_UnitTest.cpp" />
+    <ClCompile Include="MonsterController.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameManager-inl.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GargoyleController.h" />
     <ClInclude Include="Monster-inl.h" />
     <ClInclude Include="Monster.h" />
+    <ClInclude Include="MonsterController.h" />
     <ClInclude Include="Player-inl.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerController.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.vcxproj">

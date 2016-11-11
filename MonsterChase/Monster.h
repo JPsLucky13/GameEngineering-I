@@ -1,18 +1,29 @@
 #pragma once
 #include <cstring>
 #include "Vector2D.h"
+#include "IGameObjectController.h"
+#include "MonsterController.h"
 
-class Monster {
-
-private:
-
-	char monsterName[30];
+class Monster{
 
 public:
 
-	//The monster's position
-	Engine::Vector2D monsterPosition;
+	//Constructor
+	Monster(MonsterController * controller);
 
+	//Empty Constructor
+	Monster();
+
+	//Destructor
+	~Monster();
+
+	//Get the monster position
+	Engine::Vector2D GetPosition() const { return controller->GetPosition(); }
+
+	void SetController(MonsterController * c_Controller) { controller = c_Controller; }
+
+	//Set the position
+	void SetPosition(const Engine::Vector2D & i_Position) { controller->SetPosition(i_Position);}
 
 	//Get the monster name
 	inline const char* GetMonsterName()const;
@@ -20,7 +31,14 @@ public:
 	//Set the monster name
 	inline void SetMonsterName(char* name);
 
+	void UpdateMonster() { controller->UpdateGameObject(); }
 
+	void PositionFormat() { controller->PositionFormat(); }
+
+private:
+
+	char monsterName[30];
+	MonsterController * controller;
 
 };
 

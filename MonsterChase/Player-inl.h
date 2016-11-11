@@ -1,4 +1,8 @@
+#include "Player.h"
 #pragma once
+
+
+
 
 inline const char * Player::GetPlayerName() const
 {

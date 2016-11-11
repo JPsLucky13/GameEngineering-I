@@ -2,6 +2,16 @@
 #include "Player.h"
 
 
+Player::Player()
+{
+	controller = new PlayerController();
+}
+
+Player::~Player() {
+	delete(controller);
+	controller = NULL;
+}
+
 //The definition of player choose name
 void Player::PlayerChooseName() {
 	char  name[10];
@@ -15,22 +25,23 @@ void Player::PlayerChooseName() {
 }
 
 
-void Player::DisplayPlayer()
+void Player::DisplayPlayer() const
 {
 	char * tempX = "\0";
 	char * tempY = "\0";
 
-	if (playerPosition.x() < 10.0f && playerPosition.x() > -10.0f)
+	if (GetPosition().x() < 10.0f && GetPosition().x() > -10.0f)
 	{
 		tempX = "0";
 	}
 
-	if (playerPosition.y() < 10.0f && playerPosition.y() > -10.0f)
+	if (GetPosition().y() < 10.0f && GetPosition().y() > -10.0f)
 	{
 		tempY = "0";
 	}
-	printf("%s is at position: [%s%d][%s%d]\n", GetPlayerName(), tempX, (int)playerPosition.x(), tempY, (int)playerPosition.y());
-
-
+	printf("%s is at position: [%s%d][%s%d]\n", GetPlayerName(), tempX, (int)GetPosition().x(), tempY, (int)GetPosition().y());
 
 }
+
+
+
