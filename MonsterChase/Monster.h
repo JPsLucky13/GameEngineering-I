@@ -16,7 +16,7 @@ public:
 	~Monster();
 
 	//Get the monster position
-	Engine::Vector2D GetPosition() const { return controller->GetPosition(); }
+	Engine::Vector2D GetPosition() const { return controller->GetPosition();}
 
 	void SetController(MonsterController * c_Controller) { controller = c_Controller; }
 	MonsterController * GetMonsterController() { return controller; }

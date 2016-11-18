@@ -10,10 +10,18 @@
 #include "Player.h"
 #include "GameManager.h"
 #include "BlockAllocator.h"
+#include "NewDelete.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
+
+#ifdef _DEBUG
+#define TRACK_NEW (__FILE__,__FUNCTION__,__LINE__)
+#else
+#define TRACK_NEW
+#endif
+
 
 //Monster Chase Unit Test
 extern void MonsterChase_UnitTest();
@@ -29,6 +37,7 @@ int main()
 
 #ifdef _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	
 #endif // _DEBUG
 
 
@@ -38,7 +47,7 @@ int main()
 	//_getch();
 
 
-
+	/*
 
 	//For Monster Chase
 	srand(time_t(0));
@@ -64,20 +73,25 @@ int main()
 
 
 
-
-
+	*/
 
 	//For blockAllocator Testing
 
 	//The block allocator
-	//Engine::BlockAllocator blockAllocator;
+	Engine::BlockAllocator blockAllocator;
 
 	//Creating the block allocator
-	//blockAllocator.create(1024, 10);
-	
-	//Testing for Part 1
+	blockAllocator.create(1024, 10);
+	GetBlockAllocator(&blockAllocator);
+
+
+
 
 	/*
+
+	//Testing for Part 1
+
+
 
 	//Test allocating memory
 	for (int i = 0; i < 10; i++)
@@ -190,7 +204,30 @@ int main()
 
 	_CrtDumpMemoryLeaks();
 
-	*/
-	return 0;
 
+	return 0;
+	*/
+
+
+	//Testing new and delete
+	
+	Monster * monster = new Monster();
+	char* string = new char[10];
+	Monster* monster2 = new TRACK_NEW Monster();
+
+	//_getch();
+
+
+	delete monster;
+	delete monster2;
+	delete[] string;
+	blockAllocator.destroy();
+	
+
+	_CrtDumpMemoryLeaks();
+
+	
+
+	return 0;
+	
 }

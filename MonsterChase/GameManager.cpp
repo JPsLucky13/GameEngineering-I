@@ -1,5 +1,6 @@
 #include "GameManager.h"
 #include "Vector2D.h"
+#include "Debug.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <conio.h>

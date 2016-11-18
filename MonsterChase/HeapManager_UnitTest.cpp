@@ -74,7 +74,9 @@ bool HeapManager_UnitTest()
 	{
 		const size_t		maxTestAllocationSize = 1024;
 
-		const unsigned int	alignments[] = { 4, 4, 4, 4, 4 };
+		//const unsigned int	alignments[] = { 4, 4, 4, 4, 4 };
+
+		const unsigned int	alignments[] = { 4, 8, 16, 32, 64 };
 
 		unsigned int	index = rand() % (sizeof(alignments) / sizeof(alignments[0]));
 
@@ -82,7 +84,7 @@ bool HeapManager_UnitTest()
 
 		size_t			sizeAlloc = 1 + (rand() & (maxTestAllocationSize - 1));
 
-		void * pPtr = pHeapManager._alloc(sizeAlloc);
+		void * pPtr = pHeapManager._alloc(sizeAlloc,alignment);
 
 		assert((reinterpret_cast<uintptr_t>(pPtr) & (alignment - 1)) == 0);
 
@@ -90,7 +92,7 @@ bool HeapManager_UnitTest()
 		{
 			pHeapManager.GarabageCollector();
 
-			pPtr = pHeapManager._alloc(sizeAlloc);
+			pPtr = pHeapManager._alloc(sizeAlloc, alignment);
 
 			if (pPtr == NULL)
 			{
@@ -176,7 +178,7 @@ bool HeapManager_UnitTest()
 #endif // __TRACK_ALLOCATIONS
 
 		printf("\n");		// do a large test allocation to see if garbage collection worked
-		void * pPtr = pHeapManager._alloc(sizeHeap / 2);
+		void * pPtr = pHeapManager._alloc(sizeHeap / 2, 4);
 		assert(pPtr);
 
 		if (pPtr)

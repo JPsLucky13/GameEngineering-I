@@ -42,7 +42,7 @@ namespace Engine {
 	inline bool operator==(const Vector2D & input1, const Vector2D & input2);
 	inline bool operator!=(const Vector2D & input1, const Vector2D & input2);
 	
-	void PrintDebugMessage(const char* file, const char* function, const int line,const char* fmt, ...);
+
 
 
 }

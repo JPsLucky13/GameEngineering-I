@@ -1,6 +1,8 @@
 #pragma once
 #pragma once
 #include <stdio.h>
+#include <stdint.h>
+#include "Debug.h"
 namespace Engine {
 #ifdef _DEBUG
 #define DEBUG_LOG_DESCRIPTORS(fmt,...) PrintBlockDescriptors()
@@ -38,6 +40,7 @@ namespace Engine {
 		void destroy();
 
 		//Allocate
+		void * _alloc(const size_t i_size, const uint8_t alignment);
 		void * _alloc(const size_t i_size);
 
 		//free
@@ -48,6 +51,10 @@ namespace Engine {
 
 		//isAllocator Adjacent
 		bool _isAllocated(const void* pointer)const;
+
+		BlockAllocator * SetBlockAllocator(BlockAllocator * BlockAllocatorReference) { ; }
+
+
 
 
 		size_t getLargestFreeBlock() const;
@@ -74,6 +81,9 @@ namespace Engine {
 		const size_t minimumSize = 8;
 		const size_t alignment = 4;
 
+
+
+
 #ifdef _DEBUG
 
 		const size_t guardBandSize = 4;
@@ -89,6 +99,12 @@ namespace Engine {
 
 
 	};
+
+
+
+
+
+
 
 }
 

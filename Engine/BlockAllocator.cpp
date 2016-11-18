@@ -3,6 +3,10 @@
 #include <string.h>
 
 
+
+
+
+
 namespace Engine {
 	//Constructor for the block allocator
 	BlockAllocator::BlockAllocator() {
@@ -43,18 +47,22 @@ namespace Engine {
 
 	void * BlockAllocator::_alloc(const size_t i_size)
 	{
+
+		return _alloc(i_size, 4);
+
+	}
+
+	void * BlockAllocator::_alloc(const size_t i_size, const uint8_t alignment)
+	{
 		
 #ifdef _DEBUG
 		//Extra size allocate for the user to support guardbands
-		size_t guardBand = i_size + 12;
+		size_t guardBand = i_size + alignment + (guardBandSize*2);
 #else
 		size_t guardBand = i_size;
 #endif
 
 		void * basePtr;
-		if (i_size == 698) {
-			int a = 0;
-		}
 
 		//The index to get to the selected free block descriptor
 		int selectedIndex = 0;
@@ -114,7 +122,7 @@ namespace Engine {
 
 
 					//Check that the pointer to user memory is aligned
-					alignmentRemainder = reinterpret_cast<uintptr_t>(guardBandptr) % 4;
+					alignmentRemainder = reinterpret_cast<uintptr_t>(guardBandptr) % alignment;
 
 					if (alignmentRemainder == 0)
 					{
@@ -129,7 +137,7 @@ namespace Engine {
 							{
 								*(leftguardBandCheck + i) = 71;
 							}
-
+							leftguardBandCheck += guardBandSize;
 							//Set the pointer to return to the user
 							basePtr = leftguardBandCheck;
 
@@ -166,11 +174,12 @@ namespace Engine {
 						if (leftguardBandCheck <= tempSelected->m_pBlockBase)
 						{
 							//Write the left guardband
-							for (int i = 0; i < 4; i++)
+							for (size_t i = 0; i < guardBandSize; i++)
 							{
 								*(leftguardBandCheck + i) = 71;
 							}
 
+							leftguardBandCheck += guardBandSize;
 							//Set the pointer to return to the user
 							basePtr = leftguardBandCheck;
 
@@ -179,7 +188,7 @@ namespace Engine {
 
 
 							//Write the right guardband
-							for (int i = 0; i < 4; i++)
+							for (size_t i = 0; i < guardBandSize; i++)
 							{
 								*(leftguardBandCheck + i) = 71;
 							}
@@ -233,7 +242,7 @@ namespace Engine {
 
 
 						//Check that the pointer to user memory is aligned
-						alignmentRemainder = reinterpret_cast<uintptr_t>(guardBandptr) % 4;
+						alignmentRemainder = reinterpret_cast<uintptr_t>(guardBandptr) % alignment;
 
 						if (alignmentRemainder == 0)
 						{
@@ -248,7 +257,7 @@ namespace Engine {
 								{
 									*(leftguardBandCheck + i) = 71;
 								}
-
+								leftguardBandCheck += guardBandSize;
 								//Set the pointer to return to the user
 								basePtr = leftguardBandCheck;
 
@@ -291,7 +300,7 @@ namespace Engine {
 								{
 									*(leftguardBandCheck + i) = 71;
 								}
-
+								leftguardBandCheck += guardBandSize;
 								//Set the pointer to return to the user
 								basePtr = leftguardBandCheck;
 
@@ -779,8 +788,5 @@ namespace Engine {
 
 		
 	}
-
-
-
 
 }
