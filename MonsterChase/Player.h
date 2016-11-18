@@ -10,9 +10,6 @@
 	public:
 
 
-		//Construtor with parameters
-		Player(PlayerController * c_Controller);
-
 		//Empty Constructor
 		Player();
 
@@ -22,6 +19,7 @@
 		Engine::Vector2D GetPosition() const{ return controller->GetPosition(); }
 
 		void SetController(PlayerController * c_Controller) { controller = c_Controller;}
+		PlayerController * GetPlayerController() { return controller; }
 
 
 		//Get the player name

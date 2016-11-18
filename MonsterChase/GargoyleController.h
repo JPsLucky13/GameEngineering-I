@@ -12,6 +12,8 @@ public:
 	~GargoyleController();
 
 	void SetGameObject(GameObject * i_pObject) override { m_pObject = i_pObject; }
+	GameObject * GetGameObject() override { return m_pObject; }
+
 	void SetFocusObject(GameObject * i_pObject) { m_pFocus = i_pObject; }
 	void UpdateGameObject() override;
 

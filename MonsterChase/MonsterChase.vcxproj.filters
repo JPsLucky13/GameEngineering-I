@@ -42,6 +42,9 @@
     <ClCompile Include="GargoyleController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Gargoyle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Monster.h">
@@ -69,6 +72,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GargoyleController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gargoyle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gargoyle-inl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

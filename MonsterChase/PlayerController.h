@@ -12,6 +12,14 @@ public:
 	~PlayerController();
 
 	void SetGameObject(GameObject * i_pObject) override { m_pObject  = i_pObject; }
+	GameObject * GetGameObject() override { return m_pObject; }
+
+	bool GetIsDestroyingMonster() { return isDestroyingMonster; }
+	void SetIsDestroyingMonster(const bool i_value) { isDestroyingMonster = i_value; }
+
+	bool GetIsQuittingGame() { return isQuittingGame; }
+	void SetIsQuittingGame(const bool i_value) { isQuittingGame = i_value; }
+
 	void UpdateGameObject() override;
 	Engine::Vector2D PlayerController::GetMovementDirectionFromUserInput();
 
@@ -22,4 +30,6 @@ public:
 	void PositionFormat();
 private:
 	GameObject * m_pObject;
+	bool isDestroyingMonster = false;
+	bool isQuittingGame = false;
 };

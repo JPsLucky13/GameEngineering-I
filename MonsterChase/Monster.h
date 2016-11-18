@@ -8,8 +8,6 @@ class Monster{
 
 public:
 
-	//Constructor
-	Monster(MonsterController * controller);
 
 	//Empty Constructor
 	Monster();
@@ -21,6 +19,7 @@ public:
 	Engine::Vector2D GetPosition() const { return controller->GetPosition(); }
 
 	void SetController(MonsterController * c_Controller) { controller = c_Controller; }
+	MonsterController * GetMonsterController() { return controller; }
 
 	//Set the position
 	void SetPosition(const Engine::Vector2D & i_Position) { controller->SetPosition(i_Position);}

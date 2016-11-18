@@ -50,10 +50,17 @@ Engine::Vector2D PlayerController::GetMovementDirectionFromUserInput()
 		return Engine::Vector2D(0.0f, -1.0f);
 	}
 
-	else {
-		return m_pObject->GetPosition();
+	else if(input == 'm'){
+		isDestroyingMonster = true;
+		return Engine::Vector2D(0.0f, 0.0f);
 	}
-
+	else if (input == 'q') {
+		isQuittingGame = true;
+		return Engine::Vector2D(0.0f, 0.0f);
+	}
+	else {
+		return Engine::Vector2D(0.0f, 0.0f);
+	}
 }
 
 void PlayerController::PositionFormat()
@@ -61,25 +68,24 @@ void PlayerController::PositionFormat()
 
 	//Restrict the player movement to no go over 0
 	if (m_pObject->GetPosition().x() < 0.0f)
-		m_pObject->GetPosition().x(0.0f);
+		m_pObject->SetPosition(Engine::Vector2D(0.0f, m_pObject->GetPosition().y()));
 
 
 
 	//Restrict the player movement to no go over 100
 	if (m_pObject->GetPosition().x() > 100.0f)
-		m_pObject->GetPosition().x(100.0f);
-
+		m_pObject->SetPosition(Engine::Vector2D(100.0f, m_pObject->GetPosition().y()));
 
 
 
 	//Restrict the player movement to no go over 100
 	if (m_pObject->GetPosition().y() > 100.0f)
-		m_pObject->GetPosition().y(100.0f);
+		m_pObject->SetPosition(Engine::Vector2D(m_pObject->GetPosition().x(), 100.0f));
 
 
 
 	//Restrict the player movement to no go over 100
 	if (m_pObject->GetPosition().y() < 0.0f)
-		m_pObject->GetPosition().y(0.0f);
+		m_pObject->SetPosition(Engine::Vector2D(m_pObject->GetPosition().x(),0.0f));
 
 }

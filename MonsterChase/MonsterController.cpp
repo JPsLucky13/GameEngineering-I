@@ -3,7 +3,7 @@
 MonsterController::MonsterController()
 {
 	m_pObject = new GameObject();
-	m_pFocus = new GameObject();
+	m_pFocus = nullptr;
 
 }
 
@@ -11,9 +11,7 @@ MonsterController::~MonsterController()
 {
 	
 	delete(m_pObject);
-	delete(m_pFocus);
 	m_pObject = NULL;
-	m_pFocus = NULL;
 
 }
 
@@ -24,7 +22,10 @@ void MonsterController::UpdateGameObject()
 	if (m_pFocus) {
 
 		Direction = m_pFocus->GetPosition() - m_pObject->GetPosition();
-		Direction = Direction.normalize();
+		if (m_pFocus->GetPosition() != m_pObject->GetPosition()) {
+			Direction = Direction.normalize();
+		}
+		
 	}
 	else
 	{
@@ -41,21 +42,26 @@ Engine::Vector2D MonsterController::GetWanderDirection()
 
 void MonsterController::PositionFormat()
 {
-	//Restrict the monster movement to a 100 * 100 grind
-	if (m_pObject->GetPosition().x() < 0.0f) {
-		m_pObject->GetPosition().x(0.0f);
-	}
+	//Restrict the player movement to no go over 0
+	if (m_pObject->GetPosition().x() < 0.0f)
+		m_pObject->SetPosition(Engine::Vector2D(0.0f, m_pObject->GetPosition().y()));
 
-	if (m_pObject->GetPosition().y() < 0.0f) {
-		m_pObject->GetPosition().y(0.0f);
-	}
 
-	if (m_pObject->GetPosition().x() > 100.0f) {
-		m_pObject->GetPosition().x(100.0f);
-	}
 
-	if (m_pObject->GetPosition().y() > 100.0f) {
-		m_pObject->GetPosition().y(100.0f);
-	}
+	//Restrict the player movement to no go over 100
+	if (m_pObject->GetPosition().x() > 100.0f)
+		m_pObject->SetPosition(Engine::Vector2D(100.0f, m_pObject->GetPosition().y()));
+
+
+
+	//Restrict the player movement to no go over 100
+	if (m_pObject->GetPosition().y() > 100.0f)
+		m_pObject->SetPosition(Engine::Vector2D(m_pObject->GetPosition().x(), 100.0f));
+
+
+
+	//Restrict the player movement to no go over 100
+	if (m_pObject->GetPosition().y() < 0.0f)
+		m_pObject->SetPosition(Engine::Vector2D(m_pObject->GetPosition().x(), 0.0f));
 
 }

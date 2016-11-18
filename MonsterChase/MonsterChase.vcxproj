@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="Gargoyle.cpp" />
     <ClCompile Include="GargoyleController.cpp" />
     <ClCompile Include="HeapManager_UnitTest.cpp" />
     <ClCompile Include="Monster.cpp" />
@@ -32,6 +33,8 @@
   <ItemGroup>
     <ClInclude Include="GameManager-inl.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Gargoyle-inl.h" />
+    <ClInclude Include="Gargoyle.h" />
     <ClInclude Include="GargoyleController.h" />
     <ClInclude Include="Monster-inl.h" />
     <ClInclude Include="Monster.h" />
