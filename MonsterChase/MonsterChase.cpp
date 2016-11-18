@@ -10,7 +10,6 @@
 #include "Player.h"
 #include "GameManager.h"
 #include "BlockAllocator.h"
-#include <malloc.h>
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -113,9 +112,10 @@ int main()
 			}
 #ifdef _DEBUG
 			blockAllocator.PrintBlockDescriptors();
-#endif
+
 			//Halt the operation
 			_getch();
+#endif
 		}
 
 		//Ran out of block descriptors
@@ -126,14 +126,16 @@ int main()
 				printf("There are no more unused block descriptors available\n");
 			else
 				printf("There is not more free memory available\n");
+#ifdef _DEBUG
 			_getch();
+#endif
 			break;
 
 		}
 
 	}
 
-	for (int i = 0; i < 5; i++) {
+	for (unsigned int i = 0; i < 5; i++) {
 		for (unsigned int j = 0; j < (32 + i); ++j)
 		{
 			pointersToTest[i][j] = 64;
@@ -145,10 +147,11 @@ int main()
 
 #ifdef _DEBUG
 		blockAllocator.PrintBlockDescriptors();
-#endif
+
 		
 		//Halt the operation
 		_getch();
+#endif
 	}
 
 	
@@ -156,18 +159,20 @@ int main()
 	
 #ifdef _DEBUG
 	blockAllocator.PrintBlockDescriptors();
-#endif
+
 
 	//Halt the operation
 	_getch();
+#endif
 
 	blockAllocator.GarabageCollector();
 
 #ifdef _DEBUG
 	blockAllocator.PrintBlockDescriptors();
-#endif
+
 	//Halt the operation
 	_getch();
+#endif
 	
 	blockAllocator.destroy();
 	_CrtDumpMemoryLeaks();

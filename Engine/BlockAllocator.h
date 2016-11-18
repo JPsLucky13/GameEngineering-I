@@ -1,6 +1,7 @@
 #pragma once
 #pragma once
 #include <stdio.h>
+#include <stdint.h>
 namespace Engine {
 #ifdef _DEBUG
 #define DEBUG_LOG_DESCRIPTORS(fmt,...) PrintBlockDescriptors()
@@ -14,9 +15,6 @@ namespace Engine {
 	class BlockAllocator
 	{
 	public:
-		//FOr testing
-		int k = 0;
-
 		struct BlockDescriptor
 		{
 			void * m_pBlockBase;
@@ -25,7 +23,7 @@ namespace Engine {
 
 			//Keep track of the ids of the block descriptors
 #ifdef _DEBUG
-			unsigned int m_id = 0;
+			size_t m_id = 0;
 #endif//DEBUG
 		};
 
@@ -33,51 +31,51 @@ namespace Engine {
 		BlockAllocator();
 
 		//Create a new block allocator
-		void create(size_t i_sizeMemory, unsigned int i_numDescriptors);
+		void create(const size_t i_sizeMemory, const size_t i_numDescriptors);
 		//Destroys the block allocator
 		void destroy();
 
 		//Allocate
-		void * _alloc(size_t i_size);
+		void * _alloc(const size_t i_size);
 
 		//free
-		bool _free(void * i_ptr);
+		bool _free(const void * i_ptr);
 
 		//contains
-		bool _contains(void* pointer) const;
+		bool _contains(const void* pointer) const;
 
 		//isAllocator Adjacent
-		bool _isAllocated(void* pointer)const;
+		bool _isAllocated(const void* pointer)const;
 
 		size_t getLargestFreeBlock() const;
 		size_t getTotalFreeMemory() const;
 
 #ifdef _DEBUG
-		void PrintBlockDescriptors();
+		void PrintBlockDescriptors() const;
 #endif//DEBUG
 
 		//Getters
-		BlockDescriptor * unusedDescriptorsHeadGetter() { return unusedDescriptorsHead; }
-		BlockDescriptor * freeDescriptorsHeadGetter() { return freeDescriptorsHead; }
-		BlockDescriptor * outstandingDescriptorsHeadGetter() { return outstandingDescriptorsHead; }
+		BlockDescriptor * unusedDescriptorsHeadGetter() const { return unusedDescriptorsHead; }
+		BlockDescriptor * freeDescriptorsHeadGetter() const { return freeDescriptorsHead; }
+		BlockDescriptor * outstandingDescriptorsHeadGetter() const { return outstandingDescriptorsHead; }
 
 		
 		void BlockAllocator::GarabageCollector();
 
 	private:
-		void BlockAllocator::InitializeUnusedDescriptors(size_t i_sizeMemory, unsigned int i_numDescriptors);
+		void BlockAllocator::InitializeUnusedDescriptors(const size_t i_sizeMemory, const size_t i_numDescriptors);
 		void BlockAllocator::SelectionSortBlockDescriptorPointer(BlockDescriptor * bd_pointer);
 		void BlockAllocator::SwapBlockDescriptorInfo(BlockDescriptor * lhs_bd_pointer, BlockDescriptor * rhs_bd_pointer);
 		
 	private:
 		const size_t minimumSize = 8;
 		const size_t alignment = 4;
-		unsigned char * startOfMemory;
+		uint8_t * startOfMemory;
 		void * endOfRightSideOfMemory;
 		BlockDescriptor * unusedDescriptorsHead;
 		BlockDescriptor * freeDescriptorsHead;
 		BlockDescriptor * outstandingDescriptorsHead;
-		int totalBlockDescriptors;
+		size_t totalBlockDescriptors;
 
 
 	};
