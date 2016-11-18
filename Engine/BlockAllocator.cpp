@@ -279,7 +279,7 @@ namespace Engine {
 	void BlockAllocator::PrintBlockDescriptors() const
 	{
 		//Print the heading of the block allocator
-		printf("Block allocator: Total free memory %zu, Lagest Free Block %zu, number of Block descriptors %d\n", getTotalFreeMemory(), getLargestFreeBlock(), totalBlockDescriptors);
+		printf("Block allocator: Total free memory %zu, Lagest Free Block %zu, number of Block descriptors %zu\n", getTotalFreeMemory(), getLargestFreeBlock(), totalBlockDescriptors);
 		printf("-------------------------------------------------------------------------------------------\n");
 		printf("---------------------------Unused Block Descriptors------------------------------\n");
 
@@ -287,7 +287,7 @@ namespace Engine {
 		//Print the list of unused block allocators with their ID and Block Size
 		for (BlockDescriptor * ptr = unusedDescriptorsHead; ptr != NULL; ptr = ptr->m_pNext)
 		{
-			printf("BD: id = %d, Block_size = %zu,Block_Base = %p, Block_Base + Size = %p\n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<uint8_t*>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
+			printf("BD: id = %zu, Block_size = %zu,Block_Base = %p, Block_Base + Size = %p\n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<uint8_t*>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
 		}
 
 		printf("-------------------------------------------------------------------------------------------\n");
@@ -296,7 +296,7 @@ namespace Engine {
 		//Print the list of free block allocators with their ID and Block Size
 		for (BlockDescriptor * ptr = freeDescriptorsHead; ptr != NULL; ptr = ptr->m_pNext)
 		{
-			printf("BD: id = %d, Block_size = %zu, Block_Base = %p, Block_Base + Size = %p\n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<uint8_t *>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
+			printf("BD: id = %zu, Block_size = %zu, Block_Base = %p, Block_Base + Size = %p\n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<uint8_t *>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
 		}
 
 		printf("-------------------------------------------------------------------------------------------\n");
@@ -305,7 +305,7 @@ namespace Engine {
 		//Print the list of free block allocators with their ID and Block Size
 		for (BlockDescriptor * ptr = outstandingDescriptorsHead; ptr != NULL; ptr = ptr->m_pNext)
 		{
-			printf("BD: id = %d, Block_size = %zu, Block_Base = %p, Block_Base + Size = %p \n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<uint8_t *>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
+			printf("BD: id = %zu, Block_size = %zu, Block_Base = %p, Block_Base + Size = %p \n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<uint8_t *>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
 		}
 
 		printf("-------------------------------------------------------------------------------------------\n");
