@@ -1,6 +1,7 @@
 #pragma once
 #pragma once
 #include <stdio.h>
+#include <stdint.h>
 namespace Engine {
 #ifdef _DEBUG
 #define DEBUG_LOG_DESCRIPTORS(fmt,...) PrintBlockDescriptors()
@@ -14,9 +15,6 @@ namespace Engine {
 	class BlockAllocator
 	{
 	public:
-		//FOr testing
-		int k = 0;
-
 		struct BlockDescriptor
 		{
 			void * m_pBlockBase;
@@ -25,7 +23,7 @@ namespace Engine {
 
 			//Keep track of the ids of the block descriptors
 #ifdef _DEBUG
-			unsigned int m_id = 0;
+			size_t m_id = 0;
 #endif//DEBUG
 		};
 
@@ -33,7 +31,7 @@ namespace Engine {
 		BlockAllocator();
 
 		//Create a new block allocator
-		void create(const size_t i_sizeMemory,const unsigned int i_numDescriptors);
+		void create(const size_t i_sizeMemory, const size_t i_numDescriptors);
 		//Destroys the block allocator
 		void destroy();
 
@@ -64,19 +62,19 @@ namespace Engine {
 		void BlockAllocator::GarabageCollector();
 
 	private:
-		void BlockAllocator::InitializeUnusedDescriptors(const size_t i_sizeMemory, const unsigned int i_numDescriptors);
-		void BlockAllocator::SelectionSortBlockDescriptorPointer(BlockDescriptor *  const bd_pointer);
+		void BlockAllocator::InitializeUnusedDescriptors(const size_t i_sizeMemory, const size_t i_numDescriptors);
+		void BlockAllocator::SelectionSortBlockDescriptorPointer(BlockDescriptor * bd_pointer);
 		void BlockAllocator::SwapBlockDescriptorInfo(BlockDescriptor * lhs_bd_pointer, BlockDescriptor * rhs_bd_pointer);
 		
 	private:
 		const size_t minimumSize = 8;
 		const size_t alignment = 4;
-		unsigned char * startOfMemory;
+		uint8_t * startOfMemory;
 		void * endOfRightSideOfMemory;
 		BlockDescriptor * unusedDescriptorsHead;
 		BlockDescriptor * freeDescriptorsHead;
 		BlockDescriptor * outstandingDescriptorsHead;
-		int totalBlockDescriptors;
+		size_t totalBlockDescriptors;
 
 
 	};
