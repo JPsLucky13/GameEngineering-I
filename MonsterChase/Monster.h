@@ -3,7 +3,7 @@
 #include "Vector2D.h"
 #include "IGameObjectController.h"
 #include "MonsterController.h"
-
+#define BUFFER_SIZE 30
 class Monster{
 
 public:
@@ -36,7 +36,7 @@ public:
 
 private:
 
-	char monsterName[30];
+	char monsterName[BUFFER_SIZE];
 	MonsterController * controller;
 
 };

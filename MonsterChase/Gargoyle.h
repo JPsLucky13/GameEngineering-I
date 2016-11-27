@@ -3,7 +3,7 @@
 #include "Vector2D.h"
 #include "IGameObjectController.h"
 #include "GargoyleController.h"
-
+#define BUFFER_SIZE 30
 class Gargoyle {
 
 public:
@@ -37,7 +37,7 @@ public:
 
 private:
 
-	char gargoyleName[30];
+	char gargoyleName[BUFFER_SIZE];
 	GargoyleController * controller;
 
 };

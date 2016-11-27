@@ -27,7 +27,7 @@ namespace Engine {
 
 			//Keep track of the ids of the block descriptors
 #ifdef _DEBUG
-			unsigned int m_id = 0;
+			size_t m_id = 0;
 #endif//DEBUG
 		};
 
@@ -72,7 +72,7 @@ namespace Engine {
 		void BlockAllocator::GarabageCollector();
 
 	private:
-		void BlockAllocator::InitializeUnusedDescriptors(const size_t i_sizeMemory, const unsigned int i_numDescriptors);
+		void BlockAllocator::InitializeUnusedDescriptors(const size_t i_sizeMemory, const size_t i_numDescriptors);
 		void BlockAllocator::SelectionSortBlockDescriptorPointer(BlockDescriptor *  const bd_pointer);
 		void BlockAllocator::SwapBlockDescriptorInfo(BlockDescriptor * lhs_bd_pointer, BlockDescriptor * rhs_bd_pointer);
 		void BlockAllocator::SortFreeBlockListByAddress(BlockDescriptor * const bd_pointer);
@@ -86,16 +86,22 @@ namespace Engine {
 
 #ifdef _DEBUG
 
+		
+		
+
 		const size_t guardBandSize = 4;
 #else
+		
 		const size_t guardBandSize = 0;
 #endif
-		unsigned char * startOfMemory;
+		const int arrobaCharacter = 64;
+		const int guardBandCharacter = 71;
+		uint8_t * startOfMemory;
 		void * endOfRightSideOfMemory;
 		BlockDescriptor * unusedDescriptorsHead;
 		BlockDescriptor * freeDescriptorsHead;
 		BlockDescriptor * outstandingDescriptorsHead;
-		int totalBlockDescriptors;
+		size_t totalBlockDescriptors;
 
 
 	};

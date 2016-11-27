@@ -4,21 +4,24 @@
 #include "Player.h"
 #include "Gargoyle.h"
 
+#define ARRAY_MONST_SIZE 10
+#define ARRAY_GAR_SIZE 10
+#define NEG_ONE -1
 class GameManager {
 
 private:
 
 	//The number of monsters
-	int monsterNumber = -1;
+	int monsterNumber = NEG_ONE;
 
 	//The number of gargoyles
-	int gargoyleNumber = -1;
+	int gargoyleNumber = NEG_ONE;
 
 	//Create the array of Monsters
-	Monster monsters[10];
+	Monster monsters[ARRAY_MONST_SIZE];
 
 	//Create the array of Gargoyles
-	Gargoyle gargoyles[10];
+	Gargoyle gargoyles[ARRAY_GAR_SIZE];
 
 	//Create a player
 	Player player;

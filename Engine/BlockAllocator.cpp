@@ -1,11 +1,11 @@
 #include "BlockAllocator.h"
 #include <malloc.h>
 #include <string.h>
+#include <stddef.h>
 
 
-
-
-
+#define MUL 2
+#define BASE_ALIGNMENT 4
 
 namespace Engine {
 	//Constructor for the block allocator
@@ -21,8 +21,8 @@ namespace Engine {
 	void BlockAllocator::create(const size_t i_sizeMemory,const unsigned int i_numDescriptors)
 	{
 		//Get the block of memory and set the size
-		startOfMemory = reinterpret_cast<unsigned char*>(_aligned_malloc(i_sizeMemory, alignment));
-		memset(startOfMemory, 64, i_sizeMemory);
+		startOfMemory = reinterpret_cast<uint8_t*>(_aligned_malloc(i_sizeMemory, alignment));
+		memset(startOfMemory, arrobaCharacter, i_sizeMemory);
 
 		InitializeUnusedDescriptors(i_sizeMemory, i_numDescriptors);
 
@@ -48,7 +48,7 @@ namespace Engine {
 	void * BlockAllocator::_alloc(const size_t i_size)
 	{
 
-		return _alloc(i_size, 4);
+		return _alloc(i_size, BASE_ALIGNMENT);
 
 	}
 
@@ -57,7 +57,7 @@ namespace Engine {
 		
 #ifdef _DEBUG
 		//Extra size allocate for the user to support guardbands
-		size_t guardBand = i_size + alignment + (guardBandSize*2);
+		size_t guardBand = i_size + alignment + (guardBandSize*MUL);
 #else
 		size_t guardBand = i_size;
 #endif
@@ -65,10 +65,10 @@ namespace Engine {
 		void * basePtr;
 
 		//The index to get to the selected free block descriptor
-		int selectedIndex = 0;
+		size_t selectedIndex = 0;
 
 		//The remainder of the alignment 
-		int alignmentRemainder = 0;
+		size_t alignmentRemainder = 0;
 
 		//The guardbanding succeeded
 		bool guardBandedSuccessfully = false;
@@ -115,7 +115,7 @@ namespace Engine {
 				{
 
 					//Go to the right side of the size of memory given and substract the guardband size
-					unsigned char * guardBandptr = reinterpret_cast<unsigned char*>(tempSelected->m_pBlockBase) + tempSelected->m_sizeBlock - guardBandSize;
+					uint8_t* guardBandptr = reinterpret_cast<uint8_t*>(tempSelected->m_pBlockBase) + tempSelected->m_sizeBlock - guardBandSize;
 
 					//Shift left the size the user requested
 					guardBandptr -= i_size;
@@ -128,14 +128,14 @@ namespace Engine {
 					{
 						//The pointer is aligned 
 
-						unsigned char * leftguardBandCheck = guardBandptr - guardBandSize;
+						uint8_t * leftguardBandCheck = guardBandptr - guardBandSize;
 
 						if (leftguardBandCheck <= tempSelected->m_pBlockBase)
 						{
 							//Write the left guardband
 							for (size_t i = 0; i < guardBandSize; i++)
 							{
-								*(leftguardBandCheck + i) = 71;
+								*(leftguardBandCheck + i) = guardBandCharacter;
 							}
 							leftguardBandCheck += guardBandSize;
 							//Set the pointer to return to the user
@@ -148,7 +148,7 @@ namespace Engine {
 							//Write the right guardband
 							for (size_t  i = 0; i < guardBandSize; i++)
 							{
-								*(leftguardBandCheck + i) = 71;
+								*(leftguardBandCheck + i) = guardBandCharacter;
 							}
 
 							guardBandedSuccessfully = true;
@@ -169,14 +169,14 @@ namespace Engine {
 					else {
 				
 						//The realign the pointer 
-						unsigned char * leftguardBandCheck = guardBandptr - alignmentRemainder - guardBandSize;
+						uint8_t* leftguardBandCheck = guardBandptr - alignmentRemainder - guardBandSize;
 				
 						if (leftguardBandCheck <= tempSelected->m_pBlockBase)
 						{
 							//Write the left guardband
 							for (size_t i = 0; i < guardBandSize; i++)
 							{
-								*(leftguardBandCheck + i) = 71;
+								*(leftguardBandCheck + i) = guardBandCharacter;
 							}
 
 							leftguardBandCheck += guardBandSize;
@@ -190,7 +190,7 @@ namespace Engine {
 							//Write the right guardband
 							for (size_t i = 0; i < guardBandSize; i++)
 							{
-								*(leftguardBandCheck + i) = 71;
+								*(leftguardBandCheck + i) = guardBandCharacter;
 							}
 
 							guardBandedSuccessfully = true;
@@ -238,7 +238,7 @@ namespace Engine {
 	
 
 						//Temporary pointer
-						unsigned char * guardBandptr = reinterpret_cast<unsigned char *>(tempSelected->m_pBlockBase) + tempSelected->m_sizeBlock - guardBandSize - i_size;
+						uint8_t* guardBandptr = reinterpret_cast<uint8_t*>(tempSelected->m_pBlockBase) + tempSelected->m_sizeBlock - guardBandSize - i_size;
 
 
 						//Check that the pointer to user memory is aligned
@@ -248,14 +248,14 @@ namespace Engine {
 						{
 							//The pointer is aligned 
 
-							unsigned char * leftguardBandCheck = guardBandptr - guardBandSize;
+							uint8_t* leftguardBandCheck = guardBandptr - guardBandSize;
 
 							if (leftguardBandCheck >= tempSelected->m_pBlockBase)
 							{
 								//Write the left guardband
 								for (size_t  i = 0; i < guardBandSize; i++)
 								{
-									*(leftguardBandCheck + i) = 71;
+									*(leftguardBandCheck + i) = guardBandCharacter;
 								}
 								leftguardBandCheck += guardBandSize;
 								//Set the pointer to return to the user
@@ -268,7 +268,7 @@ namespace Engine {
 								//Write the right guardband
 								for (size_t  i = 0; i < guardBandSize; i++)
 								{
-									*(leftguardBandCheck + i) = 71;
+									*(leftguardBandCheck + i) = guardBandCharacter;
 								}
 
 								guardBandedSuccessfully = true;
@@ -291,14 +291,14 @@ namespace Engine {
 						else {
 						
 							//The pointer is not aligned
-							unsigned char * leftguardBandCheck = guardBandptr - alignmentRemainder - guardBandSize;
+							uint8_t* leftguardBandCheck = guardBandptr - alignmentRemainder - guardBandSize;
 
 							if (leftguardBandCheck >= tempSelected->m_pBlockBase)
 							{
 								//Write the left guardband
 								for (size_t  i = 0; i < guardBandSize; i++)
 								{
-									*(leftguardBandCheck + i) = 71;
+									*(leftguardBandCheck + i) = guardBandCharacter;
 								}
 								leftguardBandCheck += guardBandSize;
 								//Set the pointer to return to the user
@@ -311,7 +311,7 @@ namespace Engine {
 								//Write the right guardband
 								for (size_t  i = 0; i < guardBandSize; i++)
 								{
-									*(leftguardBandCheck + i) = 71;
+									*(leftguardBandCheck + i) = guardBandCharacter;
 								}
 
 								guardBandedSuccessfully = true;
@@ -338,11 +338,11 @@ namespace Engine {
 
 							//Set the gaurdbands
 							ptr->m_pBlockBase = basePtr;
-							ptr->m_sizeBlock = i_size + (guardBandSize *2) + alignmentRemainder;					
+							ptr->m_sizeBlock = i_size + (guardBandSize *MUL) + alignmentRemainder;
 							ptr->m_pNext = outstandingDescriptorsHead;
 							outstandingDescriptorsHead = ptr;							
 							//Reduce the size of the free block that stays in the list
-							tempSelected->m_sizeBlock -= (i_size + (guardBandSize * 2) + alignmentRemainder);
+							tempSelected->m_sizeBlock -= (i_size + (guardBandSize * MUL) + alignmentRemainder);
 							break;
 						}
 					
@@ -368,9 +368,6 @@ namespace Engine {
 
 	bool BlockAllocator::_free(const void * i_ptr)
 	{
-		if (tempPtr == i_ptr) {
-			int a = 0;
-		}
 		
 		//The block descriptor to select the outstanding block descriptor to compare
 		BlockDescriptor * tempSelected = outstandingDescriptorsHead;
@@ -379,14 +376,14 @@ namespace Engine {
 		BlockDescriptor * tempPrevious = outstandingDescriptorsHead;
 
 		//The index of the selected block descriptor
-		int indexOfDescriptor = 0;
+		size_t indexOfDescriptor = 0;
 		
 			while (tempSelected != NULL) {
 
-				if (tempSelected->m_pBlockBase <= i_ptr && i_ptr < reinterpret_cast<unsigned char*>(tempSelected->m_pBlockBase) + tempSelected->m_sizeBlock)
+				if (tempSelected->m_pBlockBase <= i_ptr && i_ptr < reinterpret_cast<uint8_t*>(tempSelected->m_pBlockBase) + tempSelected->m_sizeBlock)
 				{
 					//Go the previous 
-					for (int i = 0; i < indexOfDescriptor - 1; i++)
+					for (size_t i = 0; i < indexOfDescriptor; i++)
 					{						
 						tempPrevious = tempPrevious->m_pNext;
 					}
@@ -433,7 +430,7 @@ namespace Engine {
 			while (temp != NULL)
 			{
 				
-				if (pointer >= temp->m_pBlockBase && pointer < reinterpret_cast<unsigned char *>(temp->m_pBlockBase) + temp->m_sizeBlock)
+				if (pointer >= temp->m_pBlockBase && pointer < reinterpret_cast<uint8_t*>(temp->m_pBlockBase) + temp->m_sizeBlock)
 				{
 					return true;
 				}
@@ -477,14 +474,14 @@ namespace Engine {
 	{
 		//Print the heading of the block allocator
 		
-		printf("Block allocator: Total free memory %zu, Lagest Free Block %zu, number of Block descriptors %d\n", getTotalFreeMemory(), getLargestFreeBlock(), totalBlockDescriptors);
+		printf("Block allocator: Total free memory %zu, Lagest Free Block %zu, number of Block descriptors %zu\n", getTotalFreeMemory(), getLargestFreeBlock(), totalBlockDescriptors);
 
 		printf("---------------------------Unused Block Descriptors------------------------------\n");
 		//Print the list of unused block allocators with their ID and Block Size
 		for (BlockDescriptor * ptr = unusedDescriptorsHead; ptr != NULL; ptr = ptr->m_pNext)
 		{
 			
-			printf("BD: id = %d, Block_size = %zu,Block_Base = %p, Block_Base + Size = %p\n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<unsigned char *>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
+			printf("BD: id = %zu, Block_size = %zu,Block_Base = %p, Block_Base + Size = %p\n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<uint8_t*>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
 		}
 		
 		printf("---------------------------Free Block Descriptors------------------------------\n");
@@ -493,7 +490,7 @@ namespace Engine {
 		for (BlockDescriptor * ptr = freeDescriptorsHead; ptr != NULL; ptr = ptr->m_pNext)
 		{
 			
-			printf("BD: id = %d, Block_size = %zu, Block_Base = %p, Block_Base + Size = %p\n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<unsigned char *>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
+			printf("BD: id = %zu, Block_size = %zu, Block_Base = %p, Block_Base + Size = %p\n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<uint8_t*>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
 		}
 		
 		printf("---------------------------Outstanding Block Descriptors------------------------------\n");
@@ -502,7 +499,7 @@ namespace Engine {
 		for (BlockDescriptor * ptr = outstandingDescriptorsHead; ptr != NULL; ptr = ptr->m_pNext)
 		{
 			
-			printf("BD: id = %d, Block_size = %zu, Block_Base = %p, Block_Base + Size = %p \n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<unsigned char *>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
+			printf("BD: id = %zu, Block_size = %zu, Block_Base = %p, Block_Base + Size = %p \n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<uint8_t*>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
 		}
 		
 		printf("-------------------------------------------------------------------------------------------\n");
@@ -517,14 +514,14 @@ namespace Engine {
 
 	
 
-	void BlockAllocator::InitializeUnusedDescriptors(const size_t i_sizeMemory, const unsigned int i_numDescriptors)
+	void BlockAllocator::InitializeUnusedDescriptors(const size_t i_sizeMemory, const size_t i_numDescriptors)
 	{
 		totalBlockDescriptors = i_numDescriptors;
 
 		//Split the memory to create a pool of block descriptors
 		unsigned char *poolOfBlockDescriptors = (startOfMemory + i_sizeMemory) - (sizeof(BlockDescriptor) * i_numDescriptors);
 
-		for (unsigned int i = 0; i < i_numDescriptors; i++)
+		for (size_t i = 0; i < i_numDescriptors; i++)
 		{
 			BlockDescriptor* newDescriptor = reinterpret_cast<BlockDescriptor*>(poolOfBlockDescriptors) + i;
 			newDescriptor->m_pBlockBase = NULL;
@@ -555,9 +552,9 @@ namespace Engine {
 		size_t minimum = 0;
 		
 		//The indexers to keep track of the location of the smallest sized block descriptor
-		int currentIndex = 0;
-		int minimumIndex = 0;
-		int startIndex = 0;
+		size_t currentIndex = 0;
+		size_t minimumIndex = 0;
+		size_t startIndex = 0;
 
 		//Check that the block Descriptor's next is not null
 		while (startPointer->m_pNext != NULL)
@@ -590,7 +587,7 @@ namespace Engine {
 			iterator = startPointer;
 
 			//Iterate through the linked list to swap the elements
-			for (int i = startIndex; i < minimumIndex; i++) {
+			for (size_t i = startIndex; i < minimumIndex; i++) {
 					
 				iterator = iterator->m_pNext;
 			}
@@ -641,9 +638,9 @@ namespace Engine {
 		void* minimum;
 
 		//The indexers to keep track of the location of the smallest sized block descriptor
-		int currentIndex = 0;
-		int minimumIndex = 0;
-		int startIndex = 0;
+		size_t currentIndex = 0;
+		size_t minimumIndex = 0;
+		size_t startIndex = 0;
 
 		//Check that the block Descriptor's next is not null
 		while (startPointer->m_pNext != NULL)
@@ -668,7 +665,7 @@ namespace Engine {
 			}
 			iterator = startPointer;
 			//Iterate through the linked list to swap the elements
-			for (int i = startIndex; i < minimumIndex; i++) {
+			for (size_t i = startIndex; i < minimumIndex; i++) {
 
 				iterator = iterator->m_pNext;
 			}
@@ -709,7 +706,7 @@ namespace Engine {
 			while (temp != NULL) {
 
 
-				pointerRightSide = reinterpret_cast<unsigned char*>(temp->m_pBlockBase) + temp->m_sizeBlock;
+				pointerRightSide = reinterpret_cast<uint8_t*>(temp->m_pBlockBase) + temp->m_sizeBlock;
 				while (iterTemp != NULL){
 
 
@@ -728,7 +725,7 @@ namespace Engine {
 							iterTemp->m_pNext = unusedDescriptorsHead;							
 							unusedDescriptorsHead = iterTemp;
 							iterTemp = previousIterTemp->m_pNext;
-							pointerRightSide = reinterpret_cast<unsigned char*>(temp->m_pBlockBase) + temp->m_sizeBlock;
+							pointerRightSide = reinterpret_cast<uint8_t*>(temp->m_pBlockBase) + temp->m_sizeBlock;
 							continue;
 						}
 						else
@@ -753,7 +750,7 @@ namespace Engine {
 								unusedDescriptorsHead = iterTemp;
 								iterTemp = temp->m_pNext;
 							}
-							pointerRightSide = reinterpret_cast<unsigned char*>(temp->m_pBlockBase) + temp->m_sizeBlock;
+							pointerRightSide = reinterpret_cast<uint8_t*>(temp->m_pBlockBase) + temp->m_sizeBlock;
 							continue;
 						}
 

@@ -4,7 +4,10 @@
 #include <conio.h>
 #include "PlayerController.h"
 #include <cstring>
-	class Player{
+
+#define BUFFER_SIZE 30
+
+class Player{
 
 	
 	public:
@@ -38,8 +41,8 @@
 		void PositionFormat() { controller->PositionFormat(); }
 
 	private:
-
-		char playerName[30];
+		
+		char playerName[BUFFER_SIZE];
 		PlayerController * controller;
 	};
 

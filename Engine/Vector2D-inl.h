@@ -15,6 +15,9 @@ namespace Engine {
 
 	inline Vector2D operator*(const Vector2D & input1, float i_Scalar)
 	{
+
+		assert(!IsNaN(i_Scalar));
+
 		return Vector2D(input1.x()* i_Scalar, input1.y() * i_Scalar);
 	}
 
@@ -35,5 +38,7 @@ namespace Engine {
 	{
 		return (input1.x() != input2.x() || input1.y() != input2.y());
 	}
+
+	
 
 }

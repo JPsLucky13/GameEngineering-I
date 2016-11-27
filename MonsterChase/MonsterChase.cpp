@@ -26,6 +26,10 @@
 //Monster Chase Unit Test
 extern void MonsterChase_UnitTest();
 
+//Float Chek unit test
+extern void FloatChecker_UnitTest();
+
+
 //Block allocator unit test
 extern bool HeapManager_UnitTest();
 
@@ -39,6 +43,10 @@ int main()
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	
 #endif // _DEBUG
+
+
+	//Run the float check unit test
+	FloatChecker_UnitTest();
 
 
 	//Run the block allocator unit test
@@ -78,11 +86,11 @@ int main()
 	//For blockAllocator Testing
 
 	//The block allocator
-	Engine::BlockAllocator blockAllocator;
+	//Engine::BlockAllocator blockAllocator;
 
 	//Creating the block allocator
-	blockAllocator.create(1024, 10);
-	GetBlockAllocator(&blockAllocator);
+	//blockAllocator.create(1024, 10);
+	//GetBlockAllocator(&blockAllocator);
 
 
 
@@ -211,17 +219,17 @@ int main()
 
 	//Testing new and delete
 	
-	Monster * monster = new Monster();
-	char* string = new char[10];
-	Monster* monster2 = new TRACK_NEW Monster();
+	//Monster * monster = new Monster();
+	//char* string = new char[10];
+	//Monster* monster2 = new TRACK_NEW Monster();
 
 	//_getch();
 
 
-	delete monster;
-	delete monster2;
-	delete[] string;
-	blockAllocator.destroy();
+	//delete monster;
+	//delete monster2;
+	//delete[] string;
+	//blockAllocator.destroy();
 	
 
 	_CrtDumpMemoryLeaks();
