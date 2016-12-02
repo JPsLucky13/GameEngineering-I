@@ -43,6 +43,14 @@ int main()
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif // _DEBUG
 
+	//The block allocator
+	//Engine::BlockAllocator blockAllocator;
+
+	//Creating the block allocator
+	//blockAllocator.create(1024, 10);
+	//GetBlockAllocator(&blockAllocator);
+
+
 
 	//Run the float check unit test
 	//FloatChecker_UnitTest();
@@ -57,12 +65,7 @@ int main()
 
 	//For blockAllocator Testing
 
-	//The block allocator
-	//Engine::BlockAllocator blockAllocator;
-
-	//Creating the block allocator
-	//blockAllocator.create(1024, 10);
-	//GetBlockAllocator(&blockAllocator);
+	
 
 	
 	//For Monster Chase
@@ -88,6 +91,8 @@ int main()
    
 	delete gameManager;
 	gameManager = nullptr;
+
+	
 
 	//{
 	//	Monster m1("m1");
@@ -230,14 +235,16 @@ int main()
 
 
 	//Monster * monster = new Monster();
+	//Monster* monsters = new Monster[4];
 	//char* string = new char[10];
 	//Monster* monster2 = new TRACK_NEW Monster();
 
-	//_getch();
+	////_getch();
 
 
 	//delete monster;
 	//delete monster2;
+	//delete[] monsters;
 	//delete[] string;
 	//blockAllocator.destroy();
 	

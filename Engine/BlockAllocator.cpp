@@ -59,7 +59,7 @@ namespace Engine {
 		//Extra size allocate for the user to support guardbands
 		size_t guardBand = i_size + alignment + (guardBandSize*MUL);
 #else
-		size_t guardBand = i_size;
+		size_t guardBand = i_size + alignment;
 #endif
 
 		void * basePtr;
@@ -348,7 +348,13 @@ namespace Engine {
 					
 
 					}
+					//There are no more unused block descriptors
+					else
+					{
+						DEBUG_LOG_MESSAGE("Ran out of block descriptors!");
+						return NULL;
 
+					}
 
 				}
 
@@ -360,6 +366,7 @@ namespace Engine {
 		 //There are no more unused block descriptors
 		else
 		{
+			DEBUG_LOG_MESSAGE("Insufficient Memory Size!");
 			return NULL;
 
 		}

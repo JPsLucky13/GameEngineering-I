@@ -74,9 +74,9 @@ bool HeapManager_UnitTest()
 	{
 		const size_t		maxTestAllocationSize = 1024;
 
-		//const unsigned int	alignments[] = { 4, 4, 4, 4, 4 };
+		const unsigned int	alignments[] = { 4, 4, 4, 4, 4 };
 
-		const unsigned int	alignments[] = { 4, 8, 16, 32, 64 };
+		//const unsigned int	alignments[] = { 4, 8, 16, 32, 64 };
 
 		unsigned int	index = rand() % (sizeof(alignments) / sizeof(alignments[0]));
 
