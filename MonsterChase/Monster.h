@@ -3,17 +3,34 @@
 #include "Vector2D.h"
 #include "IGameObjectController.h"
 #include "MonsterController.h"
-#define BUFFER_SIZE 30
+#include <algorithm>
 class Monster{
 
 public:
 
-
 	//Empty Constructor
 	Monster();
 
+
+	
+	Monster(const char * i_monsterName);
+
+
+
 	//Destructor
 	~Monster();
+
+	//Copy Constructor
+	Monster(const Monster & i_other);
+
+	//Assignment Operator
+	Monster & operator=(const Monster & i_other);
+
+	//Move Constructor
+	Monster(Monster && i_other);
+
+	//Move Assignment operator	
+	Monster & operator=(Monster && i_other);
 
 	//Get the monster position
 	Engine::Vector2D GetPosition() const { return controller->GetPosition();}
@@ -36,7 +53,7 @@ public:
 
 private:
 
-	char monsterName[BUFFER_SIZE];
+	char * monsterName;
 	MonsterController * controller;
 
 };

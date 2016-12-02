@@ -9,7 +9,24 @@ public:
 
 	PlayerController();
 
+	//Constructor with controller
+	PlayerController(GameObject * i_GameObject);
+
 	~PlayerController();
+
+	//Copy Constructor
+	PlayerController(const PlayerController & i_other);
+
+	//Assignment Operator
+	PlayerController & operator=(const PlayerController & i_other);
+
+	//Move Constructor
+	PlayerController(PlayerController && i_other);
+
+	//Move Assignment operator	
+	PlayerController & operator=(PlayerController && i_other);
+
+
 
 	void SetGameObject(GameObject * i_pObject) override { m_pObject  = i_pObject; }
 	GameObject * GetGameObject() override { return m_pObject; }

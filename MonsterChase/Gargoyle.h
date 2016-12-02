@@ -3,17 +3,31 @@
 #include "Vector2D.h"
 #include "IGameObjectController.h"
 #include "GargoyleController.h"
-#define BUFFER_SIZE 30
+#include <algorithm>
+
 class Gargoyle {
 
 public:
 
 
 	//Empty Constructor
-	Gargoyle();
+	Gargoyle(const char * i_gargoyleName);
 
 	//Destructor
 	~Gargoyle();
+
+	//Copy Constructor
+	Gargoyle(const Gargoyle & i_other);
+
+	//Assignment operator
+	Gargoyle & operator=(const Gargoyle & i_other);
+
+	//Move constructor
+	Gargoyle(Gargoyle && i_other);
+
+	//move assignment operator
+	Gargoyle & operator=(Gargoyle && i_other);
+
 
 	//Get the monster position
 	Engine::Vector2D GetPosition() const { return controller->GetPosition(); }
@@ -37,7 +51,7 @@ public:
 
 private:
 
-	char gargoyleName[BUFFER_SIZE];
+	char  * gargoyleName;
 	GargoyleController * controller;
 
 };

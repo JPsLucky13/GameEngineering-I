@@ -5,12 +5,52 @@ PlayerController::PlayerController()
 	m_pObject = new GameObject();
 }
 
+PlayerController::PlayerController(GameObject * i_GameObject)
+{
+	m_pObject = new GameObject();
+	m_pObject->SetPosition(i_GameObject->GetPosition());
+}
+
 PlayerController::~PlayerController()
 {
-	
-	delete(m_pObject);
-	m_pObject = NULL;
+	if (m_pObject)
+	{
+		delete(m_pObject);
+		m_pObject = NULL;
+	}
+}
 
+PlayerController::PlayerController(const PlayerController & i_other):
+	m_pObject(new GameObject())
+{
+	m_pObject->SetPosition(i_other.m_pObject->GetPosition());
+
+}
+
+PlayerController & PlayerController::operator=(const PlayerController & i_other)
+{
+	if (m_pObject) {
+		delete m_pObject;
+	}
+
+	m_pObject = new GameObject();
+
+	m_pObject->SetPosition(i_other.m_pObject->GetPosition());
+
+	return *this;
+}
+
+PlayerController::PlayerController(PlayerController && i_other):
+	m_pObject(i_other.m_pObject)
+{
+	i_other.m_pObject = nullptr;
+
+}
+
+PlayerController & PlayerController::operator=(PlayerController && i_other)
+{
+	std::swap(m_pObject, i_other.m_pObject);
+	return *this;
 }
 
 void PlayerController::UpdateGameObject()

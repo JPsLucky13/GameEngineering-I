@@ -1,19 +1,40 @@
 #pragma once
 #include "IGameObjectController.h"
 #include <stdlib.h>
+#include <algorithm>
 
 class MonsterController : public IGameObjectController
 {
 public:
 
+	//Constructor
 	MonsterController();
 
+	//Constructor with controller
+	MonsterController(GameObject * i_GameObject);
+
+	//Destructor
 	~MonsterController();
+
+	//Copy constructor
+	MonsterController(const MonsterController & i_other);
+
+	//Assignment operator
+	MonsterController & operator=(const MonsterController & i_other);
+
+	//Move Constructor
+	MonsterController(MonsterController && i_other);
+
+	//Move assignment operator
+	MonsterController & operator=(MonsterController && i_other);
+
 
 	void SetGameObject(GameObject * i_pObject) override { m_pObject = i_pObject; }
 	GameObject * GetGameObject() override { return m_pObject; }
 
 	void SetFocusObject(GameObject * i_pObject) { m_pFocus = i_pObject; }
+	GameObject * GetFocusObject(){ return m_pFocus; }
+	
 	void UpdateGameObject() override;
 
 	//Get position

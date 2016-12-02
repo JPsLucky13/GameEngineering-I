@@ -101,7 +101,7 @@ namespace Engine {
 				}
 
 				//Traverse to the previous block descriptor to the selected one
-				for (int i = 0;i < selectedIndex-1;i++)
+				for (size_t i = 0;i < selectedIndex;i++)
 				{
 					tempPrevSelected = tempPrevSelected->m_pNext;
 					if (tempPrevSelected != NULL) {

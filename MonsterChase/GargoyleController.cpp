@@ -3,15 +3,62 @@
 GargoyleController::GargoyleController()
 {
 	m_pObject = new GameObject();
-	m_pFocus = m_pFocus = nullptr;
+	m_pFocus = nullptr;
 
+}
+
+GargoyleController::GargoyleController(GameObject * i_GameObject)
+{
+	m_pObject = new GameObject();
+	m_pObject->SetPosition(i_GameObject->GetPosition());
+	m_pFocus = nullptr;
 }
 
 GargoyleController::~GargoyleController()
 {
-
+	if (m_pObject)
+	{
 	delete(m_pObject);
 	m_pObject = NULL;
+	}
+
+}
+
+GargoyleController::GargoyleController(const GargoyleController & i_other):
+	m_pObject(new GameObject()),
+	m_pFocus(i_other.m_pFocus)
+{
+	m_pObject->SetPosition(i_other.m_pObject->GetPosition());
+
+}
+
+GargoyleController & GargoyleController::operator=(const GargoyleController & i_other)
+{
+	if (m_pObject) {
+		delete m_pObject;
+	}
+
+	m_pObject = new GameObject();
+
+	m_pObject->SetPosition(i_other.m_pObject->GetPosition());
+	m_pFocus = i_other.m_pFocus;
+
+	return *this;
+}
+
+GargoyleController::GargoyleController(GargoyleController && i_other):
+	m_pObject(i_other.m_pObject),
+	m_pFocus(i_other.m_pFocus)
+{
+	i_other.m_pObject = nullptr;
+	i_other.m_pFocus = nullptr;
+}
+
+GargoyleController & GargoyleController::operator=(GargoyleController && i_other)
+{
+	std::swap(m_pObject, i_other.m_pObject);
+	std::swap(m_pFocus, i_other.m_pFocus);
+	return *this;
 
 }
 

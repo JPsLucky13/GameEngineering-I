@@ -41,12 +41,11 @@ int main()
 
 #ifdef _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	
 #endif // _DEBUG
 
 
 	//Run the float check unit test
-	FloatChecker_UnitTest();
+	//FloatChecker_UnitTest();
 
 
 	//Run the block allocator unit test
@@ -55,33 +54,6 @@ int main()
 	//_getch();
 
 
-	/*
-
-	//For Monster Chase
-	srand(time_t(0));
-
-	//Create reference to a game manager object
-	GameManager gameManager;
-
-	//Initialize the game
-	gameManager.InitializeGame();
-
-
-
-	
-	//Start of the main game loop
-	do
-	{
-		gameManager.UpdateGameManager();
-
-	}while (gameManager.ReadAdditionalInput() != 'q');
-
-
-    return 0;
-
-
-
-	*/
 
 	//For blockAllocator Testing
 
@@ -92,8 +64,48 @@ int main()
 	//blockAllocator.create(1024, 10);
 	//GetBlockAllocator(&blockAllocator);
 
+	
+	//For Monster Chase
+	srand(time_t(0));
+
+	//Create reference to a game manager object
+	GameManager* gameManager = new GameManager();
+
+	//Initialize the game
+	gameManager->InitializeGame();
 
 
+
+	
+	//Start of the main game loop
+	do
+	{
+		gameManager->UpdateGameManager();
+
+	}while (gameManager->ReadAdditionalInput() != 'q');
+
+
+   
+	delete gameManager;
+	gameManager = nullptr;
+
+	//{
+	//	Monster m1("m1");
+
+	//	// copy constructor
+	//	Monster m2 = m1;
+
+	//	//// copy assignment
+	//	Monster m3("m3");
+	//	m3 = m1;
+
+	//	//// move constructor
+	//	Monster m4 = std::move(m2);
+
+	//	//// move assignment
+	//	Monster m5("m5");
+	//	m5 = std::move(m4);
+	//}
 
 	/*
 
@@ -217,8 +229,6 @@ int main()
 	*/
 
 
-	//Testing new and delete
-	
 	//Monster * monster = new Monster();
 	//char* string = new char[10];
 	//Monster* monster2 = new TRACK_NEW Monster();

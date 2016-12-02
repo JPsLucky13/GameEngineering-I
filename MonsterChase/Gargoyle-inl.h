@@ -7,5 +7,9 @@ inline const char * Gargoyle::GetGargoyleName() const
 
 inline void Gargoyle::SetGargoyleName(char * name)
 {
-	strcpy_s(gargoyleName, name);
+	if (gargoyleName)
+	{
+		free(gargoyleName);
+	}
+	gargoyleName = _strdup(name);
 }

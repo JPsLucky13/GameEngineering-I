@@ -3,13 +3,16 @@
 #include "Monster.h"
 #include "Player.h"
 #include "Gargoyle.h"
+#include <vector>
 
-#define ARRAY_MONST_SIZE 10
-#define ARRAY_GAR_SIZE 10
+
 #define NEG_ONE -1
 class GameManager {
 
 private:
+
+	
+
 
 	//The number of monsters
 	int monsterNumber = NEG_ONE;
@@ -18,15 +21,18 @@ private:
 	int gargoyleNumber = NEG_ONE;
 
 	//Create the array of Monsters
-	Monster monsters[ARRAY_MONST_SIZE];
+	std::vector<Monster *> monsters;
 
 	//Create the array of Gargoyles
-	Gargoyle gargoyles[ARRAY_GAR_SIZE];
+	std::vector<Gargoyle *> gargoyles;
 
 	//Create a player
 	Player player;
 
 public:
+
+	//Destructor
+	~GameManager();
 
 
 	//adder
@@ -38,8 +44,6 @@ public:
 	inline void gargoyleNumberAdd();
 	//substract
 	inline void gargoyleNumberDecrease();
-
-	inline Player GetPlayer() const { return player; }
 
 
 	//The prototype of the monster naming method

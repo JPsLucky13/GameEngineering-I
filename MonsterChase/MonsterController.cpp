@@ -7,11 +7,61 @@ MonsterController::MonsterController()
 
 }
 
+MonsterController::MonsterController(GameObject * i_GameObject)
+{
+	m_pObject = new GameObject();
+	m_pObject->SetPosition(i_GameObject->GetPosition());
+	m_pFocus = nullptr;
+
+}
+
 MonsterController::~MonsterController()
 {
-	
+	if (m_pObject)
+	{
 	delete(m_pObject);
 	m_pObject = NULL;
+	}
+
+}
+
+MonsterController::MonsterController(const MonsterController & i_other) :
+	m_pObject(new GameObject()),
+	m_pFocus(i_other.m_pFocus)
+{
+	m_pObject->SetPosition(i_other.m_pObject->GetPosition());
+
+}
+
+MonsterController & MonsterController::operator=(const MonsterController & i_other)
+{
+	if (m_pObject) {
+		delete m_pObject;
+	}
+
+	m_pObject = new GameObject();
+
+	m_pObject->SetPosition(i_other.m_pObject->GetPosition());
+	m_pFocus = i_other.m_pFocus;
+
+	return *this;
+}
+
+MonsterController::MonsterController(MonsterController && i_other):
+	m_pObject(i_other.m_pObject),
+	m_pFocus(i_other.m_pFocus)
+{
+	i_other.m_pObject = nullptr;
+	i_other.m_pFocus = nullptr;
+
+}
+
+MonsterController & MonsterController::operator=(MonsterController && i_other)
+{
+	std::swap(m_pObject, i_other.m_pObject);
+	std::swap(m_pFocus, i_other.m_pFocus);
+
+	return *this;
 
 }
 

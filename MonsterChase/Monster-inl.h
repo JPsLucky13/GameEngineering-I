@@ -8,5 +8,9 @@ inline const char * Monster::GetMonsterName() const
 
 inline void Monster::SetMonsterName(char * name)
 {
-	strcpy_s(monsterName, name);
+	if (monsterName)
+	{
+		free(monsterName);
+	}
+	monsterName = _strdup(name);
 }

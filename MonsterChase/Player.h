@@ -18,6 +18,19 @@ class Player{
 
 		~Player();
 
+		//Copy Constructor
+		Player(const Player & i_other);
+
+		//Assignment Operator
+		Player & operator=(const Player & i_other);
+
+		//Move Constructor
+		Player(Player && i_other);
+
+		//Move Assignment operator	
+		Player & operator=(Player && i_other);
+
+
 		//Get the player position
 		Engine::Vector2D GetPosition() const{ return controller->GetPosition(); }
 

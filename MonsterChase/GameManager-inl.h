@@ -1,4 +1,7 @@
+#include "GameManager.h"
 #pragma once
+
+
 
 //adder
 inline void GameManager::monsterNumberAdd() { monsterNumber++; }
