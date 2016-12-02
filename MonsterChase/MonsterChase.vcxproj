@@ -30,6 +30,7 @@
     <ClCompile Include="MonsterController.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerController.cpp" />
+    <ClCompile Include="ReverseString.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameManager-inl.h" />

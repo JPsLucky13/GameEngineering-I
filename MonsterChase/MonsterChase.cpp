@@ -8,6 +8,7 @@
 #include <ctime> //For calling a seed of random numbers
 #include "Monster.h"
 #include "Player.h"
+#include "Debug.h"
 #include "GameManager.h"
 #include "BlockAllocator.h"
 #include "NewDelete.h"
@@ -32,6 +33,13 @@ extern void FloatChecker_UnitTest();
 
 //Block allocator unit test
 extern bool HeapManager_UnitTest();
+
+
+//The reverse string in place function
+extern char* ReverseString(char * string);
+
+extern size_t StringLength(const char * string);
+
 
 int main()
 {
@@ -62,7 +70,7 @@ int main()
 	//_getch();
 
 
-
+	/*
 	//For blockAllocator Testing
 
 	
@@ -92,7 +100,7 @@ int main()
 	delete gameManager;
 	gameManager = nullptr;
 
-	
+	*/
 
 	//{
 	//	Monster m1("m1");
@@ -248,6 +256,15 @@ int main()
 	//delete[] string;
 	//blockAllocator.destroy();
 	
+	//Reverse string test
+
+	char word[] = "squirrelled";
+
+	char * newString = ReverseString(word);
+
+	DEBUG_LOG_MESSAGE("The new string is: %s", newString);
+
+	_getch();
 
 	_CrtDumpMemoryLeaks();
 
