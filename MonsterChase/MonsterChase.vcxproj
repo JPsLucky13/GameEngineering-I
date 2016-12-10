@@ -19,15 +19,31 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FloatChecker_UnitTest.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="Gargoyle.cpp" />
+    <ClCompile Include="GargoyleController.cpp" />
+    <ClCompile Include="HeapManager_UnitTest.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="MonsterChase.cpp" />
+    <ClCompile Include="MonsterChase_UnitTest.cpp" />
+    <ClCompile Include="MonsterController.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerController.cpp" />
+    <ClCompile Include="ReverseString.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameManager-inl.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Gargoyle-inl.h" />
+    <ClInclude Include="Gargoyle.h" />
+    <ClInclude Include="GargoyleController.h" />
+    <ClInclude Include="Monster-inl.h" />
     <ClInclude Include="Monster.h" />
+    <ClInclude Include="MonsterController.h" />
+    <ClInclude Include="Player-inl.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerController.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.vcxproj">
@@ -111,7 +127,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Release;$(SolutionDir)Debug;$(SolutionDir)x64\Debug;$(SolutionDir)x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -129,7 +145,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Release;$(SolutionDir)Debug;$(SolutionDir)x64\Debug;$(SolutionDir)x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>
       </ImportLibrary>
@@ -153,7 +169,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Release;$(SolutionDir)Debug;$(SolutionDir)x64\Debug;$(SolutionDir)x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -175,7 +191,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Release;$(SolutionDir)Debug;$(SolutionDir)x64\Debug;$(SolutionDir)x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>
       </ImportLibrary>

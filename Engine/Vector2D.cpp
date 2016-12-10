@@ -2,31 +2,14 @@
 #include "Vector2D.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include <Windows.h>
 
 namespace Engine {
 
-	Vector2D operator+(const Vector2D & input1, const Vector2D & input2)
+	Vector2D Vector2D::normalize()
 	{
-		return Vector2D(input1.x() + input2.x(), input1.y() + input2.y());
+		float length = static_cast<float>(sqrt(m_x * m_x + m_y * m_y));
+		Engine::Vector2D normalizedVector(m_x / length, m_y / length);
+		return normalizedVector;
 	}
-
-	Vector2D operator-(const Vector2D & input1, const Vector2D & input2)
-	{
-		return Vector2D(input1.x() - input2.x(), input1.y() - input2.y());
-	}
-
-	bool operator==(const Vector2D & input1, const Vector2D & input2)
-	{
-		return (input1.x() == input2.x() && input1.y() == input2.y());
-	}
-
-	void PrintDebugMessage(const char* file, const char* function, const int line, const char* fmt, ...)
-	{
-		va_list arguments;
-		va_start(arguments,fmt);
-		printf("File name: %s, Function name: %s, Line: %d ", file, function, line);
-		vprintf(fmt,arguments);
-		va_end(arguments);
-	}
-
 }

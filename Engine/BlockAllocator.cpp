@@ -1,5 +1,12 @@
 #include "BlockAllocator.h"
 #include <malloc.h>
+#include <string.h>
+#include <stddef.h>
+
+
+#define MUL 2
+#define BASE_ALIGNMENT 4
+
 namespace Engine {
 	//Constructor for the block allocator
 	BlockAllocator::BlockAllocator() {
@@ -11,10 +18,11 @@ namespace Engine {
 	}
 
 	//Creates the block allocator and splits it
-	void BlockAllocator::create(size_t i_sizeMemory, unsigned int i_numDescriptors)
+	void BlockAllocator::create(const size_t i_sizeMemory,const unsigned int i_numDescriptors)
 	{
 		//Get the block of memory and set the size
-		startOfMemory = _aligned_malloc(i_sizeMemory, alignment);
+		startOfMemory = reinterpret_cast<uint8_t*>(_aligned_malloc(i_sizeMemory, alignment));
+		memset(startOfMemory, arrobaCharacter, i_sizeMemory);
 
 		InitializeUnusedDescriptors(i_sizeMemory, i_numDescriptors);
 
@@ -28,56 +36,420 @@ namespace Engine {
 		freeDescriptorsHead->m_pNext = NULL;
 		freeDescriptorsHead->m_pBlockBase = startOfMemory;
 		freeDescriptorsHead->m_sizeBlock = i_sizeMemory - (sizeof(BlockDescriptor) * i_numDescriptors);
+
+		endOfRightSideOfMemory = startOfMemory + (i_sizeMemory - (sizeof(BlockDescriptor) * i_numDescriptors));
 	}
 
 	void BlockAllocator::destroy()
 	{
+		_aligned_free(startOfMemory);
 	}
 
-	void * BlockAllocator::_alloc(size_t i_size)
+	void * BlockAllocator::_alloc(const size_t i_size)
 	{
 
+		return _alloc(i_size, BASE_ALIGNMENT);
 
-		//Check that there are unused block descriptors and the amount of memory available is greater than what is requested
-		if (unusedDescriptorsHead != NULL && getLargestFreeBlock() >= i_size)
+	}
+
+	void * BlockAllocator::_alloc(const size_t i_size, const uint8_t alignment)
+	{
+		
+#ifdef _DEBUG
+		//Extra size allocate for the user to support guardbands
+		size_t guardBand = i_size + alignment + (guardBandSize*MUL);
+#else
+		size_t guardBand = i_size + alignment;
+#endif
+
+		void * basePtr;
+
+		//The index to get to the selected free block descriptor
+		size_t selectedIndex = 0;
+
+		//The remainder of the alignment 
+		size_t alignmentRemainder = 0;
+
+		//The guardbanding succeeded
+		bool guardBandedSuccessfully = false;
+
+
+		if (getLargestFreeBlock() >= guardBand)
 		{
 
-			void * endPtr = (char*)freeDescriptorsHead->m_pBlockBase + freeDescriptorsHead->m_sizeBlock - i_size;
+			//Sort bi size the free block descriptor linked list.
+			SelectionSortBlockDescriptorPointer(freeDescriptorsHead);
+
+			//Block descriptor to cycle through the free list to find the selected free block descriptor
+			BlockDescriptor * tempSelected = freeDescriptorsHead;
+
+			//Block descriptor to find the previous block descriptor to sleected to link it to the next of the selected one
+			BlockDescriptor * tempPrevSelected = freeDescriptorsHead;
 
 
-			BlockDescriptor* ptr = unusedDescriptorsHead;
-			unusedDescriptorsHead = unusedDescriptorsHead->m_pNext;
+			while (tempSelected != NULL)
+			{
 
-			ptr->m_pBlockBase = endPtr;
-			ptr->m_sizeBlock = i_size;
+				
+				//Cyle throught the free list until the size of the current block is appropriate
+				while (tempSelected->m_sizeBlock < guardBand)
+				{
+
+					selectedIndex++;
+					tempSelected = tempSelected->m_pNext;
+
+				}
+
+				//Traverse to the previous block descriptor to the selected one
+				for (size_t i = 0;i < selectedIndex;i++)
+				{
+					tempPrevSelected = tempPrevSelected->m_pNext;
+					if (tempPrevSelected != NULL) {
+						return NULL;
+					}
+				}
 
 
-			ptr->m_pNext = outstandingDescriptorsHead;
-			outstandingDescriptorsHead = ptr;
+				//Give the user the entire block
+				if (tempSelected->m_sizeBlock < guardBand + minimumSize)
+				{
+
+					//Go to the right side of the size of memory given and substract the guardband size
+					uint8_t* guardBandptr = reinterpret_cast<uint8_t*>(tempSelected->m_pBlockBase) + tempSelected->m_sizeBlock - guardBandSize;
+
+					//Shift left the size the user requested
+					guardBandptr -= i_size;
 
 
-			freeDescriptorsHead->m_sizeBlock = freeDescriptorsHead->m_sizeBlock - i_size;
+					//Check that the pointer to user memory is aligned
+					alignmentRemainder = reinterpret_cast<uintptr_t>(guardBandptr) % alignment;
 
-			return endPtr;
+					if (alignmentRemainder == 0)
+					{
+						//The pointer is aligned 
 
-		}
+						uint8_t * leftguardBandCheck = guardBandptr - guardBandSize;
 
-		//There are no more unused block descriptors
+						if (leftguardBandCheck <= tempSelected->m_pBlockBase)
+						{
+							//Write the left guardband
+							for (size_t i = 0; i < guardBandSize; i++)
+							{
+								*(leftguardBandCheck + i) = guardBandCharacter;
+							}
+							leftguardBandCheck += guardBandSize;
+							//Set the pointer to return to the user
+							basePtr = leftguardBandCheck;
+
+							//Shift left the size of the user
+							leftguardBandCheck += i_size;
+
+
+							//Write the right guardband
+							for (size_t  i = 0; i < guardBandSize; i++)
+							{
+								*(leftguardBandCheck + i) = guardBandCharacter;
+							}
+
+							guardBandedSuccessfully = true;
+						}
+
+						else {
+					
+							guardBandedSuccessfully = false;
+
+							//Repeat and check for the next block descriptor
+							tempSelected = tempSelected->m_pNext;
+							selectedIndex = 0;
+							continue;
+						}
+					}
+
+					//The alignment did not succeed
+					else {
+				
+						//The realign the pointer 
+						uint8_t* leftguardBandCheck = guardBandptr - alignmentRemainder - guardBandSize;
+				
+						if (leftguardBandCheck <= tempSelected->m_pBlockBase)
+						{
+							//Write the left guardband
+							for (size_t i = 0; i < guardBandSize; i++)
+							{
+								*(leftguardBandCheck + i) = guardBandCharacter;
+							}
+
+							leftguardBandCheck += guardBandSize;
+							//Set the pointer to return to the user
+							basePtr = leftguardBandCheck;
+
+							//Shift left the size of the user
+							leftguardBandCheck += i_size;
+
+
+							//Write the right guardband
+							for (size_t i = 0; i < guardBandSize; i++)
+							{
+								*(leftguardBandCheck + i) = guardBandCharacter;
+							}
+
+							guardBandedSuccessfully = true;
+
+						}
+
+						else {
+
+							guardBandedSuccessfully = false;
+
+							//Repeat and check for the next block descriptor
+							tempSelected = tempSelected->m_pNext;
+							selectedIndex = 0;
+							continue;
+						}
+					}
+
+
+					if(guardBandedSuccessfully){
+
+						//The selected element is the head of the free list
+						if (tempPrevSelected == tempSelected)
+						{
+							freeDescriptorsHead = tempSelected->m_pNext;
+
+						}
+							tempPrevSelected->m_pNext = tempSelected->m_pNext;
+							tempSelected->m_pNext = outstandingDescriptorsHead;
+							outstandingDescriptorsHead = tempSelected;
+							break;
+
+					}
+
+				}
+
+				//Divide the block
+				else {
+				
+					if (unusedDescriptorsHead != NULL)
+					{
+
+						//Assign an unused block descriptor the memory the user requested
+						BlockDescriptor* ptr = unusedDescriptorsHead;
+						
+	
+
+						//Temporary pointer
+						uint8_t* guardBandptr = reinterpret_cast<uint8_t*>(tempSelected->m_pBlockBase) + tempSelected->m_sizeBlock - guardBandSize - i_size;
+
+
+						//Check that the pointer to user memory is aligned
+						alignmentRemainder = reinterpret_cast<uintptr_t>(guardBandptr) % alignment;
+
+						if (alignmentRemainder == 0)
+						{
+							//The pointer is aligned 
+
+							uint8_t* leftguardBandCheck = guardBandptr - guardBandSize;
+
+							if (leftguardBandCheck >= tempSelected->m_pBlockBase)
+							{
+								//Write the left guardband
+								for (size_t  i = 0; i < guardBandSize; i++)
+								{
+									*(leftguardBandCheck + i) = guardBandCharacter;
+								}
+								leftguardBandCheck += guardBandSize;
+								//Set the pointer to return to the user
+								basePtr = leftguardBandCheck;
+
+								//Shift left the size of the user
+								leftguardBandCheck += i_size;
+
+
+								//Write the right guardband
+								for (size_t  i = 0; i < guardBandSize; i++)
+								{
+									*(leftguardBandCheck + i) = guardBandCharacter;
+								}
+
+								guardBandedSuccessfully = true;
+							}
+
+							else {
+
+								guardBandedSuccessfully = false;
+
+								//Repeat and check for the next block descriptor
+								tempSelected = tempSelected->m_pNext;
+								selectedIndex = 0;
+								continue;
+							}
+
+
+							
+						}
+
+						else {
+						
+							//The pointer is not aligned
+							uint8_t* leftguardBandCheck = guardBandptr - alignmentRemainder - guardBandSize;
+
+							if (leftguardBandCheck >= tempSelected->m_pBlockBase)
+							{
+								//Write the left guardband
+								for (size_t  i = 0; i < guardBandSize; i++)
+								{
+									*(leftguardBandCheck + i) = guardBandCharacter;
+								}
+								leftguardBandCheck += guardBandSize;
+								//Set the pointer to return to the user
+								basePtr = leftguardBandCheck;
+
+								//Shift left the size of the user
+								leftguardBandCheck += i_size;
+
+
+								//Write the right guardband
+								for (size_t  i = 0; i < guardBandSize; i++)
+								{
+									*(leftguardBandCheck + i) = guardBandCharacter;
+								}
+
+								guardBandedSuccessfully = true;
+							}
+
+							else {
+
+								guardBandedSuccessfully = false;
+
+								//Repeat and check for the next block descriptor
+								tempSelected = tempSelected->m_pNext;
+								selectedIndex = 0;
+
+								continue;
+
+							}
+						}
+
+
+						if(guardBandedSuccessfully){
+
+							unusedDescriptorsHead = unusedDescriptorsHead->m_pNext;
+
+
+							//Set the gaurdbands
+							ptr->m_pBlockBase = basePtr;
+							ptr->m_sizeBlock = i_size + (guardBandSize *MUL) + alignmentRemainder;
+							ptr->m_pNext = outstandingDescriptorsHead;
+							outstandingDescriptorsHead = ptr;							
+							//Reduce the size of the free block that stays in the list
+							tempSelected->m_sizeBlock -= (i_size + (guardBandSize * MUL) + alignmentRemainder);
+							break;
+						}
+					
+
+					}
+					//There are no more unused block descriptors
+					else
+					{
+						DEBUG_LOG_MESSAGE("Ran out of block descriptors!");
+						return NULL;
+
+					}
+
+				}
+
+			}//end of while loop
+		
+			return basePtr;
+		 }
+
+		 //There are no more unused block descriptors
 		else
 		{
-
+			DEBUG_LOG_MESSAGE("Insufficient Memory Size!");
 			return NULL;
 
 		}
 
-
-
 	}
 
-	bool BlockAllocator::_free(void * i_ptr)
+	bool BlockAllocator::_free(const void * i_ptr)
 	{
-		return false;
+		
+		//The block descriptor to select the outstanding block descriptor to compare
+		BlockDescriptor * tempSelected = outstandingDescriptorsHead;
+
+		//The block descriptor to travers the list
+		BlockDescriptor * tempPrevious = outstandingDescriptorsHead;
+
+		//The index of the selected block descriptor
+		size_t indexOfDescriptor = 0;
+		
+			while (tempSelected != NULL) {
+
+				if (tempSelected->m_pBlockBase <= i_ptr && i_ptr < reinterpret_cast<uint8_t*>(tempSelected->m_pBlockBase) + tempSelected->m_sizeBlock)
+				{
+					//Go the previous 
+					for (size_t i = 0; i < indexOfDescriptor; i++)
+					{						
+						tempPrevious = tempPrevious->m_pNext;
+					}
+					if (tempPrevious->m_pNext == NULL) {
+						tempSelected->m_pNext = freeDescriptorsHead;
+						freeDescriptorsHead = tempSelected;
+						outstandingDescriptorsHead = NULL;
+						
+					}
+					else {
+						if (tempPrevious == outstandingDescriptorsHead && tempPrevious == tempSelected) {							
+							outstandingDescriptorsHead = tempSelected->m_pNext;
+						}						
+						else {
+							tempPrevious->m_pNext = tempSelected->m_pNext;
+						}
+						tempSelected->m_pNext = freeDescriptorsHead;
+						freeDescriptorsHead = tempSelected;											
+					}
+
+					//printf("Free Successful %d\n", k);
+					
+					return true;
+					break;
+
+				}
+				indexOfDescriptor++;
+				tempSelected = tempSelected->m_pNext;
+			}
+			return false;	
 	}
+
+
+
+	bool BlockAllocator::_isAllocated(const void * pointer) const
+	{
+		BlockDescriptor * temp = outstandingDescriptorsHead;
+
+		if (temp == NULL)
+		{
+			return false;
+		}
+		else {
+			while (temp != NULL)
+			{
+				
+				if (pointer >= temp->m_pBlockBase && pointer < reinterpret_cast<uint8_t*>(temp->m_pBlockBase) + temp->m_sizeBlock)
+				{
+					return true;
+				}
+
+				temp = temp->m_pNext;
+			}
+		
+			return false;
+		}
+	}
+
+	
 
 	size_t BlockAllocator::getLargestFreeBlock() const
 	{
@@ -103,39 +475,40 @@ namespace Engine {
 
 		return total;
 	}
+#ifdef _DEBUG
 
-	void BlockAllocator::PrintBlockDescriptors()
+	void BlockAllocator::PrintBlockDescriptors() const
 	{
 		//Print the heading of the block allocator
-		printf("Block allocator: Total free memory %zu, Lagest Free Block %zu, number of Block descriptors %d\n", getTotalFreeMemory(), getLargestFreeBlock(), totalBlockDescriptors);
-		printf("-------------------------------------------------------------------------------------------\n");
+		
+		printf("Block allocator: Total free memory %zu, Lagest Free Block %zu, number of Block descriptors %zu\n", getTotalFreeMemory(), getLargestFreeBlock(), totalBlockDescriptors);
+
 		printf("---------------------------Unused Block Descriptors------------------------------\n");
-
-
 		//Print the list of unused block allocators with their ID and Block Size
 		for (BlockDescriptor * ptr = unusedDescriptorsHead; ptr != NULL; ptr = ptr->m_pNext)
 		{
-			printf("BD: id = %d, Block_size = %zu\n", ptr->m_id, ptr->m_sizeBlock);
+			
+			printf("BD: id = %zu, Block_size = %zu,Block_Base = %p, Block_Base + Size = %p\n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<uint8_t*>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
 		}
-
-		printf("-------------------------------------------------------------------------------------------\n");
+		
 		printf("---------------------------Free Block Descriptors------------------------------\n");
 
 		//Print the list of free block allocators with their ID and Block Size
 		for (BlockDescriptor * ptr = freeDescriptorsHead; ptr != NULL; ptr = ptr->m_pNext)
 		{
-			printf("BD: id = %d, Block_size = %zu\n", ptr->m_id, ptr->m_sizeBlock);
+			
+			printf("BD: id = %zu, Block_size = %zu, Block_Base = %p, Block_Base + Size = %p\n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<uint8_t*>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
 		}
-
-		printf("-------------------------------------------------------------------------------------------\n");
+		
 		printf("---------------------------Outstanding Block Descriptors------------------------------\n");
 
 		//Print the list of free block allocators with their ID and Block Size
 		for (BlockDescriptor * ptr = outstandingDescriptorsHead; ptr != NULL; ptr = ptr->m_pNext)
 		{
-			printf("BD: id = %d, Block_size = %zu\n", ptr->m_id, ptr->m_sizeBlock);
+			
+			printf("BD: id = %zu, Block_size = %zu, Block_Base = %p, Block_Base + Size = %p \n", ptr->m_id, ptr->m_sizeBlock, ptr->m_pBlockBase, reinterpret_cast<uint8_t*>(ptr->m_pBlockBase) + ptr->m_sizeBlock);
 		}
-
+		
 		printf("-------------------------------------------------------------------------------------------\n");
 		printf("-------------------------------------------------------------------------------------------\n");
 		printf("-------------------------------------------------------------------------------------------\n");
@@ -144,17 +517,20 @@ namespace Engine {
 		printf("-------------------------------------------------------------------------------------------\n");
 
 	}
+#endif // _DEBUG
 
-	void BlockAllocator::InitializeUnusedDescriptors(size_t i_sizeMemory, unsigned int i_numDescriptors)
+	
+
+	void BlockAllocator::InitializeUnusedDescriptors(const size_t i_sizeMemory, const size_t i_numDescriptors)
 	{
 		totalBlockDescriptors = i_numDescriptors;
 
 		//Split the memory to create a pool of block descriptors
-		char *poolOfBlockDescriptors = ((char*)startOfMemory + i_sizeMemory) - (sizeof(BlockDescriptor) * i_numDescriptors);
+		unsigned char *poolOfBlockDescriptors = (startOfMemory + i_sizeMemory) - (sizeof(BlockDescriptor) * i_numDescriptors);
 
-		for (unsigned int i = 0; i < i_numDescriptors; i++)
+		for (size_t i = 0; i < i_numDescriptors; i++)
 		{
-			BlockDescriptor* newDescriptor = (BlockDescriptor*)poolOfBlockDescriptors + i;
+			BlockDescriptor* newDescriptor = reinterpret_cast<BlockDescriptor*>(poolOfBlockDescriptors) + i;
 			newDescriptor->m_pBlockBase = NULL;
 			newDescriptor->m_sizeBlock = 0;
 
@@ -169,6 +545,252 @@ namespace Engine {
 		}
 		totalBlockDescriptors = i_numDescriptors;
 
+	}
+
+	void BlockAllocator::SelectionSortBlockDescriptorPointer(BlockDescriptor * const bd_pointer)
+	{
+		//start pointer
+		BlockDescriptor * startPointer = bd_pointer;
+
+		//compare pointer
+		BlockDescriptor * comparePointer = startPointer->m_pNext;
+
+		//The minimum size_t
+		size_t minimum = 0;
+		
+		//The indexers to keep track of the location of the smallest sized block descriptor
+		size_t currentIndex = 0;
+		size_t minimumIndex = 0;
+		size_t startIndex = 0;
+
+		//Check that the block Descriptor's next is not null
+		while (startPointer->m_pNext != NULL)
+		{
+			//BlockDescriptor to iterate through the linked list
+			BlockDescriptor * iterator = comparePointer;
+
+			//Set the current index to compare to the next after the start
+			currentIndex = startIndex + 1;
+
+			while (iterator != NULL)
+			{
+				//Store the minimum size
+				minimum = startPointer->m_sizeBlock;
+
+
+
+				//Minimum size and index
+				if (minimum > iterator->m_sizeBlock)
+				{
+					minimumIndex = currentIndex;
+					minimum = iterator->m_sizeBlock;
+				}
+				iterator = iterator->m_pNext;
+				currentIndex++;
+
+
+			}
+
+			iterator = startPointer;
+
+			//Iterate through the linked list to swap the elements
+			for (size_t i = startIndex; i < minimumIndex; i++) {
+					
+				iterator = iterator->m_pNext;
+			}
+
+			//Swap the Block Descriptor Info
+			SwapBlockDescriptorInfo(iterator,startPointer);
+
+			//Update the pointers and indexes
+			startPointer = startPointer->m_pNext;
+			startIndex++;
+			comparePointer = comparePointer->m_pNext;
+			iterator = comparePointer;
+			minimum = startPointer->m_sizeBlock;
+			minimumIndex = startIndex;
+
+		}
+
+
+	}
+
+	void BlockAllocator::SwapBlockDescriptorInfo(BlockDescriptor * lhs_bd_pointer, BlockDescriptor * rhs_bd_pointer)
+	{
+		//Temporary block descriptor
+		void *tempBase;
+		size_t tempSize;
+
+		tempBase = rhs_bd_pointer->m_pBlockBase;
+		tempSize = rhs_bd_pointer->m_sizeBlock;
+
+		//Swap the rightmost with the leftmost
+		rhs_bd_pointer->m_pBlockBase = lhs_bd_pointer->m_pBlockBase;
+		rhs_bd_pointer->m_sizeBlock = lhs_bd_pointer->m_sizeBlock;
+
+		//Store the block descriptor info of the temp into the leftmost
+		lhs_bd_pointer->m_pBlockBase = tempBase;
+		lhs_bd_pointer->m_sizeBlock = tempSize;
+	}
+
+	void BlockAllocator::SortFreeBlockListByAddress(BlockDescriptor * const bd_pointer)
+	{
+		//start pointer
+		BlockDescriptor * startPointer = bd_pointer;
+
+		//compare pointer
+		BlockDescriptor * comparePointer = startPointer->m_pNext;
+
+		//The minimum size_t
+		void* minimum;
+
+		//The indexers to keep track of the location of the smallest sized block descriptor
+		size_t currentIndex = 0;
+		size_t minimumIndex = 0;
+		size_t startIndex = 0;
+
+		//Check that the block Descriptor's next is not null
+		while (startPointer->m_pNext != NULL)
+		{
+			//BlockDescriptor to iterate through the linked list
+			BlockDescriptor * iterator = comparePointer;
+
+			//Set the current index to compare to the next after the start
+			currentIndex = startIndex + 1;
+			//Store the minimum size
+			minimum = startPointer->m_pBlockBase;
+			while (iterator != NULL)
+			{
+				//Minimum adress and index
+				if (minimum > iterator->m_pBlockBase)
+				{
+					minimumIndex = currentIndex;
+					minimum = iterator->m_pBlockBase;
+				}
+				iterator = iterator->m_pNext;
+				currentIndex++;
+			}
+			iterator = startPointer;
+			//Iterate through the linked list to swap the elements
+			for (size_t i = startIndex; i < minimumIndex; i++) {
+
+				iterator = iterator->m_pNext;
+			}
+
+			//Swap the Block Descriptor Info
+			SwapBlockDescriptorInfo(iterator, startPointer);
+
+			//Update the pointers and indexes
+			startPointer = startPointer->m_pNext;
+			startIndex++;
+			comparePointer = comparePointer->m_pNext;
+			iterator = comparePointer;
+			minimum = startPointer->m_pBlockBase;
+			minimumIndex = startIndex;
+
+		}
+
+	}
+
+	void BlockAllocator::GarabageCollector()
+	{
+
+			SortFreeBlockListByAddress(freeDescriptorsHead);
+			
+			//Grab the first element in the free list and compare it to all of the others
+			BlockDescriptor * temp = freeDescriptorsHead;
+
+			//the block descriptor to compare the current free block descriptor
+			BlockDescriptor * iterTemp = freeDescriptorsHead->m_pNext;
+
+			//The previous block descriptor
+			BlockDescriptor * previousIterTemp = NULL;
+
+			//The void pointer to get the calculation of the memory address adjacent to the current free block descriptor
+			void * pointerRightSide;
+
+		
+			while (temp != NULL) {
+
+
+				pointerRightSide = reinterpret_cast<uint8_t*>(temp->m_pBlockBase) + temp->m_sizeBlock;
+				while (iterTemp != NULL){
+
+
+					//printf("Block Base %d, size %zu, address %p, addressNext %p\n", iterTemp->m_id,iterTemp->m_sizeBlock, iterTemp->m_pBlockBase, iterTemp->m_pNext);
+					//The block descriptors are adjacent
+					if (iterTemp->m_pBlockBase == pointerRightSide) {
+
+
+						if (previousIterTemp != NULL)
+						{
+							previousIterTemp->m_pNext = iterTemp->m_pNext;
+							temp->m_sizeBlock += iterTemp->m_sizeBlock;
+							//Reset the values of the unused block descriptor
+							iterTemp->m_sizeBlock = 0;
+							iterTemp->m_pBlockBase = NULL;
+							iterTemp->m_pNext = unusedDescriptorsHead;							
+							unusedDescriptorsHead = iterTemp;
+							iterTemp = previousIterTemp->m_pNext;
+							pointerRightSide = reinterpret_cast<uint8_t*>(temp->m_pBlockBase) + temp->m_sizeBlock;
+							continue;
+						}
+						else
+						{
+							temp->m_sizeBlock += iterTemp->m_sizeBlock;
+							if (temp->m_pNext == NULL)
+							{
+								freeDescriptorsHead = iterTemp->m_pNext;
+								//Reset the values of the unused block descriptor
+								iterTemp->m_sizeBlock = 0;
+								iterTemp->m_pBlockBase = NULL;
+								iterTemp->m_pNext = unusedDescriptorsHead;
+								unusedDescriptorsHead = iterTemp;
+								iterTemp = freeDescriptorsHead;
+							}
+							else {
+								temp->m_pNext = iterTemp->m_pNext;
+								//Reset the values of the unused block descriptor
+								iterTemp->m_sizeBlock = 0;
+								iterTemp->m_pBlockBase = NULL;
+								iterTemp->m_pNext = unusedDescriptorsHead;
+								unusedDescriptorsHead = iterTemp;
+								iterTemp = temp->m_pNext;
+							}
+							pointerRightSide = reinterpret_cast<uint8_t*>(temp->m_pBlockBase) + temp->m_sizeBlock;
+							continue;
+						}
+
+						////Increase the size of the new free block descriptor
+						//temp->m_sizeBlock += iterTemp->m_sizeBlock;						
+
+						////Assign the block descriptor to the unused list of block descriptor
+						//iterTemp->m_pNext = unusedDescriptorsHead;
+						//unusedDescriptorsHead = iterTemp;
+
+						////Reset the values of the unused block descriptor
+						//iterTemp->m_sizeBlock = 0;
+						//iterTemp->m_pBlockBase = NULL;
+
+						////Reset the iterator block descriptor to the head of the free list
+						//iterTemp = freeDescriptorsHead;
+
+						////Reset the index
+						//indexForMerge = 0;
+
+						//break;
+
+					}					
+					previousIterTemp = iterTemp;
+					iterTemp = iterTemp->m_pNext;
+				}				
+				iterTemp = freeDescriptorsHead;
+				temp = temp->m_pNext;
+				previousIterTemp = NULL;
+				
+			}
+
+		
 	}
 
 }

@@ -19,11 +19,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BlockAllocator-inl.h" />
     <ClInclude Include="BlockAllocator.h" />
+    <ClInclude Include="Debug.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="IGameObjectController.h" />
+    <ClInclude Include="FloatCheck-inl.h" />
+    <ClInclude Include="FloatCheck.h" />
+    <ClInclude Include="NewDelete.h" />
+    <ClInclude Include="Vector2D-inl.h" />
     <ClInclude Include="Vector2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlockAllocator.cpp" />
+    <ClCompile Include="Debug.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="FloatCheck.cpp" />
+    <ClCompile Include="NewDelete.cpp" />
     <ClCompile Include="Vector2D.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

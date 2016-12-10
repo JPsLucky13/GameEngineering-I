@@ -1,17 +1,44 @@
 
 #include "Player.h"
-#include <cstring>
 
 
-
-const char * Player::GetPlayerName() const
+Player::Player()
 {
-	return playerName;
+	controller = new PlayerController();
 }
 
-void Player::SetPlayerName(char* name)
+Player::~Player() {
+	delete(controller);
+	controller = NULL;
+}
+
+Player::Player(const Player & i_other):
+controller(new PlayerController(i_other.controller->GetGameObject()))
 {
-	strcpy_s(playerName,name);
+	controller->SetGameObject(i_other.controller->GetGameObject());
+}
+
+Player & Player::operator=(const Player & i_other)
+{
+
+	if (controller)
+	{
+		delete controller;
+	}
+	controller = new PlayerController(i_other.controller->GetGameObject());
+	return *this;
+}
+
+Player::Player(Player && i_other):
+	controller(i_other.controller)
+{
+	i_other.controller = nullptr;
+}
+
+Player & Player::operator=(Player && i_other)
+{
+	std::swap(controller, i_other.controller);
+	return *this;
 }
 
 //The definition of player choose name
@@ -27,22 +54,23 @@ void Player::PlayerChooseName() {
 }
 
 
-void Player::DisplayPlayer()
+void Player::DisplayPlayer() const
 {
-	char * tempX = "\0";
-	char * tempY = "\0";
+	char tempX = '\0';
+	char tempY = '\0';
 
-	if (playerPosition.x() < 10.0f && playerPosition.x() > -10.0f)
+	if (GetPosition().x() < 10.0f && GetPosition().x() > -10.0f)
 	{
-		tempX = "0";
+		tempX = '0';
 	}
 
-	if (playerPosition.y() < 10.0f && playerPosition.y() > -10.0f)
+	if (GetPosition().y() < 10.0f && GetPosition().y() > -10.0f)
 	{
-		tempY = "0";
+		tempY = '0';
 	}
-	printf("%s is at position: [%s%d][%s%d]\n", GetPlayerName(), tempX, (int)playerPosition.x(), tempY, (int)playerPosition.y());
-
-
+	printf("%s is at position: [%c%d][%c%d]\n", GetPlayerName(), tempX, (int)GetPosition().x(), tempY, (int)GetPosition().y());
 
 }
+
+
+

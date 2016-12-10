@@ -1,30 +1,62 @@
 #pragma once
 #include "Vector2D.h"
 #include <stdio.h>
+#include <conio.h>
+#include "PlayerController.h"
+#include <cstring>
 
-	class Player {
+#define BUFFER_SIZE 30
 
-	private:
+class Player{
 
-		char playerName[30];
-
+	
 	public:
 
-		//The monster's position
-		Engine::Vector2D playerPosition;
+
+		//Empty Constructor
+		Player();
+
+		~Player();
+
+		//Copy Constructor
+		Player(const Player & i_other);
+
+		//Assignment Operator
+		Player & operator=(const Player & i_other);
+
+		//Move Constructor
+		Player(Player && i_other);
+
+		//Move Assignment operator	
+		Player & operator=(Player && i_other);
+
+
+		//Get the player position
+		Engine::Vector2D GetPosition() const{ return controller->GetPosition(); }
+
+		void SetController(PlayerController * c_Controller) { controller = c_Controller;}
+		PlayerController * GetPlayerController() { return controller; }
 
 
 		//Get the player name
-		const char* GetPlayerName()const;
+		inline const char* GetPlayerName()const;
 		
-		void SetPlayerName(char* name);
+		inline void SetPlayerName(const char* name);
 
 		//The function to allow the player to choose their name
 		void PlayerChooseName();
 
-
 		//The function to display the player
-		void DisplayPlayer();
+		void DisplayPlayer() const;
+
+		void UpdatePlayer() { controller->UpdateGameObject(); }
+
+		void PositionFormat() { controller->PositionFormat(); }
+
+	private:
+		
+		char playerName[BUFFER_SIZE];
+		PlayerController * controller;
 	};
 
-
+#include "Player-inl.h"

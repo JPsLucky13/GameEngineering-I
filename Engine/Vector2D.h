@@ -1,4 +1,9 @@
 #pragma once
+
+#include "Math.h"
+#include <assert.h>
+#include "FloatCheck.h"
+
 namespace Engine {
 
 	class Vector2D {
@@ -10,8 +15,8 @@ namespace Engine {
 		{}
 
 		Vector2D() :
-			m_x(0),
-			m_y(0)
+			m_x(0.0f),
+			m_y(0.0f)
 		{}
 
 
@@ -20,19 +25,26 @@ namespace Engine {
 		float y() const { return m_y; }
 
 		//set
-		void x(float x) { m_x = x; }
-		void y(float y) { m_y = y; }
+		void x(const float x) { assert(!IsNaN(x)); m_x = x; }
+		void y(const float y) { assert(!IsNaN(y)); m_y = y; }
+
+
+		inline void operator=(const Vector2D & input1);
+		//Returns the normalized vector
+		Vector2D normalize();
 
 	private:
 		float m_x, m_y;
-
 	};
 
-	Vector2D operator+(const Vector2D & input1, const Vector2D & input2);
-	Vector2D operator-(const Vector2D & input1, const Vector2D & input2);
-	bool operator==(const Vector2D & input1, const Vector2D & input2);
-	void PrintDebugMessage(const char* file, const char* function, const int line,const char* fmt, ...);
+	inline Vector2D operator+(const Vector2D & input1, const Vector2D & input2);
+	inline Vector2D operator-(const Vector2D & input1, const Vector2D & input2);
+	inline Vector2D operator*(const Vector2D & input1, float i_Scalar);
+	inline bool operator==(const Vector2D & input1, const Vector2D & input2);
+	inline bool operator!=(const Vector2D & input1, const Vector2D & input2);
+	
 
 
 
 }
+#include "Vector2D-inl.h"

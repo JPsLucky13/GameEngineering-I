@@ -1,45 +1,85 @@
 #include "GameManager.h"
+#include "Vector2D.h"
+#include "Debug.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <conio.h>
 #include <assert.h>
 
-
-#ifdef _DEBUG
-#define DEBUG_LOG_MESSAGE(fmt,...) Engine::PrintDebugMessage(__FILE__,__FUNCTION__,__LINE__,fmt,__VA_ARGS__)
-#define ASSERT(cond,message) assert((cond))
-#else
-#define DEBUG_LOG_MESSAGE(fmt,...) void(0)
-#define ASSERT_MONSTER_NUMBER(cond,message) void (0)
-
-#endif
+#define MONST_SIZE 10
+#define GAR_SIZE 10
 
 
 
-void GameManager::NameMonsters(int monsterNumber)
+
+
+GameManager::~GameManager() {
+	for (size_t i = 0; i < monsters.size(); i++)
+	{
+		delete monsters[i];
+	}
+	monsters.clear();
+	
+	for (size_t i = 0; i < gargoyles.size(); i++)
+	{
+		delete gargoyles[i];
+	}
+	gargoyles.clear();
+}
+
+
+void GameManager::NameMonsters(int &monsterNumber)
 {
 	//Cycle through the monsters to assign them names
 	for (int i = 0; i < monsterNumber; i++) {
 		char name[10];
 		printf("What name will you give monster %d ?:", i);
 		scanf_s("%s", name, 10);
-		monsters[i].SetMonsterName(name);
 		
+		monsters.push_back(new Monster(name));
+		monsters[i]->GetMonsterController()->SetFocusObject(player.GetPlayerController()->GetGameObject());
+		//monsters[i].SetMonsterName(name);
 	}
 
 }
+
+void GameManager::NameGargoyles(int &gargoyleNumber)
+{
+	//Cycle through the monsters to assign them names
+	for (int i = 0; i < gargoyleNumber; i++) {
+		char name[10];
+		printf("What name will you give gargoyle %d ?:", i);
+		scanf_s("%s", name, 10);
+		gargoyles.push_back(new Gargoyle(name));
+		gargoyles[i]->GetGargoyleController()->SetFocusObject(player.GetPlayerController()->GetGameObject());
+		//gargoyles[i].SetGargoyleName(name);
+	}
+
+}
+
 
 void GameManager::PlaceMonsters()
 {
 	//Cycle through the monsters and randomize their positions
 	for (int i = 0; i < monsterNumber; i++) {
-		monsters[i].monsterPosition = Engine::Vector2D((float)(rand() % 101), (float)(rand() % 101));
-		ASSERT(monsters[i].monsterPosition.x() >= 0.0f && monsters[i].monsterPosition.x() <= 100.0f, "Woops monster is out of bounds");
-		ASSERT(monsters[i].monsterPosition.y() >= 0.0f && monsters[i].monsterPosition.y() <= 100.0f, "Woops monster is out of bounds");
+		monsters[i]->SetPosition(Engine::Vector2D((float)(rand() % 101), (float)(rand() % 101)));
+		ASSERT(monsters[i]->GetPosition().x() >= 0.0f && monsters[i]->GetPosition().x() <= 100.0f, "Woops monster is out of bounds");
+		ASSERT(monsters[i]->GetPosition().y() >= 0.0f && monsters[i]->GetPosition().y() <= 100.0f, "Woops monster is out of bounds");
 	}
 }
 
-void GameManager::DisplayMonsters()
+void GameManager::PlaceGargoyles()
+{
+	//Cycle through the monsters and randomize their positions
+	for (int i = 0; i < gargoyleNumber; i++) {
+		gargoyles[i]->SetPosition(Engine::Vector2D((float)(rand() % 101), (float)(rand() % 101)));
+		ASSERT(gargoyles[i]->GetPosition().x() >= 0.0f && gargoyles[i]->GetPosition().x() <= 100.0f, "Woops gargoyle is out of bounds");
+		ASSERT(gargoyles[i]->GetPosition().y() >= 0.0f && gargoyles[i]->GetPosition().y() <= 100.0f, "Woops gargoyle is out of bounds");
+	}
+}
+
+
+void GameManager::DisplayMonsters() const
 {
 	//Print the monster position and format the position
 	for (int i = 0; i < monsterNumber; i++) {
@@ -47,111 +87,104 @@ void GameManager::DisplayMonsters()
 		char * tempY = "\0";
 
 
-		if (monsters[i].monsterPosition.x() < 10.0f && monsters[i].monsterPosition.x() > -10.0f)
+		if (monsters[i]->GetPosition().x() < 10.0f && monsters[i]->GetPosition().x() > -10.0f)
 		{
 			tempX = "0";
 		}
 
-		if (monsters[i].monsterPosition.y() < 10.0f && monsters[i].monsterPosition.y() > -10.0f)
+		if (monsters[i]->GetPosition().y() < 10.0f && monsters[i]->GetPosition().y() > -10.0f)
 		{
 			tempY = "0";
 		}
 
-
-
-		printf("Monster %s is at position: [%s%d][%s%d]\n", monsters[i].GetMonsterName(), tempX, (int)monsters[i].monsterPosition.x(), tempY, (int)monsters[i].monsterPosition.y());
+		printf("Monster %s is at position: [%s%d][%s%d]\n", monsters[i]->GetMonsterName(), tempX, static_cast<int>(monsters[i]->GetPosition().x()), tempY, static_cast<int>(monsters[i]->GetPosition().y()));
 	}
 }
 
-char GameManager::PlayerOptions()
+void GameManager::DisplayGargoyles() const
 {
-	//char option[2];
+	//Print the monster position and format the position
+	for (int i = 0; i < gargoyleNumber; i++) {
+		char * tempX = "\0";
+		char * tempY = "\0";
+
+
+		if (gargoyles[i]->GetPosition().x() < 10.0f && gargoyles[i]->GetPosition().x() > -10.0f)
+		{
+			tempX = "0";
+		}
+
+		if (gargoyles[i]->GetPosition().y() < 10.0f && gargoyles[i]->GetPosition().y() > -10.0f)
+		{
+			tempY = "0";
+		}
+
+		printf("Gargoyle %s is at position: [%s%d][%s%d]\n", gargoyles[i]->GetGargoyleName(), tempX, static_cast<int>(gargoyles[i]->GetPosition().x()), tempY, static_cast<int>(gargoyles[i]->GetPosition().y()));
+	}
+}
+
+
+
+void GameManager::ReadPlayerInput()
+{
+	
 	printf("Press A to move left, D to move right, W to move up or S to move Down.\nPress M to kill a monster or press Q to quit.");
-	//scanf_s("%s", option,2);
 	printf("\n\n");
-	int input = _getch();
 
-	//Move the player left
-	if (input == 'a') {
-		player.playerPosition = player.playerPosition - Engine::Vector2D(1.0f, 0.0f);
+	player.UpdatePlayer();
+	player.PositionFormat();
+}
 
-		//Restrict the player movement to no go over 0
-		if (player.playerPosition.x() < 0.0f)
-			player.playerPosition.x(0.0f);
+char GameManager::ReadAdditionalInput()
+{
 
-	}
-	//Move the player right
-	else if (input == 'd')
-	{
-		player.playerPosition = player.playerPosition + Engine::Vector2D(1.0f, 0.0f);
-
-		//Restrict the player movement to no go over 100
-		if (player.playerPosition.x() > 100.0f)
-			player.playerPosition.x(100.0f);
-	}
-
-	//Move the player up
-	else if (input == 'w')
-	{
-		player.playerPosition = player.playerPosition + Engine::Vector2D(0.0f, 1.0f);
-
-		//Restrict the player movement to no go over 100
-		if (player.playerPosition.y() > 100.0f)
-			player.playerPosition.y(100.0f);
-	}
-
-	//Move the player down
-	else if (input == 's')
-	{
-		player.playerPosition = player.playerPosition - Engine::Vector2D(0.0f, 1.0f);
-
-		//Restrict the player movement to no go over 100
-		if (player.playerPosition.y() < 0.0f)
-			player.playerPosition.y(0.0f);
-	}
-
-	//Destroy a monster
-	else if (input == 'm')
+	if (player.GetPlayerController()->GetIsDestroyingMonster())
 	{
 		DestroyMonster();
+		DestroyGargoyle();
+		player.GetPlayerController()->SetIsDestroyingMonster(false);
+		return 'm';
 	}
 
-	DEBUG_LOG_MESSAGE("The user's input is: %c\n", input);
+	else if(player.GetPlayerController()->GetIsQuittingGame()){
+		return 'q';
+	}
 
-	return input;
+	return ' ';
 }
+
+
+
+
 
 void GameManager::MoveMonsters()
 {
 	//Cycle through the monsters and randomize their positions
 	for (int i = 0; i < monsterNumber; i++) {
 
-		DEBUG_LOG_MESSAGE("The position of the monster is: X: %d, Y: %d\n", monsters[i].monsterPosition.x(), monsters[i].monsterPosition.y());
+		DEBUG_LOG_MESSAGE("The position of the monster is: X: %d, Y: %d\n", static_cast<int>(monsters[i]->GetPosition().x()), static_cast<int>(monsters[i]->GetPosition().y()));
 
-		Engine::Vector2D delta = Engine::Vector2D((float)(rand() % 3) - 1, (float)(rand() % 3) - 1);
+		monsters[i]->UpdateMonster();
+		monsters[i]->PositionFormat();
 
-		//printf("%s - %d  MONSTER:%f, %f\t\tDELTA:%f, %f\n", __FUNCTION__, __LINE__ , monsters[i].monsterPosition.x(), monsters[i].monsterPosition.y(), delta.x(), delta.y());
-		monsters[i].monsterPosition = monsters[i].monsterPosition + delta;
-		//printf("%s - %d  MONSTER:%f, %f\t\tDELTA:%f, %f\n", __FUNCTION__, __LINE__, monsters[i].monsterPosition.x(), monsters[i].monsterPosition.y(), delta.x(), delta.y());
+		DEBUG_LOG_MESSAGE("The position of the monster is: X: %d, Y: %d\n", static_cast<int>(monsters[i]->GetPosition().x()), static_cast<int>(monsters[i]->GetPosition().y()));
 
-		//Restrict the monster movement to a 100 * 100 grind
-		if (monsters[i].monsterPosition.x() < 0.0f) {
-			monsters[i].monsterPosition.x(0.0f);
-		}
+	}
 
-		if (monsters[i].monsterPosition.y() < 0.0f) {
-			monsters[i].monsterPosition.y(0.0f);
-		}
 
-		if (monsters[i].monsterPosition.x() > 100.0f) {
-			monsters[i].monsterPosition.x(100.0f);
-		}
+}
 
-		if (monsters[i].monsterPosition.y() > 100.0f) {
-			monsters[i].monsterPosition.y(100.0f);
-		}
+void GameManager::MoveGargoyles()
+{
+	//Cycle through the monsters and randomize their positions
+	for (int i = 0; i < gargoyleNumber; i++) {
 
-		DEBUG_LOG_MESSAGE("The position of the monster is: X: %d, Y: %d\n", monsters[i].monsterPosition.x(), monsters[i].monsterPosition.y());
+		DEBUG_LOG_MESSAGE("The position of the gargoyle is: X: %d, Y: %d\n", static_cast<int>(gargoyles[i]->GetPosition().x()), static_cast<int>(gargoyles[i]->GetPosition().y()));
+
+		gargoyles[i]->UpdateGargoyle();
+		gargoyles[i]->PositionFormat();
+
+		DEBUG_LOG_MESSAGE("The position of the gargoyle is: X: %d, Y: %d\n", static_cast<int>(gargoyles[i]->GetPosition().x()), static_cast<int>(gargoyles[i]->GetPosition().y()));
 
 	}
 
@@ -162,10 +195,10 @@ void GameManager::CheckMonsterPosition()
 {
 	for (int i = 0; i < monsterNumber - 1; i++) {
 		//First monster
-		Engine::Vector2D tempMonster1 = monsters[i].monsterPosition;
+		Engine::Vector2D tempMonster1 = monsters[i]->GetPosition();
 
 		//Second monster
-		Engine::Vector2D tempMonster2 = monsters[i + 1].monsterPosition;
+		Engine::Vector2D tempMonster2 = monsters[i + 1]->GetPosition();
 
 		//Check if a new monster has to be created
 		if (tempMonster1 == tempMonster2)
@@ -174,22 +207,48 @@ void GameManager::CheckMonsterPosition()
 			char name[10];
 			printf("A new Monster has appeared! How shall you name it?:");
 			scanf_s("%s", name, 10);
-			monsters[monsterNumber].SetMonsterName(name);
-			monsters[monsterNumber].monsterPosition = Engine::Vector2D((float)(rand() % 101), (float)(rand() % 101));
+			monsters.push_back(new Monster(name));
+			monsters[monsterNumber]->SetPosition(Engine::Vector2D((float)(rand() % 101), (float)(rand() % 101)));
 			monsterNumberAdd(); //Increase the maximum number of monsters
 		}
 
 	}
 }
 
+
+void GameManager::CheckGargoylePosition()
+{
+	for (int i = 0; i < gargoyleNumber - 1; i++) {
+		//First monster
+		Engine::Vector2D tempGargoyle1 = gargoyles[i]->GetPosition();
+
+		//Second monster
+		Engine::Vector2D tempGargoyle2 = gargoyles[i + 1]->GetPosition();
+
+		//Check if a new monster has to be created
+		if (tempGargoyle1 == tempGargoyle2)
+		{
+
+			char name[10];
+			printf("A new Gargoyle has appeared! How shall you name it?:");
+			scanf_s("%s", name, 10);
+			gargoyles.push_back(new Gargoyle(name));
+			gargoyles[gargoyleNumber]->SetPosition(Engine::Vector2D((float)(rand() % 101), (float)(rand() % 101)));
+			gargoyleNumberAdd(); //Increase the maximum number of monsters
+		}
+
+	}
+}
+
+
 void GameManager::DestroyMonster()
 {
 	if (monsterNumber > 0)
 	{
 		DEBUG_LOG_MESSAGE("The number of monsters is: %d\n", monsterNumber);
-		monsters[monsterNumber].SetMonsterName("");
-		monsters[monsterNumber].monsterPosition = Engine::Vector2D(0.0f, 0.0f);
-		DEBUG_LOG_MESSAGE("The position of the monster is: X: %d, Y: %d\n", monsters[monsterNumber].monsterPosition.x(), monsters[monsterNumber].monsterPosition.y());
+		DEBUG_LOG_MESSAGE("The position of the monster is: X: %d, Y: %d\n", static_cast<int>(monsters[monsterNumber-1]->GetPosition().x()), static_cast<int>(monsters[monsterNumber-1]->GetPosition().y()));
+		delete monsters.back();
+		monsters.pop_back();
 		monsterNumberDecrease();
 		DEBUG_LOG_MESSAGE("The number of monsters is: %d\n", monsterNumber);
 	}
@@ -200,6 +259,28 @@ void GameManager::DestroyMonster()
 
 
 }
+
+
+void GameManager::DestroyGargoyle()
+{
+	if (gargoyleNumber > 0)
+	{
+		DEBUG_LOG_MESSAGE("The number of gargoyles is: %d\n", gargoyleNumber);
+		DEBUG_LOG_MESSAGE("The position of the gargoyle is: X: %d, Y: %d\n", static_cast<int>(gargoyles[gargoyleNumber-1]->GetPosition().x()), static_cast<int>(gargoyles[gargoyleNumber-1]->GetPosition().y()));
+		delete gargoyles.back();
+		gargoyles.pop_back();
+		gargoyleNumberDecrease();
+		DEBUG_LOG_MESSAGE("The number of gargoyles is: %d\n", gargoyleNumber);
+	}
+	else
+	{
+		printf("All gargoyles have been destroyed!!\n");
+	}
+
+
+}
+
+
 
 void GameManager::AskforNumberOfMonsters()
 {
@@ -217,16 +298,49 @@ void GameManager::AskforNumberOfMonsters()
 	}
 }
 
+
+void GameManager::AskforNumberOfGargoyles()
+{
+	//Ask user for the number of gargoyles
+
+	while (gargoyleNumber < 0) {
+
+		printf("How many gargoyles would you like to add?:");
+		scanf_s("%d", &gargoyleNumber);
+
+		//Check that the user has inputed a positive number of monsters
+		ASSERT(gargoyleNumber>0, "Woops gargoyle number is not positive");
+
+		DEBUG_LOG_MESSAGE("The number of gargoyles is: %d\n", gargoyleNumber);
+	}
+}
+
+
 void GameManager::InitializeGame()
 {
+	//reserve the amount of monsters and gargoyles
+	monsters.reserve(MONST_SIZE);
+	gargoyles.reserve(GAR_SIZE);
+
+
+
 	//QUery the user for the number of monsters
 	AskforNumberOfMonsters();
+
+	//QUery the user for the number of gargoyles
+	AskforNumberOfGargoyles();
 
 	//Query user for names of monsters
 	NameMonsters(monsterNumber);
 
+	//Query user for names of gargoyles
+	NameGargoyles(gargoyleNumber);
+
 	//Place the monsters randomly
 	PlaceMonsters();
+
+	//Place the gargoyles randomly
+	PlaceGargoyles();
 
 	//Ask the player for their name
 	player.PlayerChooseName();
@@ -234,10 +348,14 @@ void GameManager::InitializeGame()
 
 }
 
-void GameManager::updateGameManager()
+void GameManager::UpdateGameManager()
 {
 	MoveMonsters();
+	MoveGargoyles();
 	DisplayMonsters();
+	DisplayGargoyles();
 	player.DisplayPlayer();
 	CheckMonsterPosition();
+	CheckGargoylePosition();
+	ReadPlayerInput();
 }
