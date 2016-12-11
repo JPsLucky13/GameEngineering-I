@@ -83,7 +83,7 @@ namespace Engine {
 			//Block descriptor to cycle through the free list to find the selected free block descriptor
 			BlockDescriptor * tempSelected = freeDescriptorsHead;
 
-			//Block descriptor to find the previous block descriptor to sleected to link it to the next of the selected one
+			//Block descriptor to find the previous block descriptor to selected to link it to the next of the selected one
 			BlockDescriptor * tempPrevSelected = freeDescriptorsHead;
 
 
@@ -101,10 +101,10 @@ namespace Engine {
 				}
 
 				//Traverse to the previous block descriptor to the selected one
-				for (size_t i = 0;i < selectedIndex;i++)
+				for (size_t i = 1;i < selectedIndex;i++)
 				{
 					tempPrevSelected = tempPrevSelected->m_pNext;
-					if (tempPrevSelected != NULL) {
+					if (tempPrevSelected == NULL) {
 						return NULL;
 					}
 				}
@@ -336,8 +336,8 @@ namespace Engine {
 							unusedDescriptorsHead = unusedDescriptorsHead->m_pNext;
 
 
-							//Set the gaurdbands
-							ptr->m_pBlockBase = basePtr;
+							//Set the guardbands
+							ptr->m_pBlockBase = reinterpret_cast<uint8_t*>(basePtr) - guardBandSize;
 							ptr->m_sizeBlock = i_size + (guardBandSize *MUL) + alignmentRemainder;
 							ptr->m_pNext = outstandingDescriptorsHead;
 							outstandingDescriptorsHead = ptr;							
@@ -390,7 +390,7 @@ namespace Engine {
 				if (tempSelected->m_pBlockBase <= i_ptr && i_ptr < reinterpret_cast<uint8_t*>(tempSelected->m_pBlockBase) + tempSelected->m_sizeBlock)
 				{
 					//Go the previous 
-					for (size_t i = 0; i < indexOfDescriptor; i++)
+					for (size_t i = 1; i < indexOfDescriptor; i++)
 					{						
 						tempPrevious = tempPrevious->m_pNext;
 					}

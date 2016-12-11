@@ -51,6 +51,8 @@ int main()
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif // _DEBUG
 
+	//For blockAllocator Testing
+
 	//The block allocator
 	//Engine::BlockAllocator blockAllocator;
 
@@ -65,13 +67,13 @@ int main()
 
 
 	//Run the block allocator unit test
-	//HeapManager_UnitTest();
+	HeapManager_UnitTest();
 
-	//_getch();
+	_getch();
 
 
 	/*
-	//For blockAllocator Testing
+
 
 	
 
@@ -241,7 +243,6 @@ int main()
 	return 0;
 	*/
 
-
 	//Monster * monster = new Monster();
 	//Monster* monsters = new Monster[4];
 	//char* string = new char[10];
@@ -258,13 +259,13 @@ int main()
 	
 	//Reverse string test
 
-	char word[] = "squirrelled";
+	//char word[] = "squirrelled";
 
-	char * newString = ReverseString(word);
+	//char * newString = ReverseString(word);
 
-	DEBUG_LOG_MESSAGE("The new string is: %s", newString);
+	//DEBUG_LOG_MESSAGE("The new string is: %s", newString);
 
-	_getch();
+	//_getch();
 
 	_CrtDumpMemoryLeaks();
 
