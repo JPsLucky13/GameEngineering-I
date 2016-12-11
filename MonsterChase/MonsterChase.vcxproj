@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BitArray_UnitTest.cpp" />
     <ClCompile Include="FloatChecker_UnitTest.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Gargoyle.cpp" />

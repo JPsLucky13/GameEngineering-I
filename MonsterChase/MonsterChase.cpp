@@ -38,6 +38,10 @@ extern bool HeapManager_UnitTest();
 //The reverse string in place function
 extern char* ReverseString(char * string);
 
+//The bit array unit test
+extern void BitArray_UnitTest(void);
+
+
 extern size_t StringLength(const char * string);
 
 
@@ -67,9 +71,15 @@ int main()
 
 
 	//Run the block allocator unit test
-	HeapManager_UnitTest();
+	//HeapManager_UnitTest();
+
+	//_getch();
+
+	//Run the bit array unit test
+	BitArray_UnitTest();
 
 	_getch();
+
 
 
 	/*
