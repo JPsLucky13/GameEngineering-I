@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include "BlockAllocator.h"
+#include "NewDelete.h"
 
 #define __TRACK_ALLOCATIONS
 
@@ -20,6 +21,7 @@ bool HeapManager_UnitTest()
 	// Create a heap manager for my test heap.
 	Engine::BlockAllocator pHeapManager; 
 	pHeapManager.create(sizeHeap, numDescriptors);
+	//GetBlockAllocator(&pHeapManager);
 	
 
 #ifdef TEST_SINGLE_LARGE_ALLOCATION
