@@ -5,6 +5,8 @@
 
 #define __TRACK_ALLOCATIONS
 
+//#define TEST_SINGLE_LARGE_ALLOCATION
+
 bool HeapManager_UnitTest()
 {
 
@@ -24,38 +26,40 @@ bool HeapManager_UnitTest()
 	// This is a test I wrote to check to see if using the whole block if it was almost consumed by 
 	// an allocation worked. Also helped test my ShowFreeBlocks() and ShowOutstandingAllocations().
 	{
-		ShowFreeBlocks(pHeapManager);
+		pHeapManager.PrintBlockDescriptors();
 
-		size_t largestBeforeAlloc = GetLargestFreeBlock(pHeapManager);
-		void * pPtr = alloc(pHeapManager, largestBeforeAlloc - HeapManager::s_MinumumToLeave);
+		size_t largestBeforeAlloc = pHeapManager.getLargestFreeBlock();
+		//void * pPtr = alloc(pHeapManager, largestBeforeAlloc - HeapManager::s_MinumumToLeave);
+
+		void * pPtr =  pHeapManager._alloc(largestBeforeAlloc);
 
 		if (pPtr)
 		{
-			ShowFreeBlocks(pHeapManager);
+			pHeapManager.PrintBlockDescriptors();
 			printf("\n");
 #ifdef __TRACK_ALLOCATIONS
-			ShowOutstandingAllocations(pHeapManager);
+			pHeapManager.PrintBlockDescriptors();
 #endif // __TRACK_ALLOCATIONS
 			printf("\n");
 
-			size_t largestAfterAlloc = GgetLargestFreeBlock(pHeapManager);
-			free(pHeapManager, pPtr);
+			size_t largestAfterAlloc = pHeapManager.getLargestFreeBlock();
+			pHeapManager._free(pPtr);
 
-			ShowFreeBlocks(pHeapManager);
+			pHeapManager.PrintBlockDescriptors();
 #ifdef __TRACK_ALLOCATIONS
-			ShowOutstandingAllocations(pHeapManager);
+			pHeapManager.PrintBlockDescriptors();
 #endif // __TRACK_ALLOCATIONS
 			printf("\n");
 
-			Collect(pHeapManager);
+			pHeapManager.GarabageCollector();
 
-			ShowFreeBlocks(pHeapManager);
+			pHeapManager.PrintBlockDescriptors();
 #ifdef __TRACK_ALLOCATIONS
-			ShowOutstandingAllocations(pHeapManager);
+			pHeapManager.PrintBlockDescriptors();
 #endif // __TRACK_ALLOCATIONS
 			printf("\n");
 
-			size_t largestAfterCollect = GetLargestFreeBlock(pHeapManager);
+			size_t largestAfterCollect = pHeapManager.getLargestFreeBlock();
 		}
 	}
 #endif
@@ -74,9 +78,9 @@ bool HeapManager_UnitTest()
 	{
 		const size_t		maxTestAllocationSize = 1024;
 
-		const unsigned int	alignments[] = { 4, 4, 4, 4, 4 };
+		//const unsigned int	alignments[] = { 4, 4, 4, 4, 4 };
 
-		//const unsigned int	alignments[] = { 4, 8, 16, 32, 64 };
+		const unsigned int	alignments[] = { 4, 8, 16, 32, 64 };
 
 		unsigned int	index = rand() % (sizeof(alignments) / sizeof(alignments[0]));
 
