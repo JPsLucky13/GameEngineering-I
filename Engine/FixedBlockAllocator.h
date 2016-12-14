@@ -1,7 +1,7 @@
 #pragma once
-#include "BitArray.h"
 #include "BlockAllocator.h"
 #include <stdint.h>
+#include "BitArray.h"
 
 namespace Engine {
 
@@ -27,7 +27,8 @@ namespace Engine {
 
 	private:
 		
-		BitArray * m_pAvailableBits;
+		BitArray* m_pAvailableBits;
+
 		size_t m_BlockSize;
 
 		size_t m_numberOfBlocks;

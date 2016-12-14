@@ -58,11 +58,11 @@ int main()
 	//For blockAllocator Testing
 
 	//The block allocator
-	//Engine::BlockAllocator blockAllocator;
+	Engine::BlockAllocator blockAllocator;
 
 	//Creating the block allocator
-	//blockAllocator.create(1024, 10);
-	//GetBlockAllocator(&blockAllocator);
+	blockAllocator.create(1024 * 1024, 100);
+	GetBlockAllocator(&blockAllocator);
 
 
 
@@ -71,12 +71,12 @@ int main()
 
 
 	//Run the block allocator unit test
-	//HeapManager_UnitTest();
+	HeapManager_UnitTest();
 
-	//_getch();
+	_getch();
 
 	//Run the bit array unit test
-	BitArray_UnitTest();
+	//BitArray_UnitTest();
 
 
 
@@ -263,7 +263,7 @@ int main()
 	//delete monster2;
 	//delete[] monsters;
 	//delete[] string;
-	//blockAllocator.destroy();
+	blockAllocator.destroy();
 	
 	//Reverse string test
 

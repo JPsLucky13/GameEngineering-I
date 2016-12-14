@@ -1,5 +1,5 @@
+#pragma once
 #include "NewDelete.h"
-
 
 
 
@@ -60,3 +60,8 @@ void operator delete[](void * ptr)
 	GetBlockAllocator(nullptr)->_free(ptr);
 
 }
+
+//Engine::FixedBlockAllocator * FindFixedSizeAllocator(size_t i_size) {
+//
+//}
+
