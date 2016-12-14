@@ -13,39 +13,6 @@ namespace Engine {
 	}
 
 
-	BitArray * BitArray::Create(size_t i_numBits, BlockAllocator * i_pAllocator, bool i_startClear)
-	{
-		//Store the number of bits
-		bitArraySize = i_numBits;
-#ifdef _WIN64
-
-		size_t fullBytes = i_numBits / (bitsPerByte * sizeof(uint64_t));
-		additionalBits = i_numBits % (bitsPerByte * sizeof(uint64_t));
-
-		sizeOfTheArray = additionalBits == 0 ? fullBytes : fullBytes + 1;
-
-		m_pBits = new uint64_t[sizeOfTheArray];
-		assert(m_pBits);
-
-		memset(m_pBits, i_startClear ? 0 : 1, sizeof(uint64_t) * sizeOfTheArray);
-#else
-		size_t fullBytes = i_numBits / (bitsPerByte * sizeof(uint32_t));
-		additionalBits = i_numBits % (bitsPerByte * sizeof(uint32_t));
-
-		sizeOfTheArray = additionalBits == 0 ? fullBytes : fullBytes + 1;
-
-		m_pBits = new uint32_t[sizeOfTheArray];
-		assert(m_pBits);
-
-		memset(m_pBits, i_startClear ? 0 : 1, sizeof(uint32_t) * sizeOfTheArray);
-#endif
-
-
-		
-
-		return this;
-	}
-
 	BitArray * BitArray::Create(size_t i_numBits, bool i_startClear)
 	{
 		//Store the number of bits
@@ -62,7 +29,7 @@ namespace Engine {
 		m_pBits = new uint64_t[sizeOfTheArray];
 		assert(m_pBits);
 
-		memset(m_pBits, i_startClear ? 0 : 1, sizeof(uint64_t) * sizeOfTheArray);
+		memset(m_pBits, i_startClear ? 0 : UINT8_MAX, sizeof(uint64_t) * sizeOfTheArray);
 #else
 		size_t fullBytes = i_numBits / (bitsPerByte * sizeof(uint32_t));
 		additionalBits = i_numBits % (bitsPerByte * sizeof(uint32_t));
@@ -72,7 +39,7 @@ namespace Engine {
 		m_pBits = new uint32_t[sizeOfTheArray];
 		assert(m_pBits);
 
-		memset(m_pBits, i_startClear ? 0 : 1, sizeof(uint32_t) * sizeOfTheArray);
+		memset(m_pBits, i_startClear ? 0 : UINT8_MAX, sizeof(uint32_t) * sizeOfTheArray);
 #endif
 
 		return this;

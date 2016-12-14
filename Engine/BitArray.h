@@ -1,6 +1,6 @@
 #pragma once
 #include <stdint.h>
-#include "BlockAllocator.h"
+#include "FixedBlockAllocator.h"
 #include <malloc.h>
 #include <stdio.h>
 #include <string.h>
@@ -14,11 +14,6 @@
 #define _BIT_SCAN(index, mask) _BitScanForward(index,mask) 
 #endif
 
-
-
-
-
-
 namespace Engine {
 
 	class BitArray
@@ -28,9 +23,8 @@ namespace Engine {
 
 		//Default constructor
 		BitArray(size_t i_numBits, bool i_startClear);
-		
-		BitArray* Create(size_t i_numBits,  BlockAllocator * i_pAllocator, bool i_startClear = true);
-		BitArray* Create(size_t i_numBits, bool i_startClear = true);
+	
+		BitArray* Create(size_t i_numBits, bool i_startClear = false);
 		~BitArray();
 
 		void ClearAll(void);

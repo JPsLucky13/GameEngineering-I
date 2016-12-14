@@ -35,11 +35,6 @@ void BitArray_UnitTest(void)
 		assert(pMyArray->IsBitSet(i) == true);
 
 		bool success = pMyArray->GetFirstClearBit(bit);
-
-		//if (bit == 151) {
-		//	int b = 0;
-		//}
-
 		assert(((i < (bitCount - 1)) && success && (bit == (i + 1))) || ((i == (bitCount - 1)) && !success));
 	}
 
