@@ -78,8 +78,6 @@ int main()
 	//Run the bit array unit test
 	BitArray_UnitTest();
 
-	_getch();
-
 
 
 	/*

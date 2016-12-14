@@ -1,5 +1,6 @@
 #pragma once
 #include "BitArray.h"
+#include <intrin.h> 
 
 
 namespace Engine {
@@ -16,19 +17,31 @@ namespace Engine {
 	{
 		//Store the number of bits
 		bitArraySize = i_numBits;
-
-		const size_t bitsPerByte = 8;
-
 #ifdef _WIN64
-		m_pBits = new uint64_t[bitArraySize / bitsPerByte];
+
+		size_t fullBytes = i_numBits / (bitsPerByte * sizeof(uint64_t));
+		additionalBits = i_numBits % (bitsPerByte * sizeof(uint64_t));
+
+		sizeOfTheArray = additionalBits == 0 ? fullBytes : fullBytes + 1;
+
+		m_pBits = new uint64_t[sizeOfTheArray];
 		assert(m_pBits);
+
+		memset(m_pBits, i_startClear ? 0 : 1, sizeof(uint64_t) * sizeOfTheArray);
 #else
-		m_pBits = new uint32_t[bitArraySize / bitsPerByte];
+		size_t fullBytes = i_numBits / (bitsPerByte * sizeof(uint32_t));
+		additionalBits = i_numBits % (bitsPerByte * sizeof(uint32_t));
+
+		sizeOfTheArray = additionalBits == 0 ? fullBytes : fullBytes + 1;
+
+		m_pBits = new uint32_t[sizeOfTheArray];
 		assert(m_pBits);
+
+		memset(m_pBits, i_startClear ? 0 : 1, sizeof(uint32_t) * sizeOfTheArray);
 #endif
 
 
-		memset(m_pBits, i_startClear ? 0 : 1, bitArraySize / bitsPerByte);
+		
 
 		return this;
 	}
@@ -38,124 +51,321 @@ namespace Engine {
 		//Store the number of bits
 		bitArraySize = i_numBits;
 
-		const size_t bitsPerByte = 8;
-
+		
 #ifdef _WIN64
-		m_pBits = new uint64_t[bitArraySize / bitsPerByte];
+
+		size_t fullBytes = i_numBits / (bitsPerByte * sizeof(uint64_t));
+		additionalBits = i_numBits % (bitsPerByte * sizeof(uint64_t));
+
+		sizeOfTheArray = additionalBits == 0 ? fullBytes : fullBytes + 1;
+
+		m_pBits = new uint64_t[sizeOfTheArray];
 		assert(m_pBits);
+
+		memset(m_pBits, i_startClear ? 0 : 1, sizeof(uint64_t) * sizeOfTheArray);
 #else
-		m_pBits = new uint32_t[bitArraySize / bitsPerByte];
+		size_t fullBytes = i_numBits / (bitsPerByte * sizeof(uint32_t));
+		additionalBits = i_numBits % (bitsPerByte * sizeof(uint32_t));
+
+		sizeOfTheArray = additionalBits == 0 ? fullBytes : fullBytes + 1;
+
+		m_pBits = new uint32_t[sizeOfTheArray];
 		assert(m_pBits);
+
+		memset(m_pBits, i_startClear ? 0 : 1, sizeof(uint32_t) * sizeOfTheArray);
 #endif
 
-
-		memset(m_pBits, i_startClear ? 0 : 1, bitArraySize / bitsPerByte);
 		return this;
 	}
 
 	BitArray::~BitArray()
 	{
-		_aligned_free(m_pBits);
+		delete m_pBits;
+		m_pBits = NULL;
 	}
 
 	void BitArray::ClearAll(void)
 	{
-		size_t index = 0;
+#ifdef _WIN64
+		memset(m_pBits, 0, sizeof(uint64_t) * sizeOfTheArray);
+#else
+		memset(m_pBits,0, sizeof(uint32_t) * sizeOfTheArray);
 
-		while (index < bitArraySize)
-		{
-			m_pBits[index] = 0x00;
-			index++;
-		}
+#endif
 
 	}
 
 	void BitArray::SetAll(void)
 	{
-		size_t index = 0;
+#ifdef _WIN64
+		memset(m_pBits, UINT8_MAX, sizeof(uint64_t) * sizeOfTheArray);
+#else
+		memset(m_pBits, UINT8_MAX, sizeof(uint32_t) * sizeOfTheArray);
 
-		while (index < bitArraySize)
-		{
-			m_pBits[index] = 0x01;
-			index++;
-		}
-
+#endif
 	}
 
 	bool BitArray::AreAllClear(void) const
 	{
 		size_t index = 0;
+		unsigned long tempIndex;
 
-		while ((m_pBits[index] == 0x00) && (index < bitArraySize))
+		//There are no additional bits 
+		if (additionalBits == 0)
 		{
-			if (m_pBits[index] == 0x01)
-				return false;
 
-			index++;
+			while (index < bitArraySize)
+			{
+				if (!_BIT_SCAN(&tempIndex, m_pBits[index]))
+					index++;
+				else
+					return false;
+			}
+
+			return true;
+
 		}
 
-		return true;
+		//There are additional bits
+		else
+		{
+
+			while (index < bitArraySize)
+			{
+
+
+				if (index != bitArraySize - 1) {
+
+					if (!_BIT_SCAN(&tempIndex, m_pBits[index]))
+						index++;
+					else
+						return false;
+
+				}
+
+				//The last element
+				else
+				{
+					for (size_t i = 0; i < additionalBits; i++)
+					{
+						if (!IsBitClear((sizeOfTheArray - 1) * (numberOfBits / bitsPerByte) + i))
+						{
+							return false;
+						}
+
+
+					}
+
+				}
+			}
+					return true;
+		}
 	}
 
 	bool BitArray::AreAllSet(void) const
 	{
 		size_t index = 0;
 
-		while ((m_pBits[index] == 0x01) && (index < bitArraySize))
+		//There are no additional bits 
+		if (additionalBits == 0)
 		{
-			if (m_pBits[index] == 0x00)
-				return false;
 
-			index++;
+			while (index < bitArraySize)
+			{
+				if (m_pBits[index] == _MAX_VALUE)
+					index++;
+				else
+					return false;
+			}
+
+			return true;
+
 		}
 
-		return true;
+		//There are additional bits
+		else
+		{
+
+			while (index < bitArraySize)
+			{
+
+
+				if(index != bitArraySize -1){
+
+				if (m_pBits[index] == _MAX_VALUE)
+					index++;
+				else
+					return false;
+
+				}
+
+				//The last element
+				else
+				{
+					for (size_t i = 0; i < additionalBits; i++)
+					{
+						if (!IsBitSet((sizeOfTheArray - 1) * (numberOfBits / bitsPerByte) + i))
+						{
+							return false;
+						}
+
+
+					}
+
+				}
+			}
+					return true;
+		}
 	}
 
 	inline bool BitArray::IsBitSet(size_t i_bitNumber) const
 	{
-		return m_pBits[i_bitNumber] == 0x01 ? true : false;
+		size_t element = i_bitNumber / numberOfBits;
+		return (m_pBits[element]  & (bitShift << (i_bitNumber % numberOfBits))) ? true : false;
+
 	}
 
 	inline bool BitArray::IsBitClear(size_t i_bitNumber) const
 	{
-		return m_pBits[i_bitNumber] == 0x00 ? true : false;
+
+		size_t element = i_bitNumber / numberOfBits;
+		return (m_pBits[element] & (bitShift << (i_bitNumber % numberOfBits))) ? false : true;
 	}
 
 	void BitArray::SetBit(size_t i_bitNumber)
 	{
-		m_pBits[i_bitNumber] = 0x01;
+		size_t element = i_bitNumber / numberOfBits;
+		m_pBits[element] |= bitShift << (i_bitNumber % numberOfBits);
 	}
 
 	void BitArray::ClearBit(size_t i_bitNumber)
 	{
-		m_pBits[i_bitNumber] = 0x00;
+		//Find the element in m_pBits
+		size_t element = i_bitNumber / numberOfBits;
+		m_pBits[element] &= ~(bitShift << (i_bitNumber % numberOfBits));
 	}
 
 	bool BitArray::GetFirstClearBit(size_t & o_bitNumber) const
 	{
-		size_t index = 0;
+		//There are no additional bits 
+		if (additionalBits == 0)
+		{
+			//Look for the bit that is set to 1
+			for (size_t i = 0; i < sizeOfTheArray; i++)
+			{
+				if (m_pBits[i] != _MAX_VALUE)
+				{
 
-		while ((m_pBits[index] == 0x00) && (index < o_bitNumber))
-			index++;
+					for (size_t j = 0; j < numberOfBits; j++) {
+
+						if (IsBitClear(i * numberOfBits + j))
+						{
+							o_bitNumber = i * numberOfBits + j;
+							return true;
+						}
 
 
-		return m_pBits[index] == 0x00 ? true : false;
+					}
+				}
+			}
+
+			return false;
+
+		}
+
+		//There are additional bits
+		else
+		{
+
+			//Look for the bit that is set to 1
+			for (size_t i = 0; i < sizeOfTheArray - 1; i++)
+			{
+				if (m_pBits[i] != _MAX_VALUE)
+				{
+
+					for (size_t j = 0; j < numberOfBits; j++) {
+
+						if (IsBitClear(i * numberOfBits + j))
+						{
+							o_bitNumber = i * numberOfBits + j;
+							return true;
+						}
+
+
+					}
+				}
+			}
+
+
+			for (size_t i = 0; i < additionalBits; i++) {
+
+				if (IsBitClear((sizeOfTheArray - 1) * numberOfBits  + i))
+				{
+					o_bitNumber = (sizeOfTheArray - 1) * numberOfBits + i;
+					return true;
+				}
+
+
+			}
+
+			return false;
+
+		}
 	}
 
 	bool BitArray::GetFirstSetBit(size_t & o_bitNumber) const
 	{
-		size_t index = 0;
+		unsigned long tempIndex;
 
-		while ((m_pBits[index] == 0x01) && (index < o_bitNumber))
-			index++;
+		//There are no additional bits 
+		if (additionalBits == 0)
+		{
+					//Look for the bit that is set to 1
+					for (size_t i = 0; i < sizeOfTheArray; i++)
+					{
+						if (_BIT_SCAN(&tempIndex, m_pBits[i]))
+						{
+							o_bitNumber = i * (numberOfBits/bitsPerByte) + tempIndex;
+							return true;
+						}
+					}
 
+					return false;
 
-		return m_pBits[index] == 0x01 ? true : false;
+		}
+
+		//There are additional bits
+		else
+		{
+
+			//Look for the bit that is set to 1
+			for (size_t i = 0; i < sizeOfTheArray - 1; i++)
+			{
+				if (_BIT_SCAN(&tempIndex, m_pBits[i]))
+				{
+					o_bitNumber = i * (numberOfBits / bitsPerByte) + tempIndex;
+					return true;
+				}
+			}
+
+			for (size_t i = 0; i < additionalBits; i++) {
+				
+				if (IsBitSet((sizeOfTheArray - 1) * (numberOfBits / bitsPerByte) + i))
+				{
+					o_bitNumber = (sizeOfTheArray - 1) * (numberOfBits / bitsPerByte) + i;
+					return true;
+				}
+			
+
+			}
+
+			return false;
+
+		}
 	}
 
 	bool BitArray::operator[](size_t i_index) const
 	{
-		return m_pBits[i_index] == 0x00 ? false : true;
+		return m_pBits[i_index] == 0 ? false : true;
 	}
 }
