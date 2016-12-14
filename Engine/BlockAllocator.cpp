@@ -760,26 +760,6 @@ namespace Engine {
 							pointerRightSide = reinterpret_cast<uint8_t*>(temp->m_pBlockBase) + temp->m_sizeBlock;
 							continue;
 						}
-
-						////Increase the size of the new free block descriptor
-						//temp->m_sizeBlock += iterTemp->m_sizeBlock;						
-
-						////Assign the block descriptor to the unused list of block descriptor
-						//iterTemp->m_pNext = unusedDescriptorsHead;
-						//unusedDescriptorsHead = iterTemp;
-
-						////Reset the values of the unused block descriptor
-						//iterTemp->m_sizeBlock = 0;
-						//iterTemp->m_pBlockBase = NULL;
-
-						////Reset the iterator block descriptor to the head of the free list
-						//iterTemp = freeDescriptorsHead;
-
-						////Reset the index
-						//indexForMerge = 0;
-
-						//break;
-
 					}					
 					previousIterTemp = iterTemp;
 					iterTemp = iterTemp->m_pNext;

@@ -28,6 +28,10 @@ namespace Engine {
 		m_pBlockAllocator = NULL;
 		delete m_pAvailableBits;
 		m_pAvailableBits = NULL;
+
+		//free the memory used by the allocator
+		_aligned_free(m_pAllocatorMemory);
+
 		delete m_pAllocatorMemory;
 		m_pAllocatorMemory = NULL;
 	}
@@ -58,11 +62,15 @@ namespace Engine {
 
 		if (!isValidPointer(i_ptr) || !m_pAvailableBits->IsBitClear(position))
 		{
+
+#ifdef _DEBUG
 			DEBUG_LOG_MESSAGE("Pointer is not valid");
+#endif // DEBUG
+
 		}
 
 		else {
-			//Update the bit array to mark the block as being in use
+			//Update the bit array to mark the block as available
 			m_pAvailableBits->SetBit(position);
 		}
 
