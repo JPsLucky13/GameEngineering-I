@@ -10,6 +10,7 @@ namespace Engine {
 		m_numberOfBlocks = i_numberOfBlocks;
 		m_pBlockAllocator = i_blockAllocator;
 		m_pAllocatorMemory = reinterpret_cast<uint8_t *>(i_blockAllocator->_alloc(i_size * i_numberOfBlocks));
+		m_pAvailableBits = new BitArray(i_numberOfBlocks, false);
 	}
 
 	FixedBlockAllocator::~FixedBlockAllocator()
@@ -53,10 +54,30 @@ namespace Engine {
 
 	void FixedBlockAllocator::_free(void * i_ptr)
 	{
+		size_t position = (reinterpret_cast<uint8_t *>(i_ptr) - m_pAllocatorMemory) / m_BlockSize;
+
+		if (!isValidPointer(i_ptr) || !m_pAvailableBits->IsBitClear(position))
+		{
+			DEBUG_LOG_MESSAGE("Pointer is not valid");
+		}
+
+		else {
+			//Update the bit array to mark the block as being in use
+			m_pAvailableBits->SetBit(position);
+		}
 
 
+	}
 
+	bool FixedBlockAllocator::isValidPointer(void * i_ptr)
+	{
 
+		if (m_pAllocatorMemory <= i_ptr && i_ptr < reinterpret_cast<uint8_t*>(m_pAllocatorMemory) + (m_BlockSize * m_numberOfBlocks))
+		{
+			return true;
+		}
+		else
+			return false;
 	}
 
 

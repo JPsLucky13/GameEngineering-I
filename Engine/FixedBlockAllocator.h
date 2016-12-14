@@ -21,6 +21,9 @@ namespace Engine {
 		//Free memory
 		void _free(void * i_ptr);
 
+		bool isValidPointer(void * i_ptr);
+
+
 
 	private:
 		
