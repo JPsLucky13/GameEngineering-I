@@ -15,7 +15,7 @@ namespace Engine {
 		~FixedBlockAllocator();
 
 		//Get the Bit array 
-		BitArray * GetBitArray() {return m_pAvailableBits;}
+		const BitArray * GetBitArray() {return m_pAvailableBits;}
 
 		//Allocate memory
 		void * _alloc(size_t i_size);

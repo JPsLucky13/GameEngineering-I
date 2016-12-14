@@ -64,6 +64,10 @@ int main()
 	blockAllocator.create(1024 * 1024, 100);
 	GetBlockAllocator(&blockAllocator);
 
+	//The memory manager that handles FSA
+	Engine::FSAManager fsaManager;
+	GetFSAManager(&fsaManager);
+	fsaManager.CreateFSAs(&blockAllocator);
 
 
 	//Run the float check unit test
