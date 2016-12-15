@@ -1,24 +1,28 @@
 #pragma once
 #include "BitArray.h"
 #include <intrin.h> 
-
+#include "NewDelete.h"
 
 namespace Engine {
-
-	//Constructor for the bit array
-	BitArray::BitArray(size_t i_numBits, bool i_startClear) {
+	BitArray::BitArray(size_t i_numBits, bool i_startClear)
+	{
 		m_pBits = NULL;
 		bitArraySize = 0;
-		Create(i_numBits,i_startClear);
-	}
+		Create(i_numBits, i_startClear);
 
+	}
+	//Constructor for the bit array
+	BitArray::BitArray(size_t i_numBits, BlockAllocator * i_BlockAllocator, bool i_startClear) {
+		m_pBits = NULL;
+		bitArraySize = 0;
+		Create(i_numBits, i_BlockAllocator,i_startClear);
+	}
 
 	BitArray * BitArray::Create(size_t i_numBits, bool i_startClear)
 	{
 		//Store the number of bits
 		bitArraySize = i_numBits;
 
-		
 #ifdef _WIN64
 
 		size_t fullBytes = i_numBits / (bitsPerByte * sizeof(uint64_t));
@@ -37,6 +41,38 @@ namespace Engine {
 		sizeOfTheArray = additionalBits == 0 ? fullBytes : fullBytes + 1;
 
 		m_pBits = new uint32_t[sizeOfTheArray];
+		assert(m_pBits);
+
+		memset(m_pBits, i_startClear ? 0 : UINT8_MAX, sizeof(uint32_t) * sizeOfTheArray);
+#endif
+
+		return this;
+	}
+
+
+	BitArray * BitArray::Create(size_t i_numBits, BlockAllocator * i_BlockAllocator, bool i_startClear)
+	{
+		//Store the number of bits
+		bitArraySize = i_numBits;
+		
+#ifdef _WIN64
+
+		size_t fullBytes = i_numBits / (bitsPerByte * sizeof(uint64_t));
+		additionalBits = i_numBits % (bitsPerByte * sizeof(uint64_t));
+
+		sizeOfTheArray = additionalBits == 0 ? fullBytes : fullBytes + 1;
+
+		m_pBits = new (i_BlockAllocator) uint64_t[sizeOfTheArray];
+		assert(m_pBits);
+
+		memset(m_pBits, i_startClear ? 0 : UINT8_MAX, sizeof(uint64_t) * sizeOfTheArray);
+#else
+		size_t fullBytes = i_numBits / (bitsPerByte * sizeof(uint32_t));
+		additionalBits = i_numBits % (bitsPerByte * sizeof(uint32_t));
+
+		sizeOfTheArray = additionalBits == 0 ? fullBytes : fullBytes + 1;
+
+		m_pBits = new (i_BlockAllocator) uint32_t[sizeOfTheArray];
 		assert(m_pBits);
 
 		memset(m_pBits, i_startClear ? 0 : UINT8_MAX, sizeof(uint32_t) * sizeOfTheArray);

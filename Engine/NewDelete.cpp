@@ -63,6 +63,7 @@ void * operator new(size_t i_size)
 
 }
 
+
 void operator delete(void * ptr)
 {
 	bool freeFSA = false;
@@ -83,6 +84,18 @@ void operator delete(void * ptr)
 	if(!freeFSA)
 	GetBlockAllocator(nullptr)->_free(ptr);
 }
+
+void * operator new(size_t i_size, Engine::BlockAllocator * i_BlockAllocator) {
+
+	DEBUG_LOG_MESSAGE("Calling new(void *) with (%zx).\n");
+
+	return i_BlockAllocator->_alloc(i_size);
+}
+
+void operator delete(void * ptr, Engine::BlockAllocator * i_BlockAllocator) {
+	i_BlockAllocator->_free(ptr);
+}
+
 
 void * operator new(size_t i_size ,const char * file, const char * func, const unsigned int line)
 {

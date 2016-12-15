@@ -1,6 +1,7 @@
 #pragma once
 #include "FixedBlockAllocator.h"
 #include "Debug.h"
+#include "NewDelete.h"
 
 namespace Engine {
 
@@ -10,7 +11,7 @@ namespace Engine {
 		m_numberOfBlocks = i_numberOfBlocks;
 		m_pBlockAllocator = i_blockAllocator;
 		m_pAllocatorMemory = reinterpret_cast<uint8_t *>(i_blockAllocator->_alloc(i_size * i_numberOfBlocks));
-		m_pAvailableBits = new BitArray(i_numberOfBlocks, false);
+		m_pAvailableBits = new(i_blockAllocator) BitArray(i_numberOfBlocks,i_blockAllocator,true);
 	}
 
 	FixedBlockAllocator::~FixedBlockAllocator()

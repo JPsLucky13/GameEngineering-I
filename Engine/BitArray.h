@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h> 
+#include "BlockAllocator.h"
 
 #ifdef _WIN64
 #define _MAX_VALUE UINT64_MAX
@@ -21,9 +22,11 @@ namespace Engine {
 	public:
 
 		//Default constructor
-		BitArray(size_t i_numBits, bool i_startClear);
+		BitArray(size_t i_numBits,bool i_startClear);
+		BitArray(size_t i_numBits,BlockAllocator * i_BlockAllocator, bool i_startClear);
 	
-		BitArray* Create(size_t i_numBits, bool i_startClear = false);
+		BitArray* Create(size_t i_numBits,bool i_startClear = true);
+		BitArray* Create(size_t i_numBits, BlockAllocator * i_BlockAllocator, bool i_startClear = true);
 		~BitArray();
 
 		void ClearAll(void);

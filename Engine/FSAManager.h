@@ -4,8 +4,6 @@
 
 #define _NUM_FSAS 4
 
-
-
 namespace Engine{
 
 class FSAManager {
@@ -40,7 +38,7 @@ public:
 
 private:
 
-	size_t numFSAs = _NUM_FSAS;
+	const size_t numFSAs = 4;
 
 
 

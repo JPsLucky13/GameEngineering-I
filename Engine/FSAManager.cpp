@@ -1,4 +1,7 @@
 #include "FSAManager.h"
+#include "NewDelete.h"
+
+
 
 Engine::FSAManager::FSAManager()
 {
@@ -30,9 +33,10 @@ void Engine::FSAManager::CreateFSAs(BlockAllocator * i_blockAllocator)
 
 
 
-	for (size_t i = 0; i < _NUM_FSAS; i++)
+	for (size_t i = 0; i < 4; i++)
 	{
-		fixedBlockAllocatorsAvailable[i] = new FixedBlockAllocator(FSASizes[i].sizeBlock, FSASizes[i].numBlocks, i_blockAllocator);
+
+		fixedBlockAllocatorsAvailable[i] = new (i_blockAllocator) FixedBlockAllocator (FSASizes[i].sizeBlock,FSASizes[i].numBlocks, i_blockAllocator);
 	}
 
 

@@ -19,6 +19,8 @@ Engine::FSAManager * GetFSAManager(Engine::FSAManager * i_fsaManager);
 Engine::FixedBlockAllocator * FindFixedSizeAllocator(size_t i_size);
 void * operator new(size_t i_size);
 void operator delete(void * ptr);
+void * operator new(size_t i_size, Engine::BlockAllocator * i_BlockAllocator);
+void operator delete(void * ptr, Engine::BlockAllocator * i_BlockAllocator);
 void * operator new(size_t i_size, const char * file, const char * func, const unsigned int line);
 void operator delete(void * ptr, const char * file, const char * func, const unsigned int line);
 void * operator new[](size_t i_size);
