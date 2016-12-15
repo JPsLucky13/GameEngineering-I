@@ -117,7 +117,7 @@ namespace Engine {
 		if (additionalBits == 0)
 		{
 
-			while (index < bitArraySize)
+			while (index < sizeOfTheArray)
 			{
 				if (!_BIT_SCAN(&tempIndex, m_pBits[index]))
 					index++;
@@ -133,11 +133,11 @@ namespace Engine {
 		else
 		{
 
-			while (index < bitArraySize)
+			while (index < sizeOfTheArray)
 			{
 
 
-				if (index != bitArraySize - 1) {
+				if (index != sizeOfTheArray - 1) {
 
 					if (!_BIT_SCAN(&tempIndex, m_pBits[index]))
 						index++;
@@ -158,7 +158,7 @@ namespace Engine {
 
 
 					}
-
+					return true;
 				}
 			}
 					return true;
@@ -173,7 +173,7 @@ namespace Engine {
 		if (additionalBits == 0)
 		{
 
-			while (index < bitArraySize)
+			while (index < sizeOfTheArray)
 			{
 				if (m_pBits[index] == _MAX_VALUE)
 					index++;
@@ -189,11 +189,11 @@ namespace Engine {
 		else
 		{
 
-			while (index < bitArraySize)
+			while (index < sizeOfTheArray)
 			{
 
 
-				if(index != bitArraySize -1){
+				if(index != sizeOfTheArray -1){
 
 				if (m_pBits[index] == _MAX_VALUE)
 					index++;
@@ -214,6 +214,7 @@ namespace Engine {
 
 
 					}
+					return true;
 
 				}
 			}

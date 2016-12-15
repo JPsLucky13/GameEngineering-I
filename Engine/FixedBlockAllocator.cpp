@@ -11,7 +11,12 @@ namespace Engine {
 		m_numberOfBlocks = i_numberOfBlocks;
 		m_pBlockAllocator = i_blockAllocator;
 		m_pAllocatorMemory = reinterpret_cast<uint8_t *>(i_blockAllocator->_alloc(i_size * i_numberOfBlocks));
-		m_pAvailableBits = new(i_blockAllocator) BitArray(i_numberOfBlocks,i_blockAllocator,true);
+		m_pAvailableBits = new(i_blockAllocator) BitArray(i_numberOfBlocks,i_blockAllocator,false);
+
+#ifdef _DEBUG
+		m_availableBlocks = i_numberOfBlocks;
+#endif // _DEBUG
+
 	}
 
 	FixedBlockAllocator::~FixedBlockAllocator()
@@ -49,6 +54,11 @@ namespace Engine {
 			//Update the bit array to mark the block as being in use
 			m_pAvailableBits->ClearBit(i_firstAvailable);
 
+#ifdef _DEBUG
+			m_availableBlocks--;
+#endif // DEBUG
+
+
 			//Calculate the address and return it to the user
 			return m_pAllocatorMemory + (i_firstAvailable * m_BlockSize);
 		}
@@ -73,6 +83,12 @@ namespace Engine {
 		else {
 			//Update the bit array to mark the block as available
 			m_pAvailableBits->SetBit(position);
+
+#ifdef _DEBUG
+			m_availableBlocks++;
+#endif // DEBUG
+
+
 		}
 
 
@@ -87,6 +103,13 @@ namespace Engine {
 		}
 		else
 			return false;
+	}
+
+	void FixedBlockAllocator::PrintAvailableBlocks()
+	{
+		//Print the heading of the block allocator
+
+		printf("Fixed Size Block allocator: Total free blocks %zu\n", GetTotalAvailableBlocks());
 	}
 
 

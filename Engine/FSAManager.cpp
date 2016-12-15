@@ -35,7 +35,6 @@ void Engine::FSAManager::CreateFSAs(BlockAllocator * i_blockAllocator)
 
 	for (size_t i = 0; i < 4; i++)
 	{
-
 		fixedBlockAllocatorsAvailable[i] = new (i_blockAllocator) FixedBlockAllocator (FSASizes[i].sizeBlock,FSASizes[i].numBlocks, i_blockAllocator);
 	}
 

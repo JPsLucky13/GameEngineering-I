@@ -12,6 +12,7 @@
 #include "GameManager.h"
 #include "BlockAllocator.h"
 #include "NewDelete.h"
+#include "FSAManager.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -33,6 +34,9 @@ extern void FloatChecker_UnitTest();
 
 //Block allocator unit test
 extern bool HeapManager_UnitTest();
+
+//FSA Unite test
+extern void FSA_UnitTest(Engine::FSAManager * i_fsaManager);
 
 
 //The reverse string in place function
@@ -78,11 +82,15 @@ int main()
 	//Run the block allocator unit test
 	HeapManager_UnitTest();
 
-	_getch();
+	//Run the fsa unit test
+	//FSA_UnitTest(&fsaManager);
+
+
 
 	//Run the bit array unit test
 	//BitArray_UnitTest();
 
+	//_getch();
 
 
 	/*
