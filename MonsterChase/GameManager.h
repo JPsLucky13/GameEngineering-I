@@ -3,6 +3,9 @@
 #include "Monster.h"
 #include "Player.h"
 #include "Gargoyle.h"
+#include "MonsterController.h"
+#include "PlayerController.h"
+#include "GargoyleController.h"
 
 #define ARRAY_MONST_SIZE 10
 #define ARRAY_GAR_SIZE 10

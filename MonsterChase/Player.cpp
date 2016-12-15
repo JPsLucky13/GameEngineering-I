@@ -1,5 +1,6 @@
 
 #include "Player.h"
+#include "PlayerController.h"
 
 
 Player::Player()
@@ -44,4 +45,12 @@ void Player::DisplayPlayer() const
 }
 
 
+//Get the player position
+Engine::Vector2D Player::GetPosition() const { return controller->GetPosition(); }
 
+void Player::SetController(PlayerController * c_Controller) { controller = c_Controller; }
+PlayerController * Player::GetPlayerController() { return controller; }
+
+void Player::UpdatePlayer() { controller->UpdateGameObject(); }
+
+void Player::PositionFormat() { controller->PositionFormat(); }

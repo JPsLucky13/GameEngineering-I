@@ -13,9 +13,9 @@
 #endif
 
 Engine::BlockAllocator * GetBlockAllocator(Engine::BlockAllocator * blockAllocator);
-void * operator new(size_t i_size);
-void operator delete(void * ptr);
-void * operator new(size_t i_size, const char * file, const char * func, const unsigned int line);
-void operator delete(void * ptr, const char * file, const char * func, const unsigned int line);
-void * operator new[](size_t i_size);
-void operator delete[](void * ptr);
+//void * operator new(size_t i_size);
+//void operator delete(void * ptr);
+//void * operator new(size_t i_size, const char * file, const char * func, const unsigned int line);
+//void operator delete(void * ptr, const char * file, const char * func, const unsigned int line);
+//void * operator new[](size_t i_size);
+//void operator delete[](void * ptr);

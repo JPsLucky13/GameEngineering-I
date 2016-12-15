@@ -101,10 +101,10 @@ namespace Engine {
 				}
 
 				//Traverse to the previous block descriptor to the selected one
-				for (int i = 0;i < selectedIndex-1;i++)
+				for (size_t i = 0;i < selectedIndex;i++)
 				{
 					tempPrevSelected = tempPrevSelected->m_pNext;
-					if (tempPrevSelected != NULL) {
+					if (tempPrevSelected == NULL) {
 						return NULL;
 					}
 				}
@@ -337,7 +337,7 @@ namespace Engine {
 
 
 							//Set the gaurdbands
-							ptr->m_pBlockBase = basePtr;
+							ptr->m_pBlockBase = reinterpret_cast<uint8_t*>(basePtr) - guardBandSize;
 							ptr->m_sizeBlock = i_size + (guardBandSize *MUL) + alignmentRemainder;
 							ptr->m_pNext = outstandingDescriptorsHead;
 							outstandingDescriptorsHead = ptr;							
@@ -349,7 +349,13 @@ namespace Engine {
 
 					}
 
+					//There are no more unused block descriptors
+					else
+					{
+						DEBUG_LOG_MESSAGE("Ran out of block descriptors!");
+						return NULL;
 
+					}
 				}
 
 			}//end of while loop

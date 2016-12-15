@@ -1,9 +1,11 @@
 #pragma once
 #include <cstring>
 #include "Vector2D.h"
-#include "IGameObjectController.h"
-#include "GargoyleController.h"
+
 #define BUFFER_SIZE 30
+
+class GargoyleController;
+
 class Gargoyle {
 
 public:
@@ -16,14 +18,14 @@ public:
 	~Gargoyle();
 
 	//Get the monster position
-	Engine::Vector2D GetPosition() const { return controller->GetPosition(); }
+	Engine::Vector2D GetPosition() const;
 
-	void SetController(GargoyleController * c_Controller) { controller = c_Controller; }
-	GargoyleController * GetGargoyleController() { return controller; }
+	void SetController(GargoyleController * c_Controller);
+	GargoyleController * GetGargoyleController();
 	
 
 	//Set the position
-	void SetPosition(const Engine::Vector2D & i_Position) { controller->SetPosition(i_Position); }
+	void SetPosition(const Engine::Vector2D & i_Position);
 
 	//Get the monster name
 	inline const char* GetGargoyleName()const;
@@ -31,10 +33,9 @@ public:
 	//Set the monster name
 	inline void SetGargoyleName(char* name);
 
-	void UpdateGargoyle() { controller->UpdateGameObject(); }
+	void UpdateGargoyle();
 
-	void PositionFormat() { controller->PositionFormat(); }
-
+	void PositionFormat();
 private:
 
 	char gargoyleName[BUFFER_SIZE];
