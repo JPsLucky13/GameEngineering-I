@@ -19,9 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BitArray.h" />
     <ClInclude Include="BlockAllocator-inl.h" />
     <ClInclude Include="BlockAllocator.h" />
     <ClInclude Include="Debug.h" />
+    <ClInclude Include="FixedBlockAllocator.h" />
+    <ClInclude Include="FSAManager.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="IGameObjectController.h" />
     <ClInclude Include="FloatCheck-inl.h" />
@@ -31,8 +34,11 @@
     <ClInclude Include="Vector2D.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BitArray.cpp" />
     <ClCompile Include="BlockAllocator.cpp" />
     <ClCompile Include="Debug.cpp" />
+    <ClCompile Include="FixedBlockAllocator.cpp" />
+    <ClCompile Include="FSAManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="FloatCheck.cpp" />
     <ClCompile Include="NewDelete.cpp" />

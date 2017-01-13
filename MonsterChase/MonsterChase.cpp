@@ -12,6 +12,7 @@
 #include "GameManager.h"
 #include "BlockAllocator.h"
 #include "NewDelete.h"
+#include "FSAManager.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -34,9 +35,16 @@ extern void FloatChecker_UnitTest();
 //Block allocator unit test
 extern bool HeapManager_UnitTest();
 
+//FSA Unite test
+extern void FSA_UnitTest(Engine::FSAManager * i_fsaManager);
+
 
 //The reverse string in place function
 extern char* ReverseString(char * string);
+
+//The bit array unit test
+extern void BitArray_UnitTest(void);
+
 
 extern size_t StringLength(const char * string);
 
@@ -54,12 +62,17 @@ int main()
 	//For blockAllocator Testing
 
 	//The block allocator
-	//Engine::BlockAllocator blockAllocator;
+	Engine::BlockAllocator blockAllocator;
 
 	//Creating the block allocator
-	//blockAllocator.create(1024, 10);
-	//GetBlockAllocator(&blockAllocator);
+	blockAllocator.create(1024 * 1024, 100);
+	GetBlockAllocator(&blockAllocator);
 
+	//The memory manager that handles FSA
+	Engine::FSAManager fsaManager;
+	GetFSAManager(&fsaManager);
+	fsaManager.CreateFSAs(&blockAllocator);
+	
 
 
 	//Run the float check unit test
@@ -69,7 +82,15 @@ int main()
 	//Run the block allocator unit test
 	HeapManager_UnitTest();
 
-	_getch();
+	//Run the fsa unit test
+	//FSA_UnitTest(&fsaManager);
+
+
+
+	//Run the bit array unit test
+	//BitArray_UnitTest();
+
+	//_getch();
 
 
 	/*
@@ -255,7 +276,7 @@ int main()
 	//delete monster2;
 	//delete[] monsters;
 	//delete[] string;
-	//blockAllocator.destroy();
+	blockAllocator.destroy();
 	
 	//Reverse string test
 

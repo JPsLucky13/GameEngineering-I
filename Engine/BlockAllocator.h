@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #include <stdio.h>
 #include <stdint.h>
 #include "Debug.h"
@@ -95,7 +94,7 @@ namespace Engine {
 		const size_t guardBandSize = 0;
 #endif
 		const int arrobaCharacter = 64;
-		const int guardBandCharacter = 236;
+		const int guardBandCharacter = 375;
 		uint8_t * startOfMemory;
 		void * endOfRightSideOfMemory;
 		BlockDescriptor * unusedDescriptorsHead;

@@ -51,6 +51,12 @@
     <ClCompile Include="ReverseString.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BitArray_UnitTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FSA_UnitTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Monster.h">
