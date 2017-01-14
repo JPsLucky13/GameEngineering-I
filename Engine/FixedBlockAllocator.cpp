@@ -105,12 +105,13 @@ namespace Engine {
 			return false;
 	}
 
+#ifdef _DEBUG
 	void FixedBlockAllocator::PrintAvailableBlocks()
 	{
 		//Print the heading of the block allocator
 
 		printf("Fixed Size Block allocator: Total free blocks %zu\n", GetTotalAvailableBlocks());
 	}
-
+#endif
 
 }

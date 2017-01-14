@@ -34,12 +34,17 @@ void  FSA_UnitTest(Engine::FSAManager * i_fsaManager) {
 			//Ran out of block descriptors
 			else {
 
+#ifdef DEBUG
 				//The case where the unused block descriptors are all used
 				if (pFsa->GetTotalAvailableBlocks() == 0)
-				printf("There are no blocks available\n");
+					printf("There are no blocks available\n");
 				else
-				printf("There is not more free memory available\n");
+					printf("There is not more free memory available\n");
 				_getch();
+#endif // DEBUG
+
+
+				
 			break;
 
 		}
