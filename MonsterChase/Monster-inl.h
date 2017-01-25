@@ -1,5 +1,7 @@
 #include "Monster.h"
 #pragma once
+#include <stdlib.h>
+#include <cstring>
 
 inline const char * Monster::GetMonsterName() const
 {

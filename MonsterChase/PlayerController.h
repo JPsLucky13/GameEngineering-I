@@ -1,8 +1,11 @@
 #pragma once
 #include "IGameObjectController.h"
 #include <conio.h>
+#include "Vector2D.h"
+#include "GameObject.h"
 
-class PlayerController : public IGameObjectController
+
+class PlayerController : public Engine::IGameObjectController
 {
 
 public:
@@ -10,7 +13,7 @@ public:
 	PlayerController();
 
 	//Constructor with controller
-	PlayerController(GameObject * i_GameObject);
+	PlayerController(Engine::GameObject * i_GameObject);
 
 	~PlayerController();
 
@@ -28,8 +31,8 @@ public:
 
 
 
-	void SetGameObject(GameObject * i_pObject) override { m_pObject  = i_pObject; }
-	GameObject * GetGameObject() override { return m_pObject; }
+	void SetGameObject(Engine::GameObject * i_pObject) override { m_pObject  = i_pObject; }
+	Engine::GameObject * GetGameObject() override { return m_pObject; }
 
 	bool GetIsDestroyingMonster() { return isDestroyingMonster; }
 	void SetIsDestroyingMonster(const bool i_value) { isDestroyingMonster = i_value; }
@@ -46,7 +49,8 @@ public:
 
 	void PositionFormat();
 private:
-	GameObject * m_pObject;
+	Engine::GameObject * m_pObject;
 	bool isDestroyingMonster = false;
 	bool isQuittingGame = false;
+	
 };

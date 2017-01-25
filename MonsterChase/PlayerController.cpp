@@ -1,13 +1,14 @@
 #include "PlayerController.h"
 
+
 PlayerController::PlayerController()
 {
-	m_pObject = new GameObject();
+	m_pObject = new Engine::GameObject();
 }
 
-PlayerController::PlayerController(GameObject * i_GameObject)
+PlayerController::PlayerController(Engine::GameObject * i_GameObject)
 {
-	m_pObject = new GameObject();
+	m_pObject = new Engine::GameObject();
 	m_pObject->SetPosition(i_GameObject->GetPosition());
 }
 
@@ -21,7 +22,7 @@ PlayerController::~PlayerController()
 }
 
 PlayerController::PlayerController(const PlayerController & i_other):
-	m_pObject(new GameObject())
+	m_pObject(new Engine::GameObject())
 {
 	m_pObject->SetPosition(i_other.m_pObject->GetPosition());
 
@@ -33,7 +34,7 @@ PlayerController & PlayerController::operator=(const PlayerController & i_other)
 		delete m_pObject;
 	}
 
-	m_pObject = new GameObject();
+	m_pObject = new Engine::GameObject();
 
 	m_pObject->SetPosition(i_other.m_pObject->GetPosition());
 

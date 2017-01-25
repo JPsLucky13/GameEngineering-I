@@ -1,6 +1,7 @@
 #include "Player.h"
 #pragma once
-
+#include <stdlib.h>
+#include <cstring>
 
 
 
@@ -12,5 +13,9 @@ inline const char * Player::GetPlayerName() const
 
 inline void Player::SetPlayerName(const char* name)
 {
-	strcpy_s(playerName, name);
+	if (playerName)
+	{
+		free(playerName);
+	}
+	playerName = _strdup(name);
 }

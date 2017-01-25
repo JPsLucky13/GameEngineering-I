@@ -1,6 +1,6 @@
 
 #include "Player.h"
-
+#include "PlayerController.h"
 
 Player::Player()
 {
@@ -41,6 +41,21 @@ Player & Player::operator=(Player && i_other)
 	return *this;
 }
 
+Engine::Vector2D Player::GetPosition() const
+{
+	return controller->GetPosition();
+}
+
+void Player::SetController(PlayerController * c_Controller)
+{
+	controller = c_Controller;
+}
+
+PlayerController * Player::GetPlayerController()
+{
+	return controller;
+}
+
 //The definition of player choose name
 void Player::PlayerChooseName() {
 	char  name[10];
@@ -70,6 +85,16 @@ void Player::DisplayPlayer() const
 	}
 	printf("%s is at position: [%c%d][%c%d]\n", GetPlayerName(), tempX, (int)GetPosition().x(), tempY, (int)GetPosition().y());
 
+}
+
+void Player::UpdatePlayer()
+{
+	controller->UpdateGameObject();
+}
+
+void Player::PositionFormat()
+{
+	controller->PositionFormat();
 }
 
 

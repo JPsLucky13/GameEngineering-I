@@ -1,15 +1,16 @@
 #include "MonsterController.h"
 
+
 MonsterController::MonsterController()
 {
-	m_pObject = new GameObject();
+	m_pObject = new Engine::GameObject();
 	m_pFocus = nullptr;
 
 }
 
-MonsterController::MonsterController(GameObject * i_GameObject)
+MonsterController::MonsterController(Engine::GameObject * i_GameObject)
 {
-	m_pObject = new GameObject();
+	m_pObject = new Engine::GameObject();
 	m_pObject->SetPosition(i_GameObject->GetPosition());
 	m_pFocus = nullptr;
 
@@ -26,7 +27,7 @@ MonsterController::~MonsterController()
 }
 
 MonsterController::MonsterController(const MonsterController & i_other) :
-	m_pObject(new GameObject()),
+	m_pObject(new Engine::GameObject()),
 	m_pFocus(i_other.m_pFocus)
 {
 	m_pObject->SetPosition(i_other.m_pObject->GetPosition());
@@ -39,7 +40,7 @@ MonsterController & MonsterController::operator=(const MonsterController & i_oth
 		delete m_pObject;
 	}
 
-	m_pObject = new GameObject();
+	m_pObject = new Engine::GameObject();
 
 	m_pObject->SetPosition(i_other.m_pObject->GetPosition());
 	m_pFocus = i_other.m_pFocus;

@@ -3,15 +3,16 @@
 #include "IGameObjectController.h"
 #include <stdlib.h>
 #include <algorithm>
+#include "GameObject.h"
 
-class GargoyleController : public IGameObjectController
+class GargoyleController : public Engine::IGameObjectController
 {
 public:
 
 	GargoyleController();
 
 	//Constructor with controller
-	GargoyleController(GameObject * i_GameObject);
+	GargoyleController(Engine::GameObject * i_GameObject);
 
 	~GargoyleController();
 
@@ -29,11 +30,11 @@ public:
 
 
 
-	void SetGameObject(GameObject * i_pObject) override { m_pObject = i_pObject; }
-	GameObject * GetGameObject() override { return m_pObject; }
+	void SetGameObject(Engine::GameObject * i_pObject) override { m_pObject = i_pObject; }
+	Engine::GameObject * GetGameObject() override { return m_pObject; }
 
-	void SetFocusObject(GameObject * i_pObject) { m_pFocus = i_pObject; }
-	GameObject * GetFocusObject() { return m_pFocus; }
+	void SetFocusObject(Engine::GameObject * i_pObject) { m_pFocus = i_pObject; }
+	Engine::GameObject * GetFocusObject() { return m_pFocus; }
 
 	void UpdateGameObject() override;
 
@@ -46,6 +47,6 @@ public:
 
 private:
 
-	GameObject * m_pObject;
-	GameObject * m_pFocus;
+	Engine::GameObject * m_pObject;
+	Engine::GameObject * m_pFocus;
 };

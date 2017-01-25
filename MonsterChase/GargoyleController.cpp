@@ -2,14 +2,14 @@
 
 GargoyleController::GargoyleController()
 {
-	m_pObject = new GameObject();
+	m_pObject = new Engine::GameObject();
 	m_pFocus = nullptr;
 
 }
 
-GargoyleController::GargoyleController(GameObject * i_GameObject)
+GargoyleController::GargoyleController(Engine::GameObject * i_GameObject)
 {
-	m_pObject = new GameObject();
+	m_pObject = new Engine::GameObject();
 	m_pObject->SetPosition(i_GameObject->GetPosition());
 	m_pFocus = nullptr;
 }
@@ -25,7 +25,7 @@ GargoyleController::~GargoyleController()
 }
 
 GargoyleController::GargoyleController(const GargoyleController & i_other):
-	m_pObject(new GameObject()),
+	m_pObject(new Engine::GameObject()),
 	m_pFocus(i_other.m_pFocus)
 {
 	m_pObject->SetPosition(i_other.m_pObject->GetPosition());
@@ -38,7 +38,7 @@ GargoyleController & GargoyleController::operator=(const GargoyleController & i_
 		delete m_pObject;
 	}
 
-	m_pObject = new GameObject();
+	m_pObject = new Engine::GameObject();
 
 	m_pObject->SetPosition(i_other.m_pObject->GetPosition());
 	m_pFocus = i_other.m_pFocus;

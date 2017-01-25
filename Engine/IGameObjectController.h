@@ -1,6 +1,9 @@
 #pragma once
-#include "GameObject.h"
 
+
+namespace Engine{
+
+class GameObject;
 
 class IGameObjectController
 {
@@ -12,3 +15,5 @@ public:
 
 
 };
+
+}

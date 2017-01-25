@@ -5,6 +5,10 @@
 #include <stdio.h>
 #include <conio.h>
 #include <assert.h>
+#include "PlayerController.h"
+#include "MonsterController.h"
+#include "GargoyleController.h"
+
 
 #define MONST_SIZE 10
 #define GAR_SIZE 10
