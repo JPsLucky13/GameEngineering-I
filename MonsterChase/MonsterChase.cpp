@@ -13,12 +13,12 @@
 #include "EngineHandler.h"
 #include "Input.h"
 #include "Renderer.h"
-#include "KeyboardHandler.h"
 #include "PhysicsInfo.h"
 #include "Sprite.h"
 #include "GameObject.h"
 #include <Windows.h>
 #include "Timer.h"
+
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -72,9 +72,6 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 	// first we need to initialize GLib
 	Engine::Renderer rd;
 
-	//Create a keyboad handler
-	Engine::KeyboardHandler * keyboard;
-
 
 	//Initialize renderer
 	bool bSuccess = rd.Initialize(i_hInstance, i_nCmdShow);
@@ -86,17 +83,15 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 	if (bSuccess)
 	{
 		Engine::Timer timer;
-	
-
 
 		//Read input
-		Engine::Read();
+		Engine::Input::Read();
 
 		//The game play
-		Engine::GameObject * gameObjectPlayer;
+		Engine::GameObject * gameObjectPlayer = new Engine::GameObject();
 		Engine::PhysicsInfo * physicsInPlayer = new Engine::PhysicsInfo(gameObjectPlayer,1.0f,1.0f);
 
-		Engine::GameObject * gameObjectMonster;
+		Engine::GameObject * gameObjectMonster = new Engine::GameObject();
 		Engine::PhysicsInfo * physicsInMonster = new Engine::PhysicsInfo(gameObjectMonster, 1.0f, 1.0f);
 
 
@@ -119,40 +114,39 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 				float dt = timer.GetLastFrameTime_ms();
 
 
-
-				if (playerSprite.sprite)
+				if (playerSprite->sprite)
 				{
 					Engine::Vector2D force;
 
 
 					//Move the player
-					if (Engine::keyHandler->A.m_isDown)
+					if (Engine::Input::keyHandler.A.m_isDown)
 					{
-						force = Engine::Vector2D(-1.0f,0.0f);
+						force = Engine::Vector2D(-500.0f,0.0f);
 					}
 
-					if (Engine::keyHandler->S.m_isDown)
+					if (Engine::Input::keyHandler.S.m_isDown)
 					{
-						force = Engine::Vector2D(0.0f, -1.0f);
+						force = Engine::Vector2D(0.0f, -500.0f);
 					}
 
-					if (Engine::keyHandler->W.m_isDown)
+					if (Engine::Input::keyHandler.W.m_isDown)
 					{
-						force = Engine::Vector2D(0.0f, 1.0f);
+						force = Engine::Vector2D(0.0f, 500.0f);
 					}
 
-					if (Engine::keyHandler->D.m_isDown)
+					if (Engine::Input::keyHandler.D.m_isDown)
 					{
-						force = Engine::Vector2D(1.0f, 0.0f);
+						force = Engine::Vector2D(500.0f, 0.0f);
 					}
 
-					static GLib::Point2D	Offset = { gameObjectPlayer->GetPosition().x , gameObjectPlayer->GetPosition().y};
+					static GLib::Point2D	Offset = { gameObjectPlayer->GetPosition().x() , gameObjectPlayer->GetPosition().y()};
 
 					//Update the physics
-					physicsInPlayer.Update(force,dt);
+					physicsInPlayer->Update(force,dt);
 
 					// Tell GLib to render this sprite at our calculated location
-					GLib::Sprites::RenderSprite(*playerSprite.sprite, Offset, 0.0f);
+					GLib::Sprites::RenderSprite(*playerSprite->sprite, Offset, 0.0f);
 				}
 				//if (monster)
 				//{
@@ -165,8 +159,8 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 				GLib::EndRendering();
 			}
 		} while (bQuit == false);
-		if (playerSprite.sprite)
-			GLib::Sprites::Release(playerSprite.sprite);
+		if (playerSprite->sprite)
+			GLib::Sprites::Release(playerSprite->sprite);
 		GLib::Shutdown();
 
 		handler.Shutdown();

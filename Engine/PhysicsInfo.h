@@ -11,7 +11,7 @@ namespace Engine
 		~PhysicsInfo();
 
 		//Updates the physics of the gameobject
-		void Update(Vector2D & i_Force, float i_dt);
+		void Update(const Vector2D & i_Force, float i_dt);
 
 		void SetGameObject(GameObject * gameobject);
 

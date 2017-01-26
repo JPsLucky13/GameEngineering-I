@@ -4,14 +4,22 @@
 
 namespace Engine {
 
+	//Test the Key Callback
+	void TestKeyCallback(unsigned int i_VKeyID, bool bWentDown);
 
-		//Test the Key Callback
-		void TestKeyCallback(unsigned int i_VKeyID, bool bWentDown);
+	class Input
+	{
+
+
+	public:
+		static KeyboardHandler keyHandler;
 		//Read the keyboard input
-		void Read();
+		static void Read();
 
-		KeyboardHandler * keyHandler;
-
+	private:
+		Input();
+		~Input();
+	};
 
 
 

@@ -1,3 +1,4 @@
+#pragma once
 #include "KeyboardHandler.h"
 
 Engine::KeyboardHandler::KeyboardHandler()

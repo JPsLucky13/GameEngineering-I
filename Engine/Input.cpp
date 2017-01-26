@@ -1,8 +1,9 @@
 #include "Input.h"
 #include <stdio.h>
 
+namespace Engine{
 
-void  Engine::TestKeyCallback(unsigned int i_VKeyID, bool bWentDown)
+void TestKeyCallback(unsigned int i_VKeyID, bool bWentDown)
 {
 #ifdef _DEBUG
 	const size_t	lenBuffer = 65;
@@ -17,53 +18,32 @@ void  Engine::TestKeyCallback(unsigned int i_VKeyID, bool bWentDown)
 
 
 	//Check if keys are down
-	if (key == 'A' && bWentDown)
+	if (key == 'A')
 	{
-		Engine::keyHandler->A.m_isDown = true;
+		Input::keyHandler.A.m_isDown = bWentDown;
 	}
-	if (key == 'S' && bWentDown)
+	if (key == 'S')
 	{
-		Engine::keyHandler->S.m_isDown = true;
+		Input::keyHandler.S.m_isDown = bWentDown;
 	}
-	if (key == 'W' && bWentDown)
+	if (key == 'W')
 	{
-		Engine::keyHandler->W.m_isDown = true;
+		Input::keyHandler.W.m_isDown = bWentDown;
 	}
-	if (key == 'D' && bWentDown)
+	if (key == 'D')
 	{
-		Engine::keyHandler->D.m_isDown = true;
+		Input::keyHandler.D.m_isDown = bWentDown;
 	}
-
-
-
-	//Check if keys are down
-	if (key == 'A' && !bWentDown)
-	{
-		Engine::keyHandler->A.m_isDown = false;
-	}
-	if (key == 'S' && !bWentDown)
-	{
-		Engine::keyHandler->S.m_isDown = false;
-	}
-	if (key == 'W' && !bWentDown)
-	{
-		Engine::keyHandler->W.m_isDown = false;
-	}
-	if (key == 'D' && !bWentDown)
-	{
-		Engine::keyHandler->D.m_isDown = false;
-	}
-
-
 
 
 }
 
+KeyboardHandler Input::keyHandler;
 
-
-
-void Engine::Read()
+void Input::Read()
 {
 	// Set a callback for notification of key presses
 	GLib::SetKeyStateChangeCallback(TestKeyCallback);
+}
+
 }
