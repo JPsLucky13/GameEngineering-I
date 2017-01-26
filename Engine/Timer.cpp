@@ -1,6 +1,7 @@
 #include "Timer.h"
-
-Engine::Timer::Timer()
+#define CONSTANT_FRAMETIME
+Engine::Timer::Timer() : g_LastFrameStartTick(0.0),
+m_fFrequency(0.0)
 {
 }
 
@@ -26,7 +27,7 @@ float Engine::Timer::CalcLastFrameTime_ms()
 	}
 	else {
 
-		g_LastFrameTime_ms = 13.3f;//Assume a 60Hz frame for first call.
+		g_LastFrameTime_ms = 16.67f;//Assume a 60Hz frame for first call.
 	
 	}
 	//Note start of this frame
@@ -40,8 +41,9 @@ float Engine::Timer::CalcLastFrameTime_ms()
 float Engine::Timer::GetLastFrameTime_ms()
 {
 
+
 #if defined(CONSTANT_FRAMETIME)
-	return DESIRED_FRAMETIME_MS;
+	return DESIRED_FRAMETIME_S;
 #elif defined (CLAMP_FRAMETIME)
 	if (g_LastFrameTime_ms > MAX_FRAMETIME_MS)
 		return MAX_FRAMETIME_MS;
@@ -50,6 +52,12 @@ float Engine::Timer::GetLastFrameTime_ms()
 #else
 	return CalcLastFrameTime_ms();
 #endif
+
+
+
+
+
+
 }
 
 
@@ -64,8 +72,11 @@ double Engine::Timer::GetCounter()
 
 double Engine::Timer::GetFrequency()
 {
-	LARGE_INTEGER counterResult;
-	QueryPerformanceFrequency(&counterResult);
-	double frequency = static_cast<double>(counterResult.QuadPart / 1000.0);
-	return frequency;
+	if (m_fFrequency == 0.0)
+	{
+		LARGE_INTEGER counterResult;
+		QueryPerformanceFrequency(&counterResult);
+		m_fFrequency = static_cast<double>(counterResult.QuadPart/1000.0);
+	}
+	return m_fFrequency;
 }

@@ -89,7 +89,7 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 
 		//The game play
 		Engine::GameObject * gameObjectPlayer = new Engine::GameObject();
-		Engine::PhysicsInfo * physicsInPlayer = new Engine::PhysicsInfo(gameObjectPlayer,1.0f,1.0f);
+		Engine::PhysicsInfo * physicsInPlayer = new Engine::PhysicsInfo(gameObjectPlayer,1.0f,0.05f);
 
 		Engine::GameObject * gameObjectMonster = new Engine::GameObject();
 		Engine::PhysicsInfo * physicsInMonster = new Engine::PhysicsInfo(gameObjectMonster, 1.0f, 1.0f);
@@ -113,38 +113,37 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 				
 				float dt = timer.GetLastFrameTime_ms();
 
-
 				if (playerSprite->sprite)
 				{
-					Engine::Vector2D force;
-
+					Engine::Vector2D force(0.0f, 0.0f);
+					const float forceMagnitude = 5.0f;
 
 					//Move the player
 					if (Engine::Input::keyHandler.A.m_isDown)
 					{
-						force = Engine::Vector2D(-500.0f,0.0f);
+						force = Engine::Vector2D(-forceMagnitude,0.0f);
 					}
 
 					if (Engine::Input::keyHandler.S.m_isDown)
 					{
-						force = Engine::Vector2D(0.0f, -500.0f);
+						force = Engine::Vector2D(0.0f, -forceMagnitude);
 					}
 
 					if (Engine::Input::keyHandler.W.m_isDown)
 					{
-						force = Engine::Vector2D(0.0f, 500.0f);
+						force = Engine::Vector2D(0.0f, forceMagnitude);
 					}
 
 					if (Engine::Input::keyHandler.D.m_isDown)
 					{
-						force = Engine::Vector2D(500.0f, 0.0f);
+						force = Engine::Vector2D(forceMagnitude, 0.0f);
 					}
-
-					static GLib::Point2D	Offset = { gameObjectPlayer->GetPosition().x() , gameObjectPlayer->GetPosition().y()};
 
 					//Update the physics
 					physicsInPlayer->Update(force,dt);
 
+					GLib::Point2D	Offset = { gameObjectPlayer->GetPosition().x() , gameObjectPlayer->GetPosition().y()};
+					
 					// Tell GLib to render this sprite at our calculated location
 					GLib::Sprites::RenderSprite(*playerSprite->sprite, Offset, 0.0f);
 				}

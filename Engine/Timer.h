@@ -1,8 +1,8 @@
 #pragma once
 #include <Windows.h>
 #define DESIRED_FPS 60.0f
-#define DESIRED_FRAMETIME_MS (1000.0f / DESIRED_FPS)
-#define MAX_FRAMETIME_MS (2 * DESIRED_FRAMETIME_MS)
+#define DESIRED_FRAMETIME_S (1.0f / DESIRED_FPS)
+#define MAX_FRAMETIME_MS (2 * DESIRED_FRAMETIME_S)
 
 namespace Engine {
 
@@ -26,6 +26,7 @@ namespace Engine {
 
 	private:
 		double g_LastFrameStartTick;
+		double m_fFrequency;
 	};
 
 

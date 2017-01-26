@@ -12,7 +12,10 @@ namespace Engine {
 		Vector2D(float x, float y) :
 			m_x(x),
 			m_y(y)
-		{}
+		{
+			assert(!IsNaN(m_x));
+			assert(!IsNaN(m_y));
+		}
 
 		Vector2D() :
 			m_x(0.0f),
@@ -30,6 +33,7 @@ namespace Engine {
 
 
 		inline void operator=(const Vector2D & input1);
+		inline bool isZero();
 		//Returns the normalized vector
 		Vector2D normalize();
 

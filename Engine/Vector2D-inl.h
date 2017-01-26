@@ -3,6 +3,14 @@
 
 namespace Engine {
 
+	inline bool  Vector2D::isZero()
+	{
+		if (m_x == 0 && m_y == 0)
+			return true;
+		else
+			return false;
+	}
+
 	inline Vector2D operator+(const Vector2D & input1, const Vector2D & input2)
 	{
 		return Vector2D(input1.x() + input2.x(), input1.y() + input2.y());

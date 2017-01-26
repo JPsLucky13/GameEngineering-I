@@ -6,6 +6,8 @@
 
 namespace Engine {
 
+
+
 	Vector2D Vector2D::normalize()
 	{
 		float length = static_cast<float>(sqrt(m_x * m_x + m_y * m_y));
