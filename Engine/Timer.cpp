@@ -1,20 +1,28 @@
 #include "Timer.h"
 
+Engine::Timer::Timer()
+{
+}
+
+Engine::Timer::~Timer()
+{
+}
+
 float Engine::Timer::CalcLastFrameTime_ms()
 {
 
 	float g_LastFrameTime_ms;
 
 	//Grab the CPU Tick Counter
-	long currentTick = GetCounter();
+	double currentTick = GetCounter();
 
 	if (g_LastFrameStartTick)
 	{
 		//How many ticks have elapsed since we last did this
-		long elapsedTicks = (currentTick - g_LastFrameStartTick);
+		double elapsedTicks = (currentTick - g_LastFrameStartTick);
 
 		//Calculate the frame time - converting the ticks to ms.
-		g_LastFrameTime_ms = static_cast<float>(elapsedTicks / QueryPerformanceFrequency(&counterResult));
+		g_LastFrameTime_ms = static_cast<float>(elapsedTicks / GetFrequency());
 	}
 	else {
 
@@ -44,10 +52,20 @@ float Engine::Timer::GetLastFrameTime_ms()
 #endif
 }
 
-long Engine::Timer::GetCounter()
-{
-	
-	QueryPerformanceCounter(&counterResult);
 
-	return static_cast<long>(counterResult.QuadPart);
+
+double Engine::Timer::GetCounter()
+{
+	LARGE_INTEGER counterResult;
+	QueryPerformanceCounter(&counterResult);
+	double counter = static_cast<double>(counterResult.QuadPart);
+	return counter;
+}
+
+double Engine::Timer::GetFrequency()
+{
+	LARGE_INTEGER counterResult;
+	QueryPerformanceFrequency(&counterResult);
+	double frequency = static_cast<double>(counterResult.QuadPart / 1000.0);
+	return frequency;
 }

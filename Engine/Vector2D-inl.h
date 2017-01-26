@@ -21,6 +21,14 @@ namespace Engine {
 		return Vector2D(input1.x()* i_Scalar, input1.y() * i_Scalar);
 	}
 
+	inline Vector2D operator/(const Vector2D & input1, float i_Scalar)
+	{
+
+		assert(!IsNaN(i_Scalar));
+
+		return Vector2D(input1.x()/ i_Scalar, input1.y() / i_Scalar);
+	}
+
 	inline void Vector2D::operator=(const Vector2D & input1)
 	{
 		m_x = input1.x();

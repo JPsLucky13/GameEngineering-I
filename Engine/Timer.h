@@ -12,6 +12,8 @@ namespace Engine {
 
 	public:
 
+		Timer();
+		~Timer();
 
 
 		//The last frame time calculated in ms
@@ -19,11 +21,11 @@ namespace Engine {
 		//Get the last frame time
 		float GetLastFrameTime_ms();
 
-		long GetCounter();
+		double GetCounter();
+		double GetFrequency();
 
 	private:
-		LARGE_INTEGER counterResult;
-		long g_LastFrameStartTick;
+		double g_LastFrameStartTick;
 	};
 
 

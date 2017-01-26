@@ -1,6 +1,6 @@
 #include "EngineHandler.h"
 #include "NewDelete.h"
-
+#include "Timer.h"
 namespace Engine{	
 
 
@@ -27,6 +27,11 @@ namespace Engine{
 			fsaManager.CreateFSAs(&blockAllocator);
 
 		}
+
+	void EngineHandler::Run()
+	{
+
+	}
 
 		void EngineHandler::Shutdown()
 		{

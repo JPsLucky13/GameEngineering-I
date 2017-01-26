@@ -13,6 +13,12 @@
 #include "EngineHandler.h"
 #include "Input.h"
 #include "Renderer.h"
+#include "KeyboardHandler.h"
+#include "PhysicsInfo.h"
+#include "Sprite.h"
+#include "GameObject.h"
+#include <Windows.h>
+#include "Timer.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -66,18 +72,39 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 	// first we need to initialize GLib
 	Engine::Renderer rd;
 
+	//Create a keyboad handler
+	Engine::KeyboardHandler * keyboard;
+
+
 	//Initialize renderer
 	bool bSuccess = rd.Initialize(i_hInstance, i_nCmdShow);
+
+
+
 
 	//Check if renderer succeeded
 	if (bSuccess)
 	{
+		Engine::Timer timer;
+	
+
+
 		//Read input
 		Engine::Read();
 
+		//The game play
+		Engine::GameObject * gameObjectPlayer;
+		Engine::PhysicsInfo * physicsInPlayer = new Engine::PhysicsInfo(gameObjectPlayer,1.0f,1.0f);
+
+		Engine::GameObject * gameObjectMonster;
+		Engine::PhysicsInfo * physicsInMonster = new Engine::PhysicsInfo(gameObjectMonster, 1.0f, 1.0f);
+
+
 		// Create a couple of sprites using our own helper routine CreateSprite
-		GLib::Sprites::Sprite * pGoodGuy = rd.CreateSprite("data\\Zero.dds");
-		GLib::Sprites::Sprite * pBadGuy = rd.CreateSprite("data\\Vile.dds");
+		Engine::Sprite * playerSprite = new Engine::Sprite(gameObjectPlayer, "data\\Zero.dds");
+		//Engine::Sprite *  monsterSprite = new Engine::Sprite(gameObjectMonster, "data\\Vile.dds");
+
+
 
 		bool bQuit = false;
 		do
@@ -89,43 +116,57 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 				rd.StartRenderer();
 				rd.StartRenderSprites();
 				
-				
-				if (pGoodGuy)
+				float dt = timer.GetLastFrameTime_ms();
+
+
+
+				if (playerSprite.sprite)
 				{
-					static float			moveDist = .01f;
-					static float			moveDir = moveDist;
-					static GLib::Point2D	Offset = { -180.0f, -100.0f };
-					if (Offset.x < -220.0f)
-						moveDir = moveDist;
-					else if (Offset.x > -140.0f)
-						moveDir = -moveDist;
-					Offset.x += moveDir;
+					Engine::Vector2D force;
+
+
+					//Move the player
+					if (Engine::keyHandler->A.m_isDown)
+					{
+						force = Engine::Vector2D(-1.0f,0.0f);
+					}
+
+					if (Engine::keyHandler->S.m_isDown)
+					{
+						force = Engine::Vector2D(0.0f, -1.0f);
+					}
+
+					if (Engine::keyHandler->W.m_isDown)
+					{
+						force = Engine::Vector2D(0.0f, 1.0f);
+					}
+
+					if (Engine::keyHandler->D.m_isDown)
+					{
+						force = Engine::Vector2D(1.0f, 0.0f);
+					}
+
+					static GLib::Point2D	Offset = { gameObjectPlayer->GetPosition().x , gameObjectPlayer->GetPosition().y};
+
+					//Update the physics
+					physicsInPlayer.Update(force,dt);
+
 					// Tell GLib to render this sprite at our calculated location
-					GLib::Sprites::RenderSprite(*pGoodGuy, Offset, 0.0f);
+					GLib::Sprites::RenderSprite(*playerSprite.sprite, Offset, 0.0f);
 				}
-				if (pBadGuy)
-				{
-					static float			moveDist = .02f;
-					static float			moveDir = -moveDist;
-					static GLib::Point2D	Offset = { 180.0f, -100.0f };
-					if (Offset.x > 200.0f)
-						moveDir = -moveDist;
-					else if (Offset.x < 160.0f)
-						moveDir = moveDist;
-					Offset.x += moveDir;
+				//if (monster)
+				//{
 					// Tell GLib to render this sprite at our calculated location
-					GLib::Sprites::RenderSprite(*pBadGuy, Offset, 0.0f);
-				}
+				//	GLib::Sprites::RenderSprite(*monster, Offset, 0.0f);
+				//}
 				// Tell GLib we're done rendering sprites
 				GLib::Sprites::EndRendering();
 				// Tell GLib we're done rendering
 				GLib::EndRendering();
 			}
 		} while (bQuit == false);
-		if (pGoodGuy)
-			GLib::Sprites::Release(pGoodGuy);
-		if (pBadGuy)
-			GLib::Sprites::Release(pBadGuy);
+		if (playerSprite.sprite)
+			GLib::Sprites::Release(playerSprite.sprite);
 		GLib::Shutdown();
 
 		handler.Shutdown();

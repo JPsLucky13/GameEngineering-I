@@ -31,8 +31,11 @@
     <ClInclude Include="FloatCheck-inl.h" />
     <ClInclude Include="FloatCheck.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="KeyboardHandler.h" />
     <ClInclude Include="NewDelete.h" />
+    <ClInclude Include="PhysicsInfo.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Sprite.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Vector2D-inl.h" />
     <ClInclude Include="Vector2D.h" />
@@ -47,8 +50,11 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="FloatCheck.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="KeyboardHandler.cpp" />
     <ClCompile Include="NewDelete.cpp" />
+    <ClCompile Include="PhysicsInfo.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Vector2D.cpp" />
   </ItemGroup>
