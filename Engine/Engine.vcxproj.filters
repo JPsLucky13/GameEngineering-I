@@ -91,7 +91,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WeakPointer-inl.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -144,7 +144,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Counters.cpp">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

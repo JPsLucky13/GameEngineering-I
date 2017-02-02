@@ -18,6 +18,8 @@
 #include "GameObject.h"
 #include <Windows.h>
 #include "Timer.h"
+#include "SmartPointer.h"
+#include "WeakPointer.h"
 
 
 #define _CRTDBG_MAP_ALLOC
@@ -76,6 +78,8 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 	//Initialize renderer
 	bool bSuccess = rd.Initialize(i_hInstance, i_nCmdShow);
 
+	//SmartPointer Unit Test
+
 
 
 
@@ -88,15 +92,19 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 		Engine::Input::Read();
 
 		//The game play
-		Engine::GameObject * gameObjectPlayer = new Engine::GameObject();
-		Engine::PhysicsInfo * physicsInPlayer = new Engine::PhysicsInfo(gameObjectPlayer,1.0f,0.05f);
+		Engine::SmartPointer<Engine::GameObject> gameObjectPlayer(new Engine::GameObject());
+		Engine::SmartPointer<Engine::GameObject> dummy(std::move(gameObjectPlayer));
+		Engine::PhysicsInfo * physicsInPlayer = new Engine::PhysicsInfo(dummy,1.0f,0.05f);
 
-		Engine::GameObject * gameObjectMonster = new Engine::GameObject();
-		Engine::PhysicsInfo * physicsInMonster = new Engine::PhysicsInfo(gameObjectMonster, 1.0f, 1.0f);
+		//Engine::SmartPointer<Engine::GameObject> gameObjectMonster(new Engine::GameObject());
+		//Engine::PhysicsInfo * physicsInMonster = new Engine::PhysicsInfo(gameObjectMonster, 1.0f, 1.0f);
 
 
 		// Create a couple of sprites using our own helper routine CreateSprite
-		Engine::Sprite * playerSprite = new Engine::Sprite(gameObjectPlayer, "data\\Zero.dds");
+		Engine::WeakPointer<Engine::GameObject> playerObject(dummy);
+		Engine::SmartPointer<Engine::GameObject> empty = playerObject.Acquire();
+		assert(dummy == empty);
+		Engine::Sprite * playerSprite = new Engine::Sprite(playerObject, "data\\Zero.dds");
 		//Engine::Sprite *  monsterSprite = new Engine::Sprite(gameObjectMonster, "data\\Vile.dds");
 
 
@@ -139,10 +147,16 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 						force = Engine::Vector2D(forceMagnitude, 0.0f);
 					}
 
+					if (Engine::Input::keyHandler.Q.m_isDown)
+					{
+						bQuit = true;
+					}
+
+
 					//Update the physics
 					physicsInPlayer->Update(force,dt);
 
-					GLib::Point2D	Offset = { gameObjectPlayer->GetPosition().x() , gameObjectPlayer->GetPosition().y()};
+					GLib::Point2D	Offset = { dummy->GetPosition().x() , dummy->GetPosition().y()};
 					
 					// Tell GLib to render this sprite at our calculated location
 					GLib::Sprites::RenderSprite(*playerSprite->sprite, Offset, 0.0f);
@@ -162,8 +176,11 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 			GLib::Sprites::Release(playerSprite->sprite);
 		GLib::Shutdown();
 
-		handler.Shutdown();
+		//Delete the pointers
+		delete physicsInPlayer;
+		delete playerSprite;
 	}
+		handler.Shutdown();
 #if defined _DEBUG
 	_CrtDumpMemoryLeaks();
 #endif // _DEBUG

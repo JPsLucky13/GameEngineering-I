@@ -6,6 +6,11 @@ namespace Engine {
 		m_Velocity = Engine::Vector2D(0.0f, 0.0f);
 	}
 
+	GameObject::~GameObject()
+	{
+
+	}
+
 	GameObject::GameObject(const GameObject & i_other) :
 		m_Position(i_other.m_Position)
 	{

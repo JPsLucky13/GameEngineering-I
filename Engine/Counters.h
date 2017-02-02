@@ -13,7 +13,8 @@ namespace Engine {
 		inline long AddWeakReference();
 		inline long ReleaseWeakReference();
 
-
+		inline long GetSmartRefCount();
+		inline long GetWeakRefCount();
 
 	private:
 		long m_SmartRefCount;

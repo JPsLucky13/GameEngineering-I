@@ -12,7 +12,7 @@ namespace Engine {
 	public:
 
 		GameObject();
-
+		~GameObject();
 
 		//Initializer List
 		GameObject(const Engine::Vector2D & i_InitialPosition) :

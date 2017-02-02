@@ -26,15 +26,16 @@ public:
 
 	bool operator==(const SmartPointer & i_other)const;
 
+
 	void ReleaseCurrentReference();
-
-	void AcquireNewReference(const SmartPointer & i_other);
-
 
 
 private:
 	T* m_pObject;
 	Counters * m_pCounters;
+	template<class T>
+	friend class WeakPointer;
+	void AcquireNewReference(const SmartPointer & i_other);
 
 };
 }
