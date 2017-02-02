@@ -107,6 +107,7 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 		Engine::Sprite * playerSprite = new Engine::Sprite(playerObject, "data\\Zero.dds");
 		//Engine::Sprite *  monsterSprite = new Engine::Sprite(gameObjectMonster, "data\\Vile.dds");
 
+		//DEBUG_LOG_OUTPUT("Position x: %f, Position y: %f", empty->GetPosition().x(), empty->GetPosition().y());
 
 
 		bool bQuit = false;
@@ -158,6 +159,7 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 
 					GLib::Point2D	Offset = { dummy->GetPosition().x() , dummy->GetPosition().y()};
 					
+
 					// Tell GLib to render this sprite at our calculated location
 					GLib::Sprites::RenderSprite(*playerSprite->sprite, Offset, 0.0f);
 				}
