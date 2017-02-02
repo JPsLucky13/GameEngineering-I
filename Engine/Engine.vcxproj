@@ -22,6 +22,8 @@
     <ClInclude Include="BitArray.h" />
     <ClInclude Include="BlockAllocator-inl.h" />
     <ClInclude Include="BlockAllocator.h" />
+    <ClInclude Include="Counters-inl.h" />
+    <ClInclude Include="Counters.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="EngineHandler.h" />
     <ClInclude Include="FixedBlockAllocator.h" />
@@ -35,14 +37,19 @@
     <ClInclude Include="NewDelete.h" />
     <ClInclude Include="PhysicsInfo.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="SmartPointer-inl.h" />
+    <ClInclude Include="SmartPointer.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Vector2D-inl.h" />
     <ClInclude Include="Vector2D.h" />
+    <ClInclude Include="WeakPointer-inl.h" />
+    <ClInclude Include="WeakPointer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitArray.cpp" />
     <ClCompile Include="BlockAllocator.cpp" />
+    <ClCompile Include="Counters.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="EngineHandler.cpp" />
     <ClCompile Include="FixedBlockAllocator.cpp" />
