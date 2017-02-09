@@ -40,6 +40,7 @@
     <ClInclude Include="SmartPointer-inl.h" />
     <ClInclude Include="SmartPointer.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="StringPool.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Vector2D-inl.h" />
     <ClInclude Include="Vector2D.h" />
@@ -62,6 +63,7 @@
     <ClCompile Include="PhysicsInfo.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="StringPool.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Vector2D.cpp" />
   </ItemGroup>
