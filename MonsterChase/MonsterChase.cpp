@@ -45,6 +45,9 @@ extern void FloatChecker_UnitTest();
 //Block allocator unit test
 extern bool HeapManager_UnitTest();
 
+//String pool unit test
+extern void StringPool_UnitTest(Engine::BlockAllocator * i_pBlockAllocator);
+
 //FSA Unite test
 //extern void FSA_UnitTest(Engine::FSAManager * i_fsaManager);
 
@@ -78,7 +81,8 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 	//Initialize renderer
 	bool bSuccess = rd.Initialize(i_hInstance, i_nCmdShow);
 
-	//SmartPointer Unit Test
+	//String Pool unit test
+	StringPool_UnitTest(&handler.blockAllocator);
 
 
 
@@ -95,10 +99,8 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 		Engine::SmartPointer<Engine::GameObject> gameObjectPlayer(new Engine::GameObject());
 		Engine::SmartPointer<Engine::GameObject> dummy(std::move(gameObjectPlayer));
 		Engine::PhysicsInfo * physicsInPlayer = new Engine::PhysicsInfo(dummy,1.0f,0.05f);
-
 		//Engine::SmartPointer<Engine::GameObject> gameObjectMonster(new Engine::GameObject());
 		//Engine::PhysicsInfo * physicsInMonster = new Engine::PhysicsInfo(gameObjectMonster, 1.0f, 1.0f);
-
 
 		// Create a couple of sprites using our own helper routine CreateSprite
 		Engine::WeakPointer<Engine::GameObject> playerObject(dummy);

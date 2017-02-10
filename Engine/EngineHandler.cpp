@@ -22,7 +22,6 @@ namespace Engine{
 			blockAllocator.create(1024 * 1024, 100);
 			GetBlockAllocator(&blockAllocator);
 
-			
 			GetFSAManager(&fsaManager);
 			fsaManager.CreateFSAs(&blockAllocator);
 

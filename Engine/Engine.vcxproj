@@ -29,6 +29,7 @@
     <ClInclude Include="FixedBlockAllocator.h" />
     <ClInclude Include="FSAManager.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="HashedString.h" />
     <ClInclude Include="IGameObjectController.h" />
     <ClInclude Include="FloatCheck-inl.h" />
     <ClInclude Include="FloatCheck.h" />
@@ -36,6 +37,7 @@
     <ClInclude Include="KeyboardHandler.h" />
     <ClInclude Include="NewDelete.h" />
     <ClInclude Include="PhysicsInfo.h" />
+    <ClInclude Include="PooledString.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="SmartPointer-inl.h" />
     <ClInclude Include="SmartPointer.h" />
@@ -57,6 +59,7 @@
     <ClCompile Include="FSAManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="FloatCheck.cpp" />
+    <ClCompile Include="HashedString.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="KeyboardHandler.cpp" />
     <ClCompile Include="NewDelete.cpp" />

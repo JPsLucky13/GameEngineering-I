@@ -4,8 +4,15 @@
 #include <stdio.h>
 #include "Debug.h"
 namespace Engine {
+	StringPool::StringPool() :
+		m_pStartBuffer(NULL),
+		m_pEndStrings(NULL),
+		m_pEndBuffer(NULL),
+		m_pBlockAllocator(NULL)
+		{};
 
-StringPool * StringPool::create(size_t i_bytesInPool, BlockAllocator * i_pBlockAllocator)
+
+	StringPool * StringPool::create(size_t i_bytesInPool, BlockAllocator * i_pBlockAllocator)
 {
 	//Create the block
 	m_pStartBuffer = reinterpret_cast<uint8_t *>(i_pBlockAllocator->_alloc(i_bytesInPool));
@@ -33,7 +40,7 @@ const char * StringPool::add(const char * i_pString)
 	size_t * p_StringSize = reinterpret_cast<size_t *>(m_pEndStrings);
 	p_StringSize++;
 	char * targetCharacter = reinterpret_cast<char *>(p_StringSize);
-	targetCharacter += stringSize;
+	targetCharacter += stringSize + 1;
 	uint8_t * comparer = reinterpret_cast<uint8_t*>(targetCharacter);
 
 	//Check if memory is available
@@ -59,8 +66,8 @@ const char * StringPool::add(const char * i_pString)
 		*traversalCopy = stringSize;
 		traversalCopy++;
 		traversalPointer = reinterpret_cast<char*>(traversalCopy);
-		strcpy_s(traversalPointer, stringSize, i_pString);
-		m_pEndStrings = reinterpret_cast<uint8_t *>(traversalPointer + stringSize);
+		strcpy_s(traversalPointer, stringSize+1,i_pString);
+		m_pEndStrings = reinterpret_cast<uint8_t *>(traversalPointer + stringSize +1);
 
 		return traversalPointer;
 
@@ -77,7 +84,7 @@ const char * StringPool::add(const char * i_pString)
 			return result;
 		}
 		else {
-			//pointer to traver the string pool
+			//pointer to traverse the string pool
 			char * traversalPointer = reinterpret_cast<char*>(m_pEndStrings);
 
 			size_t stringSize = strlen(i_pString);
@@ -85,8 +92,8 @@ const char * StringPool::add(const char * i_pString)
 			*traversalCopy = stringSize;
 			traversalCopy++;
 			traversalPointer = reinterpret_cast<char*>(traversalCopy);
-			strcpy_s(traversalPointer, stringSize, i_pString);
-			m_pEndStrings = reinterpret_cast<uint8_t *>(traversalPointer + stringSize);
+			strcpy_s(traversalPointer, stringSize +1, i_pString);
+			m_pEndStrings = reinterpret_cast<uint8_t *>(traversalPointer + stringSize + 1);
 
 			return traversalPointer;
 
@@ -118,7 +125,7 @@ const char * StringPool::find(const char * i_pString)
 			size_t numberOfCharacters = *traversalCopy;
 			traversalCopy++;
 			traversalPointer = reinterpret_cast<char*>(traversalCopy);
-			traversalPointer += numberOfCharacters;
+			traversalPointer += numberOfCharacters + 1;
 			traversalCopy = reinterpret_cast<size_t *>(traversalPointer);
 			
 		}
@@ -135,7 +142,7 @@ const char * StringPool::find(const char * i_pString)
 				return traversalPointer;
 			}
 			else {
-				traversalPointer += numberOfCharacters;
+				traversalPointer += numberOfCharacters +1;
 				traversalCopy = reinterpret_cast<size_t *>(traversalPointer);
 			}
 		}

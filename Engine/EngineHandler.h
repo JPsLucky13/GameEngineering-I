@@ -19,11 +19,11 @@ namespace Engine{
 		//Shutdown the engine
 		void Shutdown();
 
-
-	private:
 		
 		//The block allocator
 		BlockAllocator blockAllocator;
+
+	private:
 
 		//The memory manager that handles FSA
 		FSAManager fsaManager;

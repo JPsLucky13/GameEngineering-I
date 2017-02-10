@@ -7,6 +7,8 @@ namespace Engine
 	class StringPool
 	{
 	public:
+
+		StringPool();
 		StringPool * create(size_t i_bytesInPool, BlockAllocator * i_pBlockAllocator);
 		~StringPool();
 
