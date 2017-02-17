@@ -20,7 +20,9 @@
 #include "Timer.h"
 #include "SmartPointer.h"
 #include "WeakPointer.h"
-
+#include "lua.hpp"
+#include "Actor.h"
+#include "CreateActor.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -46,7 +48,7 @@ extern void FloatChecker_UnitTest();
 extern bool HeapManager_UnitTest();
 
 //String pool unit test
-extern void StringPool_UnitTest(Engine::BlockAllocator * i_pBlockAllocator);
+//extern void StringPool_UnitTest(Engine::BlockAllocator * i_pBlockAllocator);
 
 //FSA Unite test
 //extern void FSA_UnitTest(Engine::FSAManager * i_fsaManager);
@@ -81,8 +83,8 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 	//Initialize renderer
 	bool bSuccess = rd.Initialize(i_hInstance, i_nCmdShow);
 
-	//String Pool unit test
-	StringPool_UnitTest(&handler.blockAllocator);
+	////String Pool unit test
+	//StringPool_UnitTest(&handler.blockAllocator);
 
 
 
@@ -95,21 +97,13 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 		//Read input
 		Engine::Input::Read();
 
-		//The game play
-		Engine::SmartPointer<Engine::GameObject> gameObjectPlayer(new Engine::GameObject());
-		Engine::SmartPointer<Engine::GameObject> dummy(std::move(gameObjectPlayer));
-		Engine::PhysicsInfo * physicsInPlayer = new Engine::PhysicsInfo(dummy,1.0f,0.05f);
-		//Engine::SmartPointer<Engine::GameObject> gameObjectMonster(new Engine::GameObject());
-		//Engine::PhysicsInfo * physicsInMonster = new Engine::PhysicsInfo(gameObjectMonster, 1.0f, 1.0f);
-
-		// Create a couple of sprites using our own helper routine CreateSprite
-		Engine::WeakPointer<Engine::GameObject> playerObject(dummy);
-		Engine::SmartPointer<Engine::GameObject> empty = playerObject.Acquire();
-		assert(dummy == empty);
-		Engine::Sprite * playerSprite = new Engine::Sprite(playerObject, "data\\Zero.dds");
-		//Engine::Sprite *  monsterSprite = new Engine::Sprite(gameObjectMonster, "data\\Vile.dds");
+		
 
 		//DEBUG_LOG_OUTPUT("Position x: %f, Position y: %f", empty->GetPosition().x(), empty->GetPosition().y());
+
+		Engine::SmartPointer<Engine::Actor> player = Engine::CreateActor("Player1.lua");
+
+		
 
 
 		bool bQuit = false;
@@ -124,7 +118,7 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 				
 				float dt = timer.GetLastFrameTime_ms();
 
-				if (playerSprite->sprite)
+				if (player->getSprite()->sprite)
 				{
 					Engine::Vector2D force(0.0f, 0.0f);
 					const float forceMagnitude = 5.0f;
@@ -157,13 +151,13 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 
 
 					//Update the physics
-					physicsInPlayer->Update(force,dt);
+					player->getPhysics()->Update(force,dt);
 
-					GLib::Point2D	Offset = { dummy->GetPosition().x() , dummy->GetPosition().y()};
+					GLib::Point2D	Offset = { player->getGObject()->GetPosition().x(), player->getGObject()->GetPosition().y() };
 					
 
 					// Tell GLib to render this sprite at our calculated location
-					GLib::Sprites::RenderSprite(*playerSprite->sprite, Offset, 0.0f);
+					GLib::Sprites::RenderSprite(*player->getSprite()->sprite, Offset, 0.0f);
 				}
 				//if (monster)
 				//{
@@ -176,13 +170,9 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 				GLib::EndRendering();
 			}
 		} while (bQuit == false);
-		if (playerSprite->sprite)
-			GLib::Sprites::Release(playerSprite->sprite);
+		if (player->getSprite()->sprite)
+			GLib::Sprites::Release(player->getSprite()->sprite);
 		GLib::Shutdown();
-
-		//Delete the pointers
-		delete physicsInPlayer;
-		delete playerSprite;
 	}
 		handler.Shutdown();
 #if defined _DEBUG

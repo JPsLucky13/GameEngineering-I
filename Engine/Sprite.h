@@ -12,6 +12,9 @@ namespace Engine {
 		Sprite(const WeakPointer<GameObject>& object, const char * i_pFilename);
 		~Sprite();
 
+
+	
+
 		GLib::Sprites::Sprite * sprite;
 
 	private:
