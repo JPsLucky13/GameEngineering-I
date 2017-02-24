@@ -5,6 +5,7 @@
 #include <conio.h>
 #include <stdlib.h>
 #include <assert.h> 
+#include <vector>
 #include <ctime> //For calling a seed of random numbers
 #include "Monster.h"
 #include "Player.h"
@@ -23,6 +24,9 @@
 #include "lua.hpp"
 #include "Actor.h"
 #include "CreateActor.h"
+#include "Physics.h"
+#include "ThreadedFileProcessor.h"
+#include "ShowTask.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -63,6 +67,16 @@ extern void BitArray_UnitTest(void);
 
 extern size_t StringLength(const char * string);
 
+void CheckForNewActors(std::vector<Engine::SmartPointer<Engine::Actor>>& i_actorsToAdd, std::vector<Engine::SmartPointer<Engine::Actor>>& i_actorsInScene)
+{
+	if (i_actorsToAdd.size() > 0)
+	{
+		Engine::SmartPointer<Engine::Actor> temp = i_actorsToAdd.back();
+		i_actorsToAdd.pop_back();
+		i_actorsInScene.push_back(temp);
+	}
+
+}
 
 
 
@@ -73,21 +87,27 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif // _DEBUG
 	
+	//Initialize the engine for memory allocation
 	Engine::EngineHandler handler; 
 	handler.Init();
 
-	// first we need to initialize GLib
-	Engine::Renderer rd;
-
+	//Initialize physics
+	static Engine::Physics * physics;
+	physics = Engine::Physics::Create();
 
 	//Initialize renderer
-	bool bSuccess = rd.Initialize(i_hInstance, i_nCmdShow);
+	static Engine::Renderer * renderer;
+	renderer = Engine::Renderer::Create();
+
+	//Initialize renderer
+	bool bSuccess = renderer->Initialize(i_hInstance, i_nCmdShow);
 
 	////String Pool unit test
 	//StringPool_UnitTest(&handler.blockAllocator);
 
 
-
+	std::vector<Engine::SmartPointer<Engine::Actor>> actorsToAdd;
+	std::vector<Engine::SmartPointer<Engine::Actor>> actorsInScene;
 
 	//Check if renderer succeeded
 	if (bSuccess)
@@ -101,25 +121,30 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 
 		//DEBUG_LOG_OUTPUT("Position x: %f, Position y: %f", empty->GetPosition().x(), empty->GetPosition().y());
 
-		Engine::SmartPointer<Engine::Actor> player = Engine::CreateActor("Player1.lua");
+		Engine::ThreadedFileProcessor &Processor = Engine::ThreadedFileProcessor::GetInstance();
 
-		
+		Processor.AddToLoadQueue(*new Engine::ShowTask("Player1", actorsToAdd));
+
+
+		//Engine::SmartPointer<Engine::Actor> player = Engine::CreateActor("Player1");
+
+	
 
 
 		bool bQuit = false;
 		do
 		{
-			rd.ServiceRenderer(bQuit);
+			renderer->ServiceRenderer(bQuit);
 
 			if (!bQuit)
 			{
-				rd.StartRenderer();
-				rd.StartRenderSprites();
+				renderer->StartRenderer();
+				renderer->StartRenderSprites();
 				
 				float dt = timer.GetLastFrameTime_ms();
 
-				if (player->getSprite()->sprite)
-				{
+				//if (player->getSprite().Acquire()->sprite)
+				//{
 					Engine::Vector2D force(0.0f, 0.0f);
 					const float forceMagnitude = 5.0f;
 
@@ -150,15 +175,23 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 					}
 
 
-					//Update the physics
-					player->getPhysics()->Update(force,dt);
+					//For loop to update the actors
+					for(size_t i = 0; i < actorsInScene.size(); i++)
+					{
+						actorsInScene[i]->getPhysics().Acquire()->Update(force, dt);
+						GLib::Point2D	Offset = { actorsInScene[i]->getGObject()->GetPosition().x(), actorsInScene[i]->getGObject()->GetPosition().y() };
+					
+						// Tell GLib to render this sprite at our calculated location
+						GLib::Sprites::RenderSprite(*actorsInScene[i]->getSprite().Acquire()->sprite, Offset, 0.0f);
+					}
+					
+					CheckForNewActors(actorsToAdd, actorsInScene);
 
-					GLib::Point2D	Offset = { player->getGObject()->GetPosition().x(), player->getGObject()->GetPosition().y() };
+
 					
 
-					// Tell GLib to render this sprite at our calculated location
-					GLib::Sprites::RenderSprite(*player->getSprite()->sprite, Offset, 0.0f);
-				}
+					
+				//}
 				//if (monster)
 				//{
 					// Tell GLib to render this sprite at our calculated location
@@ -170,11 +203,16 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 				GLib::EndRendering();
 			}
 		} while (bQuit == false);
-		if (player->getSprite()->sprite)
-			GLib::Sprites::Release(player->getSprite()->sprite);
+		//if (player->getSprite().Acquire()->sprite)
+		for (size_t i = 0; i < actorsInScene.size(); i++)
+		{
+		
+			GLib::Sprites::Release(actorsInScene[i]->getSprite().Acquire()->sprite);
+		}
 		GLib::Shutdown();
 	}
-		handler.Shutdown();
+	Engine::ThreadedFileProcessor::Shutdown();
+	handler.Shutdown();
 #if defined _DEBUG
 	_CrtDumpMemoryLeaks();
 #endif // _DEBUG

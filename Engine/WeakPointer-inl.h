@@ -55,7 +55,6 @@ namespace Engine
 	template<class T>
 	SmartPointer<T> WeakPointer<T>::Acquire() const {
 		if (m_pCounters->GetSmartRefCount() > 0){
-			m_pCounters->AddSmartReference();
 			return SmartPointer<T>(m_pObject, m_pCounters);
 		}
 		else

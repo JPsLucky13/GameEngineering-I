@@ -5,14 +5,44 @@
 #include "FileHandler.h"
 
 namespace Engine {
-	Renderer::Renderer()
-	{
-	}
-	Renderer::~Renderer()
-	{
-	}
-	//Initializes the Graphics library
-		bool Renderer::Initialize(HINSTANCE i_hInstance, int i_nCmdShow)
+	
+		Renderer * Renderer::instance = NULL;
+
+		Renderer::Renderer()
+		{
+		}
+
+		SmartPointer<Sprite>  Renderer::CreateSpriteIcon(SmartPointer<GameObject>& gameObject, const char * i_pFileName)
+		{
+			SmartPointer<Sprite> sprite(new Sprite(gameObject, i_pFileName));
+			smartSprites.push_back(sprite);
+			return sprite;
+		}
+
+		Renderer * Renderer::GetInstance()
+		{
+			return instance;
+		}
+
+		Renderer::~Renderer()
+		{
+		}
+
+
+		Renderer *  Renderer::Create()
+		{
+			if (instance == nullptr)
+			{
+				instance = new Renderer();
+				return instance;
+			}
+			else
+			{
+				return instance;
+			}
+		}
+		//Initializes the Graphics library
+		bool  Renderer::Initialize(HINSTANCE i_hInstance, int i_nCmdShow)
 		{
 
 			if (GLib::Initialize(i_hInstance, i_nCmdShow, "GLibTest", -1, 800, 600))
@@ -21,65 +51,13 @@ namespace Engine {
 				return false;
 		}
 
-
-		GLib::Sprites::Sprite * Renderer::CreateSprite(const char * i_pFilename)
-		{
-			assert(i_pFilename);
-
-			size_t sizeTextureFile = 0;
-
-			// Load the source file (texture data)
-			void * pTextureFile = Engine::LoadFile(i_pFilename, sizeTextureFile);
-
-			// Ask GLib to create a texture out of the data (assuming it was loaded successfully)
-			GLib::Texture * pTexture = pTextureFile ? GLib::CreateTexture(pTextureFile, sizeTextureFile) : nullptr;
-
-			// exit if something didn't work
-			// probably need some debug logging in here!!!!
-			if (pTextureFile)
-				delete[] pTextureFile;
-
-			if (pTexture == nullptr)
-				return NULL;
-
-			unsigned int width = 0;
-			unsigned int height = 0;
-			unsigned int depth = 0;
-
-			// Get the dimensions of the texture. We'll use this to determine how big it is on screen
-			bool result = GLib::GetDimensions(pTexture, width, height, depth);
-			assert(result == true);
-			assert((width > 0) && (height > 0));
-
-			// Define the sprite edges
-			GLib::Sprites::SpriteEdges	Edges = { -float(width / 2.0f), float(height), float(width / 2.0f), 0.0f };
-			GLib::Sprites::SpriteUVs	UVs = { { 0.0f, 0.0f },{ 1.0f, 0.0f },{ 0.0f, 1.0f },{ 1.0f, 1.0f } };
-			GLib::RGBA							Color = { 255, 255, 255, 255 };
-
-			// Create the sprite
-			GLib::Sprites::Sprite * pSprite = GLib::Sprites::CreateSprite(Edges, 0.1f, Color, UVs);
-			if (pSprite == nullptr)
-			{
-				GLib::Release(pTexture);
-				return nullptr;
-			}
-
-			// Bind the texture to sprite
-			GLib::Sprites::SetTexture(*pSprite, *pTexture);
-
-			return pSprite;
-		}
-
-
-
-
-		void Renderer::ServiceRenderer(bool bQuit)
+		void  Renderer::ServiceRenderer(bool bQuit)
 		{
 			// We need to let GLib do it's thing. 
 			GLib::Service(bQuit);
 		}
 
-		void Renderer::StartRenderer()
+		void  Renderer::StartRenderer()
 		{
 			// Tell GLib that we want to start rendering
 			GLib::BeginRendering();
@@ -91,7 +69,8 @@ namespace Engine {
 			GLib::Sprites::BeginRendering();
 		}
 
-		
+
+	
 
 }
 

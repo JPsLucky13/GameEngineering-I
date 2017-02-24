@@ -1,25 +1,13 @@
 #pragma once
 #include "PhysicsInfo.h"
 #include <stdio.h>
-#include "GLib.h"
 namespace Engine {
 
-
-
-
-	/*PhysicsInfo::PhysicsInfo(const SmartPointer<GameObject>& object, float mass, float drag)
-	{
-		m_pObject = object;
-		m_Mass = mass;
-		m_Drag = drag;
-	}*/
-
-	PhysicsInfo::PhysicsInfo(const WeakPointer<GameObject>& object, float mass, float drag) : 
+	PhysicsInfo::PhysicsInfo(const WeakPointer<GameObject>& object, float mass, float drag) :
 		m_pObject(object),
 		m_Mass(mass),
 		m_Drag(drag)
-	{
-	}
+	{}
 
 
 
@@ -40,7 +28,7 @@ namespace Engine {
 		m_pObject.Acquire()->SetPosition(m_pObject.Acquire()->GetPosition() + m_pObject.Acquire()->GetVelocity()  * i_dt);
 	}
 
-	void PhysicsInfo::SetGameObject(SmartPointer<GameObject> gameobject)
+	void PhysicsInfo::SetGameObject(WeakPointer<GameObject> gameobject)
 	{
 		m_pObject = gameobject;
 	}

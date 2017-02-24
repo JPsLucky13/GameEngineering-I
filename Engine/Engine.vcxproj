@@ -23,11 +23,13 @@
     <ClInclude Include="BitArray.h" />
     <ClInclude Include="BlockAllocator-inl.h" />
     <ClInclude Include="BlockAllocator.h" />
+    <ClInclude Include="ConsolePrint.h" />
     <ClInclude Include="Counters-inl.h" />
     <ClInclude Include="Counters.h" />
     <ClInclude Include="CreateActor.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="EngineHandler.h" />
+    <ClInclude Include="Events.h" />
     <ClInclude Include="FileHandler.h" />
     <ClInclude Include="FixedBlockAllocator.h" />
     <ClInclude Include="FSAManager.h" />
@@ -38,17 +40,24 @@
     <ClInclude Include="FloatCheck.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="KeyboardHandler.h" />
+    <ClInclude Include="Mutex.h" />
     <ClInclude Include="NewDelete.h" />
+    <ClInclude Include="Physics.h" />
     <ClInclude Include="PhysicsInfo.h" />
     <ClInclude Include="PooledString.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Semaphore.h" />
+    <ClInclude Include="ShowTask.h" />
+    <ClInclude Include="SingleWriterMultipleReader.h" />
     <ClInclude Include="SmartPointer-inl.h" />
     <ClInclude Include="SmartPointer.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="StringPool.h" />
+    <ClInclude Include="ThreadedFileProcessor.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Vector2D-inl.h" />
     <ClInclude Include="Vector2D.h" />
+    <ClInclude Include="WaitableObject.h" />
     <ClInclude Include="WeakPointer-inl.h" />
     <ClInclude Include="WeakPointer.h" />
   </ItemGroup>
@@ -56,10 +65,12 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="BitArray.cpp" />
     <ClCompile Include="BlockAllocator.cpp" />
+    <ClCompile Include="ConsolePrint.cpp" />
     <ClCompile Include="Counters.cpp" />
     <ClCompile Include="CreateActor.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="EngineHandler.cpp" />
+    <ClCompile Include="Events.cpp" />
     <ClCompile Include="FileHandler.cpp" />
     <ClCompile Include="FixedBlockAllocator.cpp" />
     <ClCompile Include="FSAManager.cpp" />
@@ -68,13 +79,19 @@
     <ClCompile Include="HashedString.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="KeyboardHandler.cpp" />
+    <ClCompile Include="Mutex.cpp" />
     <ClCompile Include="NewDelete.cpp" />
+    <ClCompile Include="Physics.cpp" />
     <ClCompile Include="PhysicsInfo.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Semaphore.cpp" />
+    <ClCompile Include="ShowTask.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="StringPool.cpp" />
+    <ClCompile Include="ThreadedFileProcessor.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Vector2D.cpp" />
+    <ClCompile Include="WaitableObject.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{EA18DF79-5A7B-4A25-A939-E2426E6F7F3D}</ProjectGuid>
@@ -87,27 +104,27 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">

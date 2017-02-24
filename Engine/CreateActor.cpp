@@ -1,6 +1,8 @@
 #pragma once
 #include "CreateActor.h"
 #include "FileHandler.h"
+#include "Renderer.h"
+#include "Physics.h"
 #include <string.h>
 namespace Engine {
 
@@ -20,9 +22,11 @@ namespace Engine {
 		const size_t dest_size = 50;
 		char destination[dest_size];
 		const char * directory = "..//data/";
+		const char * fileType = ".lua";
 		
 		strncpy_s(destination, dest_size, directory, strlen(directory));
 		strcat_s(destination, dest_size, file);
+		strcat_s(destination, dest_size, fileType);
 
 		//the parameters for the file to read 
 		size_t sizeFile = 0;
@@ -42,7 +46,7 @@ namespace Engine {
 
 	
 			//Find the global table 
-			result = lua_getglobal(pLuaState, "Player1");
+			result = lua_getglobal(pLuaState, i_pFilename);
 			assert(result == LUA_TTABLE);
 
 			int	type = LUA_TNIL;
@@ -100,10 +104,10 @@ namespace Engine {
 
 
 			//Create the physics info
-			Engine::SmartPointer<Engine::PhysicsInfo> physicsWeakp(new Engine::PhysicsInfo(gameObject, mass, drag));
+			Engine::WeakPointer<Engine::PhysicsInfo> physicsWeakp(Engine::Physics::GetInstance()->CreatePhysics(gameObject,mass, drag));
 
 			//Create the sprite info
-			Engine::SmartPointer<Engine::Sprite> spriteWeakp(new Engine::Sprite(gameObject, "data\\Zero.dds"));
+			Engine::WeakPointer<Engine::Sprite> spriteWeakp(Engine::Renderer::GetInstance()->CreateSpriteIcon(gameObject,"data\\Zero.dds"));
 
 			Actor * new_Actor = new Actor(gameObject, physicsWeakp, spriteWeakp);
 			Engine::SmartPointer<Engine::Actor> actorObject(new_Actor);

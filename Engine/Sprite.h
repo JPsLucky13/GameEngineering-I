@@ -1,7 +1,6 @@
 #pragma once
 #include "GLib.h"
 #include "GameObject.h"
-#include "Renderer.h"
 #include "WeakPointer.h"
 namespace Engine {
 
@@ -11,15 +10,11 @@ namespace Engine {
 
 		Sprite(const WeakPointer<GameObject>& object, const char * i_pFilename);
 		~Sprite();
-
-
-	
-
 		GLib::Sprites::Sprite * sprite;
 
 	private:
 		WeakPointer<GameObject> m_pObject;
-		Renderer * m_Renderer;
+		GLib::Sprites::Sprite * CreateSprite(const char * i_pFilename);
 	};
 
 

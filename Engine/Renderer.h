@@ -1,33 +1,42 @@
 #pragma once
 
 #include "GLib.h"
-
+#include "Sprite.h"
+#include "SmartPointer.h"
+#include <vector>
 
 namespace Engine
 {
-	class Renderer
-	{
-
+	
+	class Renderer {
+	
 	public:
 
-	Renderer();
-	~Renderer();
+		static Renderer * Create();
 
-	bool Initialize(HINSTANCE i_hInstance, int i_nCmdShow);
+		bool Initialize(HINSTANCE i_hInstance, int i_nCmdShow);
 
-	void RunRenderer();
+		void RunRenderer();
 
-	void ShutdownRenderer();
+		void ShutdownRenderer();
 
-	void ServiceRenderer(bool bQuit);
+		void ServiceRenderer(bool bQuit);
 
-	void StartRenderer();
+		void StartRenderer();
 
-	void StartRenderSprites();
-
+		void StartRenderSprites();
 	
-	GLib::Sprites::Sprite * CreateSprite(const char * i_pFilename);
+		SmartPointer<Sprite> CreateSpriteIcon(SmartPointer<GameObject>& gameObject ,const  char * i_pFileName);
 
+		static Renderer * GetInstance();
+
+
+		~Renderer();
 	
+	private:
+		std::vector<SmartPointer<Sprite>> smartSprites;
+		static Renderer * instance;
+		Renderer();
+
 	};
 }
