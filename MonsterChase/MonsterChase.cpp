@@ -67,14 +67,18 @@ extern void BitArray_UnitTest(void);
 
 extern size_t StringLength(const char * string);
 
-void CheckForNewActors(std::vector<Engine::SmartPointer<Engine::Actor>>& i_actorsToAdd, std::vector<Engine::SmartPointer<Engine::Actor>>& i_actorsInScene)
+void CheckForNewActors(std::vector<Engine::SmartPointer<Engine::Actor>>& i_actorsToAdd, std::vector<Engine::SmartPointer<Engine::Actor>>& i_actorsInScene, Engine::Mutex& i_actor)
 {
+	i_actor.Acquire();
+
 	if (i_actorsToAdd.size() > 0)
 	{
 		Engine::SmartPointer<Engine::Actor> temp = i_actorsToAdd.back();
 		i_actorsToAdd.pop_back();
 		i_actorsInScene.push_back(temp);
 	}
+
+	i_actor.Release();
 
 }
 
@@ -106,9 +110,6 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 	//StringPool_UnitTest(&handler.blockAllocator);
 
 
-	std::vector<Engine::SmartPointer<Engine::Actor>> actorsToAdd;
-	std::vector<Engine::SmartPointer<Engine::Actor>> actorsInScene;
-
 	//Check if renderer succeeded
 	if (bSuccess)
 	{
@@ -121,10 +122,13 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 
 		//DEBUG_LOG_OUTPUT("Position x: %f, Position y: %f", empty->GetPosition().x(), empty->GetPosition().y());
 
+		std::vector<Engine::SmartPointer<Engine::Actor>> actorsToAdd;
+		std::vector<Engine::SmartPointer<Engine::Actor>> actorsInScene;
+
 		Engine::ThreadedFileProcessor &Processor = Engine::ThreadedFileProcessor::GetInstance();
 
-		Processor.AddToLoadQueue(*new Engine::ShowTask("Player1", actorsToAdd));
-
+		Engine::Mutex actorMu(false, "ActorsMutex");
+		Processor.AddToLoadQueue(*new Engine::ShowTask("..//data/Player1.lua","Player1", actorsToAdd, actorMu));
 
 		//Engine::SmartPointer<Engine::Actor> player = Engine::CreateActor("Player1");
 
@@ -185,7 +189,7 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 						GLib::Sprites::RenderSprite(*actorsInScene[i]->getSprite().Acquire()->sprite, Offset, 0.0f);
 					}
 					
-					CheckForNewActors(actorsToAdd, actorsInScene);
+					CheckForNewActors(actorsToAdd, actorsInScene, actorMu);
 
 
 					

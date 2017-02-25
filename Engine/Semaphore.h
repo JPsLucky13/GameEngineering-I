@@ -16,8 +16,6 @@ namespace Engine
 		void Increment(unsigned int i_Count = 1);
 		void Decrement();
 		bool Decrement(wait_t i_waitMilliseconds);
-
-
 	};
 
 

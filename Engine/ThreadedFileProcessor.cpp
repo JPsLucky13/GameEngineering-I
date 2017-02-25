@@ -25,9 +25,9 @@ namespace Engine
 		m_LoadThreadHandle(i_LoadThreadHandle),
 		m_ProcessThreadHandle(i_ProcessThreadHandle),
 		m_LoadQueueSemaphore(0,100,"LoadQueueSemaphore"),
-		m_LoadQueueMutex("LoadQueueMutex"),
+		m_LoadQueueMutex(false,"LoadQueueMutex"),
 		m_ProcessQueueSemaphore(0,100,"ProcessQueueSemaphore"),
-		m_ProcessQueueMutex("ProcessQueueMutex")
+		m_ProcessQueueMutex(false, "ProcessQueueMutex")
 	{
 		ResumeThread(m_LoadThreadHandle);
 		ResumeThread(m_ProcessThreadHandle);
@@ -175,7 +175,7 @@ namespace Engine
 
 					if (FileHandle == INVALID_HANDLE_VALUE)
 					{
-						ConsolePrint("Error Opening File %s : %d", pLoadTask, GetLastError());
+						ConsolePrint("Error Opening File %s : %d", pFileName, GetLastError());
 						delete pLoadTask;
 					}
 					else
