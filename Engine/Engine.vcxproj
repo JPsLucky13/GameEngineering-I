@@ -40,6 +40,7 @@
     <ClInclude Include="FloatCheck.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="KeyboardHandler.h" />
+    <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="Mutex.h" />
     <ClInclude Include="NewDelete.h" />
     <ClInclude Include="Physics.h" />
@@ -57,6 +58,10 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Vector2D-inl.h" />
     <ClInclude Include="Vector2D.h" />
+    <ClInclude Include="Vector3-inl.h" />
+    <ClInclude Include="Vector3.h" />
+    <ClInclude Include="Vector4-inl.h" />
+    <ClInclude Include="Vector4.h" />
     <ClInclude Include="WaitableObject.h" />
     <ClInclude Include="WeakPointer-inl.h" />
     <ClInclude Include="WeakPointer.h" />
@@ -79,6 +84,7 @@
     <ClCompile Include="HashedString.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="KeyboardHandler.cpp" />
+    <ClCompile Include="Matrix4x4.cpp" />
     <ClCompile Include="Mutex.cpp" />
     <ClCompile Include="NewDelete.cpp" />
     <ClCompile Include="Physics.cpp" />
@@ -91,6 +97,8 @@
     <ClCompile Include="ThreadedFileProcessor.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Vector2D.cpp" />
+    <ClCompile Include="Vector3.cpp" />
+    <ClCompile Include="Vector4.cpp" />
     <ClCompile Include="WaitableObject.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
