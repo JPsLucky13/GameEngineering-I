@@ -25,6 +25,12 @@
     <Filter Include="Source Files\Math">
       <UniqueIdentifier>{e4ac2608-eb02-48d8-b88e-4384eff31e56}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\CollisionHandling">
+      <UniqueIdentifier>{d1a68084-1ff4-4767-8e5a-7bda2d7e4726}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CollisionHandling">
+      <UniqueIdentifier>{8e7c028b-389e-4fd8-a0bb-0108b50aac35}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlockAllocator.h">
@@ -165,6 +171,9 @@
     <ClInclude Include="Vector3-inl.h">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>Header Files\CollisionHandling</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlockAllocator.cpp">
@@ -265,6 +274,9 @@
     </ClCompile>
     <ClCompile Include="Vector3.cpp">
       <Filter>Header Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>Source Files\CollisionHandling</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

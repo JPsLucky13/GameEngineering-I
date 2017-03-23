@@ -1,10 +1,10 @@
-Player1 =
+Monster1 =
 {
-	name = "Zero",
-	class = "Player",
+	name = "Vile",
+	class = "Monster",
 	controller = "InputController",
-	initial_position = {-200.0,5.0},
-	initial_rotation = {0.0,0.0,0.0},
+	initial_position = {100.0,-200.0},
+	initial_rotation = {0.0,0.0,0.7853},
 
 	physics_settings = {
 		mass = 1.0,

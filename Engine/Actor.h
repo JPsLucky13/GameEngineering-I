@@ -7,10 +7,23 @@
 
 namespace Engine {
 
-	class Actor
+	
+	
+	class Actor	
 	{
+
+
+
 	public :
-		Actor(const SmartPointer<GameObject>& i_pObject, const WeakPointer<PhysicsInfo>& i_pPhysics, const WeakPointer<Sprite>& i_pSprite);
+
+		struct AABB
+		{
+			Vector2D center;
+			Vector2D extents;
+		};
+
+
+		Actor(char * i_name, const SmartPointer<GameObject>& i_pObject, const WeakPointer<PhysicsInfo>& i_pPhysics, const WeakPointer<Sprite>& i_pSprite);
 		~Actor();
 
 		SmartPointer<GameObject>& getGObject()
@@ -29,11 +42,28 @@ namespace Engine {
 			return m_pSprite;
 		}
 
+		char * getName()
+		{
+			return m_Name;
+		}
+
+		AABB getBoundingBox()
+		{
+			return  m_boundingBox;
+		}
+
+		void setBoundingBox(Vector2D i_center, Vector2D i_extents)
+		{
+			m_boundingBox.center = i_center;
+			m_boundingBox.extents = i_extents;
+		}
 
 	private:
+		char * m_Name;
 		SmartPointer<GameObject> m_pObject;
 		WeakPointer<PhysicsInfo> m_pPhysics;
 		WeakPointer<Sprite>  m_pSprite;
+		AABB m_boundingBox;
 	};
 
 

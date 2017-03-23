@@ -23,6 +23,7 @@
     <ClInclude Include="BitArray.h" />
     <ClInclude Include="BlockAllocator-inl.h" />
     <ClInclude Include="BlockAllocator.h" />
+    <ClInclude Include="Collision.h" />
     <ClInclude Include="ConsolePrint.h" />
     <ClInclude Include="Counters-inl.h" />
     <ClInclude Include="Counters.h" />
@@ -70,6 +71,7 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="BitArray.cpp" />
     <ClCompile Include="BlockAllocator.cpp" />
+    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="ConsolePrint.cpp" />
     <ClCompile Include="Counters.cpp" />
     <ClCompile Include="CreateActor.cpp" />

@@ -29,7 +29,7 @@
 #include "ShowTask.h"
 #include "Matrix4x4.h"
 #include "Vector4.h"
-
+#include "Collision.h"
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
@@ -132,56 +132,57 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 
 		Engine::Mutex actorMu(false, "ActorsMutex");
 		Processor.AddToLoadQueue(*new Engine::ShowTask("..//data/Player1.lua","Player1", actorsToAdd, actorMu));
+		Processor.AddToLoadQueue(*new Engine::ShowTask("..//data/Monster1.lua", "Monster1", actorsToAdd, actorMu));
 
 
-		//Test case for matrices and Vector4
-		Engine::Matrix4x4 A(5,6,7,8,
-							 0,1,0,1,
-							 2,3,1,2,
-							 0,0,0,1);
+		////Test case for matrices and Vector4
+		//Engine::Matrix4x4 A(5,6,7,8,
+		//					 0,1,0,1,
+		//					 2,3,1,2,
+		//					 0,0,0,1);
 
-		Engine::Matrix4x4 B(7,9,4,5,
-							2,3,3,1,
-							1,1,0,0,
-							2,6,7,5);
-
-
-		Engine::Matrix4x4 C = A*B;
+		//Engine::Matrix4x4 B(7,9,4,5,
+		//					2,3,3,1,
+		//					1,1,0,0,
+		//					2,6,7,5);
 
 
-		DEBUG_LOG_OUTPUT(" Matrix C \n  m_11: %f, m_12: %f, m_13: %f, m_14: %f \n  m_21: %f, m_22: %f, m_23: %f, m_24: %f \n m_31: %f, m_32: %f, m_33: %f, m_34: %f \n m_41: %f, m_42: %f, m_43: %f, m_44: %f \n", C._11(), C._12(), C._13(), C._14(), C._21(), C._22(), C._23(), C._24(), C._31(), C._32(), C._33(), C._34(), C._41(), C._42(), C._43(), C._44());
-
-		//Transpose of A copy
-		C = A.GetTranspose();
-		DEBUG_LOG_OUTPUT(" Transpose \n m_11: %f, m_12: %f, m_13: %f, m_14: %f \n  m_21: %f, m_22: %f, m_23: %f, m_24: %f \n m_31: %f, m_32: %f, m_33: %f, m_34: %f \n m_41: %f, m_42: %f, m_43: %f, m_44: %f \n", C._11(), C._12(), C._13(), C._14(), C._21(), C._22(), C._23(), C._24(), C._31(), C._32(), C._33(), C._34(), C._41(), C._42(), C._43(), C._44());
-
-		//Transpose of A
-		//A.Transpose();
-		//DEBUG_LOG_OUTPUT(" Matrix A T \n m_11: %f, m_12: %f, m_13: %f, m_14: %f \n  m_21: %f, m_22: %f, m_23: %f, m_24: %f \n m_31: %f, m_32: %f, m_33: %f, m_34: %f \n m_41: %f, m_42: %f, m_43: %f, m_44: %f \n", A._11(), A._12(), A._13(), A._14(), A._21(), A._22(), A._23(), A._24(), A._31(), A._32(), A._33(), A._34(), A._41(), A._42(), A._43(), A._44());
-
-		
-
-		//Inverse of A
-		C = A.GetInverse();
-
-		DEBUG_LOG_OUTPUT(" Inverse \n m_11: %f, m_12: %f, m_13: %f, m_14: %f \n  m_21: %f, m_22: %f, m_23: %f, m_24: %f \n m_31: %f, m_32: %f, m_33: %f, m_34: %f \n m_41: %f, m_42: %f, m_43: %f, m_44: %f \n", C._11(), C._12(), C._13(), C._14(), C._21(), C._22(), C._23(), C._24(), C._31(), C._32(), C._33(), C._34(), C._41(), C._42(), C._43(), C._44());
+		//Engine::Matrix4x4 C = A*B;
 
 
+		//DEBUG_LOG_OUTPUT(" Matrix C \n  m_11: %f, m_12: %f, m_13: %f, m_14: %f \n  m_21: %f, m_22: %f, m_23: %f, m_24: %f \n m_31: %f, m_32: %f, m_33: %f, m_34: %f \n m_41: %f, m_42: %f, m_43: %f, m_44: %f \n", C._11(), C._12(), C._13(), C._14(), C._21(), C._22(), C._23(), C._24(), C._31(), C._32(), C._33(), C._34(), C._41(), C._42(), C._43(), C._44());
 
-		//Invert A
-		A.Invert();
-		DEBUG_LOG_OUTPUT(" A -1 \n m_11: %f, m_12: %f, m_13: %f, m_14: %f \n  m_21: %f, m_22: %f, m_23: %f, m_24: %f \n m_31: %f, m_32: %f, m_33: %f, m_34: %f \n m_41: %f, m_42: %f, m_43: %f, m_44: %f \n", A._11(), A._12(), A._13(), A._14(), A._21(), A._22(), A._23(), A._24(), A._31(), A._32(), A._33(), A._34(), A._41(), A._42(), A._43(), A._44());
+		////Transpose of A copy
+		//C = A.GetTranspose();
+		//DEBUG_LOG_OUTPUT(" Transpose \n m_11: %f, m_12: %f, m_13: %f, m_14: %f \n  m_21: %f, m_22: %f, m_23: %f, m_24: %f \n m_31: %f, m_32: %f, m_33: %f, m_34: %f \n m_41: %f, m_42: %f, m_43: %f, m_44: %f \n", C._11(), C._12(), C._13(), C._14(), C._21(), C._22(), C._23(), C._24(), C._31(), C._32(), C._33(), C._34(), C._41(), C._42(), C._43(), C._44());
 
-		//Rotation Matrix Z
-		Engine::Matrix4x4 Rotz = Engine::Matrix4x4::CreateZRotation(3.14f);
-		DEBUG_LOG_OUTPUT(" Rotation Z \n m_11: %f, m_12: %f, m_13: %f, m_14: %f \n  m_21: %f, m_22: %f, m_23: %f, m_24: %f \n m_31: %f, m_32: %f, m_33: %f, m_34: %f \n m_41: %f, m_42: %f, m_43: %f, m_44: %f \n", Rotz._11(), Rotz._12(), Rotz._13(), Rotz._14(), Rotz._21(), Rotz._22(), Rotz._23(), Rotz._24(), Rotz._31(), Rotz._32(), Rotz._33(), Rotz._34(), Rotz._41(), Rotz._42(), Rotz._43(), Rotz._44());
-		Engine::Matrix4x4 trans = Engine::Matrix4x4::CreateTranslation(Engine:: Vector4(2.0f,3.0f,1.0f,5.0f));
-		Rotz = Rotz * trans;
-		DEBUG_LOG_OUTPUT(" Rotation Z X Translation \n m_11: %f, m_12: %f, m_13: %f, m_14: %f \n  m_21: %f, m_22: %f, m_23: %f, m_24: %f \n m_31: %f, m_32: %f, m_33: %f, m_34: %f \n m_41: %f, m_42: %f, m_43: %f, m_44: %f \n", Rotz._11(), Rotz._12(), Rotz._13(), Rotz._14(), Rotz._21(), Rotz._22(), Rotz._23(), Rotz._24(), Rotz._31(), Rotz._32(), Rotz._33(), Rotz._34(), Rotz._41(), Rotz._42(), Rotz._43(), Rotz._44());
+		////Transpose of A
+		////A.Transpose();
+		////DEBUG_LOG_OUTPUT(" Matrix A T \n m_11: %f, m_12: %f, m_13: %f, m_14: %f \n  m_21: %f, m_22: %f, m_23: %f, m_24: %f \n m_31: %f, m_32: %f, m_33: %f, m_34: %f \n m_41: %f, m_42: %f, m_43: %f, m_44: %f \n", A._11(), A._12(), A._13(), A._14(), A._21(), A._22(), A._23(), A._24(), A._31(), A._32(), A._33(), A._34(), A._41(), A._42(), A._43(), A._44());
 
-		Engine::Vector4 result = Rotz.MultiplyRight(Engine::Vector4(2.0f, 0.0f, 1.0f, 0.0f));
+		//
 
-		DEBUG_LOG_OUTPUT(" Vector4 result \n m_x: %f, m_y: %f, m_z: %f, m_w: %f \n", result.x(), result.y() , result.z(), result.w());
+		////Inverse of A
+		//C = A.GetInverse();
+
+		//DEBUG_LOG_OUTPUT(" Inverse \n m_11: %f, m_12: %f, m_13: %f, m_14: %f \n  m_21: %f, m_22: %f, m_23: %f, m_24: %f \n m_31: %f, m_32: %f, m_33: %f, m_34: %f \n m_41: %f, m_42: %f, m_43: %f, m_44: %f \n", C._11(), C._12(), C._13(), C._14(), C._21(), C._22(), C._23(), C._24(), C._31(), C._32(), C._33(), C._34(), C._41(), C._42(), C._43(), C._44());
+
+
+
+		////Invert A
+		//A.Invert();
+		//DEBUG_LOG_OUTPUT(" A -1 \n m_11: %f, m_12: %f, m_13: %f, m_14: %f \n  m_21: %f, m_22: %f, m_23: %f, m_24: %f \n m_31: %f, m_32: %f, m_33: %f, m_34: %f \n m_41: %f, m_42: %f, m_43: %f, m_44: %f \n", A._11(), A._12(), A._13(), A._14(), A._21(), A._22(), A._23(), A._24(), A._31(), A._32(), A._33(), A._34(), A._41(), A._42(), A._43(), A._44());
+
+		////Rotation Matrix Z
+		//Engine::Matrix4x4 Rotz = Engine::Matrix4x4::CreateZRotation(3.14f);
+		//DEBUG_LOG_OUTPUT(" Rotation Z \n m_11: %f, m_12: %f, m_13: %f, m_14: %f \n  m_21: %f, m_22: %f, m_23: %f, m_24: %f \n m_31: %f, m_32: %f, m_33: %f, m_34: %f \n m_41: %f, m_42: %f, m_43: %f, m_44: %f \n", Rotz._11(), Rotz._12(), Rotz._13(), Rotz._14(), Rotz._21(), Rotz._22(), Rotz._23(), Rotz._24(), Rotz._31(), Rotz._32(), Rotz._33(), Rotz._34(), Rotz._41(), Rotz._42(), Rotz._43(), Rotz._44());
+		//Engine::Matrix4x4 trans = Engine::Matrix4x4::CreateTranslation(Engine:: Vector4(2.0f,3.0f,1.0f,5.0f));
+		//Rotz = Rotz * trans;
+		//DEBUG_LOG_OUTPUT(" Rotation Z X Translation \n m_11: %f, m_12: %f, m_13: %f, m_14: %f \n  m_21: %f, m_22: %f, m_23: %f, m_24: %f \n m_31: %f, m_32: %f, m_33: %f, m_34: %f \n m_41: %f, m_42: %f, m_43: %f, m_44: %f \n", Rotz._11(), Rotz._12(), Rotz._13(), Rotz._14(), Rotz._21(), Rotz._22(), Rotz._23(), Rotz._24(), Rotz._31(), Rotz._32(), Rotz._33(), Rotz._34(), Rotz._41(), Rotz._42(), Rotz._43(), Rotz._44());
+
+		//Engine::Vector4 result = Rotz.MultiplyRight(Engine::Vector4(2.0f, 0.0f, 1.0f, 0.0f));
+
+		//DEBUG_LOG_OUTPUT(" Vector4 result \n m_x: %f, m_y: %f, m_z: %f, m_w: %f \n", result.x(), result.y() , result.z(), result.w());
 
 		bool bQuit = false;
 		do
@@ -230,11 +231,28 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 					//For loop to update the actors
 					for(size_t i = 0; i < actorsInScene.size(); i++)
 					{
-						actorsInScene[i]->getPhysics().Acquire()->Update(force, dt);
+						
+						
+						//Update the player movement
+						if (strcmp(actorsInScene[i]->getName(),"Zero") == 0)
+						{
+							actorsInScene[i]->getPhysics().Acquire()->Update(force, dt);
+						}
+
+
+						float rotation = actorsInScene[i]->getGObject()->GetRotation().z();
 						GLib::Point2D	Offset = { actorsInScene[i]->getGObject()->GetPosition().x(), actorsInScene[i]->getGObject()->GetPosition().y() };
-					
+
 						// Tell GLib to render this sprite at our calculated location
-						GLib::Sprites::RenderSprite(*actorsInScene[i]->getSprite().Acquire()->sprite, Offset, 0.0f);
+						GLib::Sprites::RenderSprite(*actorsInScene[i]->getSprite().Acquire()->sprite, Offset, rotation);
+
+
+						//Handle collisions without velocity and with rotations
+						if (actorsInScene.size() > 1)
+						{
+							Engine::Collision::CheckCollisions(actorsInScene);
+						}
+
 					}
 					
 					CheckForNewActors(actorsToAdd, actorsInScene, actorMu);

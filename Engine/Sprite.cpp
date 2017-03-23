@@ -8,7 +8,6 @@ namespace Engine {
 	{
 		m_pObject = object;
 		sprite =CreateSprite(i_pFilename);
-
 	}
 
 	Sprite::~Sprite()
@@ -44,6 +43,10 @@ namespace Engine {
 		bool result = GLib::GetDimensions(pTexture, width, height, depth);
 		assert(result == true);
 		assert((width > 0) && (height > 0));
+
+		//Set the values of the sprite
+		m_width = static_cast<float>(width);
+		m_height = static_cast<float>(height);
 
 		// Define the sprite edges
 		GLib::Sprites::SpriteEdges	Edges = { -float(width / 2.0f), float(height), float(width / 2.0f), 0.0f };
