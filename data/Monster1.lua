@@ -3,7 +3,7 @@ Monster1 =
 	name = "Vile",
 	class = "Monster",
 	controller = "InputController",
-	initial_position = {100.0,-200.0},
+	initial_position = {500.0,-200.0},
 	initial_rotation = {0.0,0.0,0.7853},
 
 	physics_settings = {

@@ -3,7 +3,7 @@ Player1 =
 	name = "Zero",
 	class = "Player",
 	controller = "InputController",
-	initial_position = {-200.0,5.0},
+	initial_position = {-200.0,200.0},
 	initial_rotation = {0.0,0.0,0.0},
 
 	physics_settings = {

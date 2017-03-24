@@ -198,8 +198,13 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 
 				//if (player->getSprite().Acquire()->sprite)
 				//{
+
+					//Force to move the player
 					Engine::Vector2D force(0.0f, 0.0f);
 					const float forceMagnitude = 5.0f;
+
+					//Force for the monsters
+					Engine::Vector2D monster_force(-5.0f, 0.0f);
 
 					//Move the player
 					if (Engine::Input::keyHandler.A.m_isDown)
@@ -238,6 +243,10 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 						{
 							actorsInScene[i]->getPhysics().Acquire()->Update(force, dt);
 						}
+						else
+						{
+							actorsInScene[i]->getPhysics().Acquire()->Update(monster_force, dt);
+						}
 
 
 						float rotation = actorsInScene[i]->getGObject()->GetRotation().z();
@@ -250,7 +259,7 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 						//Handle collisions without velocity and with rotations
 						if (actorsInScene.size() > 1)
 						{
-							Engine::Collision::CheckCollisions(actorsInScene);
+							Engine::Collision::CheckCollisions(actorsInScene, dt);
 						}
 
 					}
