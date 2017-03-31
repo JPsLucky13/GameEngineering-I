@@ -21,6 +21,11 @@ namespace Engine {
 		return Vector2D(input1.x() - input2.x(), input1.y() - input2.y());
 	}
 
+	inline Vector2D Vector2D::operator-()const 
+	{
+		return Vector2D(-m_x, -m_y);
+	}
+
 	inline Vector2D operator*(const Vector2D & input1, float i_Scalar)
 	{
 
@@ -35,6 +40,11 @@ namespace Engine {
 		assert(!IsNaN(i_Scalar));
 
 		return Vector2D(input1.x()/ i_Scalar, input1.y() / i_Scalar);
+	}
+
+	inline float Vector2D::operatordot(const Vector2D & input1)
+	{
+		return m_x * input1.x()  + m_y * input1.y();
 	}
 
 	inline void Vector2D::operator=(const Vector2D & input1)

@@ -10,12 +10,22 @@ namespace Engine
 
 	void Collision::CheckCollisions(std::vector<Engine::SmartPointer<Engine::Actor>>& i_actorsToAdd, float i_LastFrameTime)
 	{
+		CollisionPair EarliestCollision;
+		EarliestCollision.m_CollisionTime = i_LastFrameTime;
+
+		Engine::Vector3 colNormal;
+
+
 		for (size_t i = 0; i < i_actorsToAdd.size(); i++)
 		{
 
 			for(size_t j=i + 1; j < i_actorsToAdd.size(); j++)
 			{ 
 		
+			//Calculate the earliest collision
+			float colTime = 0.0f;
+
+
 			//Separation check
 			bool IsSeparated = false;
 				
@@ -60,13 +70,16 @@ namespace Engine
 
 			Engine::Vector4 VelAInB = mWorldToB.MultiplyRight(Engine::Vector4(VelARelToB.x(), VelARelToB.y(), VelAInB.z(), 0.0f));
 
+			float BextentsX = i_actorsToAdd[j]->getBoundingBox().extents.x() + AProjectionOntoB_X;
+			float BextentsY = i_actorsToAdd[j]->getBoundingBox().extents.y() + AProjectionOntoB_Y;
+
 			//The edges of B
-			float BLeft = i_actorsToAdd[j]->getBoundingBox().center.x() - (i_actorsToAdd[j]->getBoundingBox().extents.x() + AProjectionOntoB_X);
-			float BRight = i_actorsToAdd[j]->getBoundingBox().center.x() + (i_actorsToAdd[j]->getBoundingBox().extents.x() + AProjectionOntoB_X);
+			float BLeft = i_actorsToAdd[j]->getBoundingBox().center.x() - BextentsX;
+			float BRight = i_actorsToAdd[j]->getBoundingBox().center.x() + BextentsX;
 
 			//Top edges of B
-			float BBottom = i_actorsToAdd[j]->getBoundingBox().center.y() - (i_actorsToAdd[j]->getBoundingBox().extents.y() + AProjectionOntoB_Y);
-			float BTop = i_actorsToAdd[j]->getBoundingBox().center.y() + (i_actorsToAdd[j]->getBoundingBox().extents.y() + AProjectionOntoB_Y);
+			float BBottom = i_actorsToAdd[j]->getBoundingBox().center.y() - BextentsY;
+			float BTop = i_actorsToAdd[j]->getBoundingBox().center.y() + BextentsY;
 
 			float t_CloseAInBX = 0.0f;
 			float t_OpenAInBX = 0.0f;
@@ -76,8 +89,8 @@ namespace Engine
 			if(!Engine::floatEpsilonEqual(VelAInB.x(),0.0f))
 			{ 
 				//Times on X axis
-				t_CloseAInBX = (i_actorsToAdd[j]->getBoundingBox().center.x() - i_actorsToAdd[j]->getBoundingBox().extents.x()) - (ABBCenterInB.x() + AProjectionOntoB_X) / VelAInB.x();
-				t_OpenAInBX = (i_actorsToAdd[j]->getBoundingBox().center.x() - i_actorsToAdd[j]->getBoundingBox().extents.x()) - (ABBCenterInB.x() - AProjectionOntoB_X) / VelAInB.x();
+				t_CloseAInBX = (BLeft - ABBCenterInB.x())/ VelAInB.x();
+				t_OpenAInBX = (BRight - ABBCenterInB.x())/ VelAInB.x();
 
 				//Swap the values
 				if (t_CloseAInBX > t_OpenAInBX)
@@ -87,7 +100,13 @@ namespace Engine
 					t_OpenAInBX = temp;
 				}
 
+				//The axis for the collision
+				Engine::Vector4 BxInWorld = mBToWorld.MultiplyLeft(Engine::Vector4(1.0f, 0.0f, 0.0f, 0.0f));
 
+				//The normal to the collision
+				colNormal = Engine::Vector3(BxInWorld.x(), BxInWorld.y(),0.0f);
+				
+				
 			}
 
 			else
@@ -115,8 +134,8 @@ namespace Engine
 			{
 
 				//Times on Y axis
-				t_CloseAInBY = (i_actorsToAdd[j]->getBoundingBox().center.y() - i_actorsToAdd[j]->getBoundingBox().extents.y()) - (ABBCenterInB.y() + AProjectionOntoB_Y) / VelAInB.y();
-				t_OpenAInBY = (i_actorsToAdd[j]->getBoundingBox().center.y() - i_actorsToAdd[j]->getBoundingBox().extents.y()) - (ABBCenterInB.y() - AProjectionOntoB_Y) / VelAInB.y();
+				t_CloseAInBY = (BBottom - ABBCenterInB.y())/ VelAInB.y();
+				t_OpenAInBY = (BTop - ABBCenterInB.y())/ VelAInB.y();
 
 				//Swap the values
 				if (t_CloseAInBY > t_OpenAInBY)
@@ -125,6 +144,13 @@ namespace Engine
 					t_CloseAInBY = t_OpenAInBY;
 					t_OpenAInBY = temp;
 				}
+
+				//The axis for the collision
+				Engine::Vector4 ByInWorld = mBToWorld.MultiplyLeft(Engine::Vector4(0.0f, 1.0f, 0.0f, 0.0f));
+
+				//The normal to the collision
+				colNormal = Engine::Vector3(ByInWorld.x(), ByInWorld.y(), 0.0f);
+				
 			}
 
 			else
@@ -178,13 +204,16 @@ namespace Engine
 
 			Engine::Vector4 VelBInA = mWorldToA.MultiplyRight(Engine::Vector4(VelBRelToA.x(), VelBRelToA.y(), VelBRelToA.z(), 0.0f));
 
+			float AextentsX = i_actorsToAdd[i]->getBoundingBox().extents.x() + BProjectionOntoA_X;
+			float AextentsY = i_actorsToAdd[i]->getBoundingBox().extents.y() + BProjectionOntoA_Y;
+
 			//The edges of A
-			float ALeft = i_actorsToAdd[i]->getBoundingBox().center.x() - (i_actorsToAdd[i]->getBoundingBox().extents.x() + BProjectionOntoA_X);
-			float ARight = i_actorsToAdd[i]->getBoundingBox().center.x() + (i_actorsToAdd[i]->getBoundingBox().extents.x() + BProjectionOntoA_X);
+			float ALeft = i_actorsToAdd[i]->getBoundingBox().center.x() - AextentsX;
+			float ARight = i_actorsToAdd[i]->getBoundingBox().center.x() + AextentsX;
 
 			//Top edges of A
-			float ABottom = i_actorsToAdd[i]->getBoundingBox().center.y() - (i_actorsToAdd[i]->getBoundingBox().extents.y() + BProjectionOntoA_Y);
-			float ATop = i_actorsToAdd[i]->getBoundingBox().center.y() + (i_actorsToAdd[i]->getBoundingBox().extents.y() + BProjectionOntoA_Y);
+			float ABottom = i_actorsToAdd[i]->getBoundingBox().center.y() - AextentsY;
+			float ATop = i_actorsToAdd[i]->getBoundingBox().center.y() + AextentsY;
 
 			float t_CloseBInAX = 0.0f;
 			float t_OpenBInAX = 0.0f;
@@ -193,8 +222,8 @@ namespace Engine
 			{
 
 				//Times on X axis
-				t_CloseBInAX = (i_actorsToAdd[i]->getBoundingBox().center.x() - i_actorsToAdd[i]->getBoundingBox().extents.x()) - (BBBCenterInA.x() + BProjectionOntoA_X) / VelBInA.x();
-				t_OpenBInAX = (i_actorsToAdd[i]->getBoundingBox().center.x() - i_actorsToAdd[i]->getBoundingBox().extents.x()) - (BBBCenterInA.x() - BProjectionOntoA_X) / VelBInA.x();
+				t_CloseBInAX = (ALeft - BBBCenterInA.x()) / VelBInA.x();
+				t_OpenBInAX = (ARight - BBBCenterInA.x()) / VelBInA.x();
 
 				if (t_CloseBInAX > t_OpenBInAX)
 				{
@@ -202,6 +231,13 @@ namespace Engine
 					t_CloseBInAX = t_OpenBInAX;
 					t_OpenBInAX = temp;
 				}
+
+				//The axis for the collision
+				Engine::Vector4 AxInWorld = mAToWorld.MultiplyLeft(Engine::Vector4(1.0f, 0.0f, 0.0f, 0.0f));
+
+				//The normal to the collision
+				colNormal = Engine::Vector3(AxInWorld.x(), AxInWorld.y(), 0.0f);
+				
 
 			}
 
@@ -227,8 +263,8 @@ namespace Engine
 			{
 
 				//Times on Y axis
-				t_CloseBInAY = (i_actorsToAdd[i]->getBoundingBox().center.y() - i_actorsToAdd[i]->getBoundingBox().extents.y()) - (BBBCenterInA.y() + BProjectionOntoA_Y) / VelBInA.y();
-				t_OpenBInAY = (i_actorsToAdd[i]->getBoundingBox().center.y() - i_actorsToAdd[i]->getBoundingBox().extents.y()) - (BBBCenterInA.y() - BProjectionOntoA_Y) / VelBInA.y();
+				t_CloseBInAY = (ABottom - BBBCenterInA.y()) / VelBInA.y();
+				t_OpenBInAY = (ATop - BBBCenterInA.y())/ VelBInA.y();
 
 				if (t_CloseBInAY > t_OpenBInAY)
 				{
@@ -236,6 +272,13 @@ namespace Engine
 					t_CloseBInAY = t_OpenBInAY;
 					t_OpenBInAY = temp;
 				}
+
+				//The axis for the collision
+				Engine::Vector4 AyInWorld = mAToWorld.MultiplyLeft(Engine::Vector4(0.0f, 1.0f, 0.0f, 0.0f));
+
+				//The normal to the collision
+				colNormal = Engine::Vector3(AyInWorld.x(), AyInWorld.y(), 0.0f);
+				
 			}
 
 			else 
@@ -319,16 +362,55 @@ namespace Engine
 			
 
 
-			//Resolve if there was a collision
-			if (!IsSeparated)
-			{
-				DEBUG_LOG_OUTPUT("There was a collision!");
-			}
-			
-			
+				
+			colTime = maxClose;
 
+				//Resolve if there was a collision
+				if (!IsSeparated)
+				{
+					
+					if (colTime < EarliestCollision.m_CollisionTime)
+					{
+						EarliestCollision.m_CollisionTime = colTime;
+						EarliestCollision.m_CollisionNormal = colNormal;
+						EarliestCollision.m_CollisionObjects[0] = i_actorsToAdd[i];
+						EarliestCollision.m_CollisionObjects[1] = i_actorsToAdd[j];
+
+						//	Call the collision resolution
+						ResolveCollision(EarliestCollision, colNormal);
+
+					}
+					//DEBUG_LOG_OUTPUT("There was a collision!");
+				}
 			}
 		}
 
+	}
+	void Collision::ResolveCollision(CollisionPair i_Pair, Engine::Vector3 i_colNormal)
+	{
+
+		//Objcets A and B
+		Engine::Vector2D velA = i_Pair.m_CollisionObjects[0].Acquire()->getGObject()->GetVelocity();
+		Engine::Vector2D velB = i_Pair.m_CollisionObjects[1].Acquire()->getGObject()->GetVelocity();
+
+		//The masses of the objects
+		float massA = i_Pair.m_CollisionObjects[0].Acquire()->getPhysics().Acquire()->getMass();
+		float massB = i_Pair.m_CollisionObjects[1].Acquire()->getPhysics().Acquire()->getMass();
+
+		//Post collision velocities
+		Engine::Vector2D velAPost = velA * ((massA - massB) / (massA + massB)) + velB * ((2 * massB) / (massA + massB));
+		Engine::Vector2D velBPost = velB * ((massB - massA) / (massA + massB)) + velA * ((2 * massA) / (massA + massB));
+
+
+		Engine::Vector2D colNormal = Engine::Vector2D(i_colNormal.x(), i_colNormal.y());
+		colNormal.normalize();
+
+		//Post collision velocities with normal
+		Engine::Vector2D velAPost2 = velA - (colNormal * velA.operatordot(colNormal) * 2.0f);
+		Engine::Vector2D velBPost2 = velB - (colNormal * velB.operatordot(colNormal) * 2.0f);
+
+		//Set new velocity
+		i_Pair.m_CollisionObjects[0].Acquire()->getGObject()->SetVelocity(velAPost + velAPost2);
+		i_Pair.m_CollisionObjects[1].Acquire()->getGObject()->SetVelocity(velBPost + velBPost2);
 	}
 }

@@ -201,10 +201,10 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 
 					//Force to move the player
 					Engine::Vector2D force(0.0f, 0.0f);
-					const float forceMagnitude = 5.0f;
+					const float forceMagnitude = 10.0f;
 
 					//Force for the monsters
-					Engine::Vector2D monster_force(-5.0f, 0.0f);
+					Engine::Vector2D monster_force(-3.0f, 0.0f);
 
 					//Move the player
 					if (Engine::Input::keyHandler.A.m_isDown)

@@ -33,6 +33,8 @@ namespace Engine {
 
 
 		inline void operator=(const Vector2D & input1);
+		inline Vector2D operator-()const;
+		inline float operatordot(const Vector2D & input1);
 		inline bool isZero();
 		//Returns the normalized vector
 		Vector2D normalize();
@@ -45,6 +47,7 @@ namespace Engine {
 	inline Vector2D operator-(const Vector2D & input1, const Vector2D & input2);
 	inline Vector2D operator*(const Vector2D & input1, float i_Scalar);
 	inline Vector2D operator/(const Vector2D & input1, float i_Scalar);
+	
 	inline bool operator==(const Vector2D & input1, const Vector2D & input2);
 	inline bool operator!=(const Vector2D & input1, const Vector2D & input2);
 	

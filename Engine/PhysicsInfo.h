@@ -10,6 +10,12 @@ namespace Engine
 		PhysicsInfo::PhysicsInfo(const WeakPointer<GameObject>& object, float mass, float drag);
 		~PhysicsInfo();
 
+
+		//Getters 
+		float getMass() { return m_Mass; }
+		float getDrag() { return m_Drag; }
+
+
 		//Updates the physics of the gameobject
 		void Update(const Vector2D & i_Force, float i_dt);
 
