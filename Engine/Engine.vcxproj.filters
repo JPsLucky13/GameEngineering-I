@@ -31,6 +31,12 @@
     <Filter Include="Source Files\CollisionHandling">
       <UniqueIdentifier>{8e7c028b-389e-4fd8-a0bb-0108b50aac35}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\MessageSystem">
+      <UniqueIdentifier>{6556a95a-017e-47b1-9731-4dffb2ae0087}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MessageSystem">
+      <UniqueIdentifier>{07d31ccd-4307-4e24-80af-3e97ba436c19}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlockAllocator.h">
@@ -174,6 +180,9 @@
     <ClInclude Include="Collision.h">
       <Filter>Header Files\CollisionHandling</Filter>
     </ClInclude>
+    <ClInclude Include="MessageSystem.h">
+      <Filter>Header Files\MessageSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlockAllocator.cpp">
@@ -277,6 +286,9 @@
     </ClCompile>
     <ClCompile Include="Collision.cpp">
       <Filter>Source Files\CollisionHandling</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageSystem.cpp">
+      <Filter>Source Files\MessageSystem</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

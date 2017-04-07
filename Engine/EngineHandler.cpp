@@ -16,14 +16,13 @@ namespace Engine{
 
 	void EngineHandler::Init()
 		{
-			
 
 			//Creating the block allocator
 			blockAllocator.create(1024 * 1024, 100);
 			GetBlockAllocator(&blockAllocator);
 
-			GetFSAManager(&fsaManager);
 			fsaManager.CreateFSAs(&blockAllocator);
+			GetFSAManager(&fsaManager);
 
 		}
 
@@ -32,10 +31,10 @@ namespace Engine{
 
 	}
 
-		void EngineHandler::Shutdown()
-		{
+	void EngineHandler::Shutdown()
+	{
 			blockAllocator.destroy();
 
-		}
+	}
 
 }

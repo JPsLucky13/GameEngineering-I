@@ -42,6 +42,7 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="KeyboardHandler.h" />
     <ClInclude Include="Matrix4x4.h" />
+    <ClInclude Include="MessageSystem.h" />
     <ClInclude Include="Mutex.h" />
     <ClInclude Include="NewDelete.h" />
     <ClInclude Include="Physics.h" />
@@ -87,6 +88,7 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="KeyboardHandler.cpp" />
     <ClCompile Include="Matrix4x4.cpp" />
+    <ClCompile Include="MessageSystem.cpp" />
     <ClCompile Include="Mutex.cpp" />
     <ClCompile Include="NewDelete.cpp" />
     <ClCompile Include="Physics.cpp" />

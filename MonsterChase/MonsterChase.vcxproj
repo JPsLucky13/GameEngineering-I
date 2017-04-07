@@ -22,6 +22,7 @@
     <ClCompile Include="BitArray_UnitTest.cpp" />
     <ClCompile Include="FloatChecker_UnitTest.cpp" />
     <ClCompile Include="FSA_UnitTest.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Gargoyle.cpp" />
     <ClCompile Include="GargoyleController.cpp" />
@@ -36,6 +37,7 @@
     <ClCompile Include="StringPool_UnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game.h" />
     <ClInclude Include="GameManager-inl.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Gargoyle-inl.h" />

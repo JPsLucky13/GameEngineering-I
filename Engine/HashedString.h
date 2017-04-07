@@ -9,50 +9,57 @@ namespace Engine {
 
 	public: 
 		HashedString(const char * i_pString) :
-			m_pString(i_pString)
-		{}
+			m_hash(Hash(i_pString))
+		{
+		
+		}
 
 
 		HashedString(PooledString & i_PooledString) :
-			m_pString(i_PooledString.getString())
+			m_hash(Hash(i_PooledString.getString()))
 		{}
 
 
 		HashedString(const HashedString & i_other):
-			m_pString(i_other.m_pString)
+			m_hash(i_other.m_hash)
 		{}
 
 		HashedString & operator= (const HashedString & i_other)
 		{
-			m_pString = i_other.m_pString;
+			m_hash = i_other.m_hash;
 		}
 
 		bool operator==(PooledString & i_other)
 		{
-			return m_pString == i_other.getString();
+			return m_hash == Hash(i_other.getString());
 		}
 
 
 		bool operator==(const HashedString & i_other)
 		{
-			return m_pString == i_other.m_pString;
+			return m_hash == i_other.m_hash;
 		}
 
 		bool operator==(const char * i_pString)
 		{
-			return m_pString == i_pString;
+			return m_hash == Hash(i_pString);
 		}
 
-		operator bool()
+		bool operator<(const HashedString& i_other) const
 		{
-			return m_pString == nullptr;
+			return m_hash < i_other.m_hash;
 		}
+
+		//operator bool()
+		//{
+		//	return m_hash == nullptr;
+		//}
 
 		unsigned int Hash(const char * i_string);
 		unsigned int Hash(const void * i_bytes, size_t i_byteCount);
 
 	private:
-		const char * m_pString;
+		int m_hash;
 
 	};
 

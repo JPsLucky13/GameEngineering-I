@@ -1,6 +1,7 @@
 
 #include "ShowTask.h"
 #include "CreateActor.h"
+#include "MessageSystem.h"
 
 namespace Engine
 {
@@ -22,6 +23,11 @@ namespace Engine
 		}
 
 		m_actorMutex.Release();
+
+		//Call broadcast that actor was created
+		Engine::MessageSystem::GetInstance()->BroadCast("ActorCreated");
+
+
 	}
 
 
