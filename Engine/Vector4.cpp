@@ -10,9 +10,10 @@ namespace Engine {
 
 	Vector4 Vector4::normalize()
 	{
-		float length = static_cast<float>(sqrt(m_x * m_x + m_y * m_y + m_z * m_z + m_w * m_w));
+		float length = static_cast<float>(sqrt(dot(m_vector, m_vector)));
 		assert(length != 0);
-		Engine::Vector4 normalizedVector(m_x / length, m_y / length, m_z/length, m_w / length);
-		return normalizedVector;
+		__m128 lengthVec = _mm_set_ps1(length);
+
+		return Vector4(_mm_div_ps(m_vector, lengthVec));
 	}
 }

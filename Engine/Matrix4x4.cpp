@@ -244,27 +244,79 @@ namespace Engine {
 	//return v * M
 	Vector4 Matrix4x4::MultiplyLeft(const Vector4 & i_Vector) const
 	{
+		//Old operation
 
-		Vector4 res(i_Vector.x() * m_11 + i_Vector.y() * m_21 + i_Vector.z() * m_31 + i_Vector.w() * m_41,
+		/*Vector4 res(i_Vector.x() * m_11 + i_Vector.y() * m_21 + i_Vector.z() * m_31 + i_Vector.w() * m_41,
 					i_Vector.x() * m_12 + i_Vector.y() * m_22 + i_Vector.z() * m_32 + i_Vector.w() * m_42,
 					i_Vector.x() * m_13 + i_Vector.y() * m_23 + i_Vector.z() * m_33 + i_Vector.w() * m_43,
 					i_Vector.x() * m_14 + i_Vector.y() * m_24 + i_Vector.z() * m_34 + i_Vector.w() * m_44
-					);
+					);*/
+		
 
-		return res;
+		//Columns of matrix 4x4
+		__m128 col1 = _mm_set_ps(m_14, m_13, m_12, m_11);
+		__m128 col2 = _mm_set_ps(m_24, m_23, m_22, m_21);
+		__m128 col3 = _mm_set_ps(m_34, m_33, m_32, m_31);
+		__m128 col4 = _mm_set_ps(m_44, m_43, m_42, m_41);
+
+		//The vector
+		__m128 vectorXComp = _mm_set_ps1(i_Vector.x());
+		__m128 vectorYComp = _mm_set_ps1(i_Vector.y());
+		__m128 vectorZComp = _mm_set_ps1(i_Vector.z());
+		__m128 vectorWComp = _mm_set_ps1(i_Vector.w());
+
+		//The multiplications
+		__m128 mulOp1 = _mm_mul_ps(col1,vectorXComp);
+		__m128 mulOp2 = _mm_mul_ps(col2, vectorYComp);
+		__m128 mulOp3 = _mm_mul_ps(col3, vectorZComp);
+		__m128 mulOp4 = _mm_mul_ps(col4, vectorWComp);
+
+		//The sums
+		__m128 sumOp1 = _mm_add_ps(mulOp1, mulOp2);
+		__m128 sumOp2 = _mm_add_ps(mulOp3, mulOp4);
+		__m128 sumOp3 = _mm_add_ps(sumOp1, sumOp2);
+
+
+		return Vector4(sumOp3);
 	}
 
 	//return M * v
 	Vector4 Matrix4x4::MultiplyRight(const Vector4 & i_Vector) const
 	{
+		//Old operation
+		/*
 		Vector4 res(m_11 * i_Vector.x() + m_12 * i_Vector.y() + m_13 * i_Vector.z() + m_14 * i_Vector.w(),
 					m_21 * i_Vector.x() + m_22 * i_Vector.y() + m_23 * i_Vector.z() + m_24 * i_Vector.w(),
 					m_31 * i_Vector.x() + m_32 * i_Vector.y() + m_33 * i_Vector.z() + m_34 * i_Vector.w(),
 					m_41 * i_Vector.x() + m_42 * i_Vector.y() + m_43 * i_Vector.z() + m_44 * i_Vector.w()
 					);
+					*/
+
+		//Columns of matrix 4x4
+		__m128 col1 = _mm_set_ps(m_41, m_31, m_21, m_11);
+		__m128 col2 = _mm_set_ps(m_42, m_32, m_22, m_12);
+		__m128 col3 = _mm_set_ps(m_43, m_33, m_23, m_13);
+		__m128 col4 = _mm_set_ps(m_44, m_34, m_24, m_14);
+
+		//The vector
+		__m128 vectorXComp = _mm_set_ps1(i_Vector.x());
+		__m128 vectorYComp = _mm_set_ps1(i_Vector.y());
+		__m128 vectorZComp = _mm_set_ps1(i_Vector.z());
+		__m128 vectorWComp = _mm_set_ps1(i_Vector.w());
+
+		//The multiplications
+		__m128 mulOp1 = _mm_mul_ps(col1, vectorXComp);
+		__m128 mulOp2 = _mm_mul_ps(col2, vectorYComp);
+		__m128 mulOp3 = _mm_mul_ps(col3, vectorZComp);
+		__m128 mulOp4 = _mm_mul_ps(col4, vectorWComp);
+
+		//The sums
+		__m128 sumOp1 = _mm_add_ps(mulOp1, mulOp2);
+		__m128 sumOp2 = _mm_add_ps(mulOp3, mulOp4);
+		__m128 sumOp3 = _mm_add_ps(sumOp1, sumOp2);
 
 
-		return res;
+		return Vector4(sumOp3);
 	}
 
 	void Matrix4x4::Switch(float & i_value1, float & i_value2)

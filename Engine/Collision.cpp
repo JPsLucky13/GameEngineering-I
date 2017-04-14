@@ -389,7 +389,7 @@ namespace Engine
 	void Collision::ResolveCollision(CollisionPair i_Pair, Engine::Vector3 i_colNormal)
 	{
 
-		//Objcets A and B
+		//Objects A and B
 		Engine::Vector2D velA = i_Pair.m_CollisionObjects[0].Acquire()->getGObject()->GetVelocity();
 		Engine::Vector2D velB = i_Pair.m_CollisionObjects[1].Acquire()->getGObject()->GetVelocity();
 
@@ -406,8 +406,8 @@ namespace Engine
 		colNormal.normalize();
 
 		//Post collision velocities with normal
-		Engine::Vector2D velAPost2 = velA - (colNormal * velA.operatordot(colNormal) * 2.0f);
-		Engine::Vector2D velBPost2 = velB - (colNormal * velB.operatordot(colNormal) * 2.0f);
+		Engine::Vector2D velAPost2 = velA - (colNormal * Engine::dot(velA,colNormal) * 2.0f);
+		Engine::Vector2D velBPost2 = velB - (colNormal * Engine::dot(velB,colNormal) * 2.0f);
 
 		//Set new velocity
 		i_Pair.m_CollisionObjects[0].Acquire()->getGObject()->SetVelocity(velAPost + velAPost2);

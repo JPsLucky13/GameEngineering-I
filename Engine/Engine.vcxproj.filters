@@ -281,14 +281,14 @@
     <ClCompile Include="Matrix4x4.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Vector3.cpp">
-      <Filter>Header Files\Math</Filter>
-    </ClCompile>
     <ClCompile Include="Collision.cpp">
       <Filter>Source Files\CollisionHandling</Filter>
     </ClCompile>
     <ClCompile Include="MessageSystem.cpp">
       <Filter>Source Files\MessageSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>Source Files\Math</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

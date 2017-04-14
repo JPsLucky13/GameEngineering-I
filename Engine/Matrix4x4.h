@@ -1,8 +1,14 @@
 #pragma once
+
+
+#include <xmmintrin.h>
+#include <smmintrin.h>
 #include "Vector4.h"
 #include "math.h"
 #include <assert.h>
 #include "FloatCheck.h"
+#define _MM_SHUFFLE(fp3,fp2,fp1,fp0)(((fp3) << 6) | ((fp2) << 4) | ((fp1) << 2) | ((fp0)))
+
 
 namespace Engine
 {
