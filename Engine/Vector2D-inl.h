@@ -13,12 +13,20 @@ namespace Engine {
 
 	inline Vector2D operator+(const Vector2D & input1, const Vector2D & input2)
 	{
+#ifdef _WIN64
 		return Vector2D(_mm_add_ps(input1.vector(),input2.vector()));
+#else
+		return Vector2D(input1.x() + input2.x(), input1.y() + input2.y());
+#endif
 	}
 
 	inline Vector2D operator-(const Vector2D & input1, const Vector2D & input2)
 	{
+#ifdef _WIN64
 		return Vector2D(_mm_sub_ps(input1.vector(), input2.vector()));
+#else
+		return Vector2D(input1.x() - input2.x(), input1.y() - input2.y());
+#endif
 	}
 
 	inline Vector2D Vector2D::operator-()const 
@@ -30,21 +38,31 @@ namespace Engine {
 	{
 
 		assert(!IsNaN(i_Scalar));
-		__m128 scalarVec = _mm_set_ps1(i_Scalar);
 
+#ifdef _WIN64
+		__m128 scalarVec = _mm_set_ps1(i_Scalar);
 		return Vector2D(_mm_mul_ps(input1.vector(), scalarVec));
+#else
+		return Vector2D(input1.x()* i_Scalar, input1.y() * i_Scalar);
+#endif
 	}
 
 	inline Vector2D operator/(const Vector2D & input1, float i_Scalar)
 	{
 
 		assert(!IsNaN(i_Scalar));
+#ifdef _WIN64
 		__m128 scalarVec = _mm_set_ps1(i_Scalar);
 		return Vector2D(_mm_div_ps(input1.vector(), scalarVec));
+#else
+		return Vector2D(input1.x() / i_Scalar, input1.y() / i_Scalar);
+#endif
 	}
 
 	inline float dot(const Vector2D & input1, const Vector2D & input2)
 	{
+
+#ifdef _WIN64
 		__m128 vector1 = _mm_set_ps(0, 0, input1.y(), input1.x());
 		__m128 vector2 = _mm_set_ps(0, 0, input2.y(), input2.x());
 
@@ -54,6 +72,10 @@ namespace Engine {
 		float dot = _mm_cvtss_f32(vectorRes);
 
 		return dot;
+#else
+		return input1.x() * input2.x() + input1.y() * input2.y();
+#endif
+
 	}
 
 	inline void Vector2D::operator=(const Vector2D & input1)

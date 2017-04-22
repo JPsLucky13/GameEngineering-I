@@ -1,11 +1,15 @@
 #pragma once
 #include "Game.h"
+#include "ProfilerUtils.h"
+
+
 
 
 //Singletons
 Engine::Physics * Game::physics = NULL;
 Engine::Renderer * Game::renderer = NULL;
 Engine::MessageSystem * Game::messageSystem = NULL;
+Engine::Timer * Game::timer = NULL;
 
 Game::Game():
 	actorMu(false, "ActorsMutex")
@@ -33,6 +37,9 @@ void Game::InitializeGame(HINSTANCE i_hInstance, int i_nCmdShow)
 	//Initialize the message system
 	messageSystem = Engine::MessageSystem::Create();
 
+	//Initialize the timer
+	timer = Engine::Timer::Create();
+
 	//Initialize renderer
 	m_renderSuccess = renderer->Initialize(i_hInstance, i_nCmdShow);
 
@@ -46,8 +53,6 @@ bool Game::StartGameLoop()
 	//Check if renderer succeeded
 	if (m_renderSuccess)
 	{
-		
-
 
 		//Read input
 		Engine::Input::Read();
@@ -68,7 +73,7 @@ bool Game::StartGameLoop()
 				renderer->StartRenderer();
 				renderer->StartRenderSprites();
 
-				float dt = m_timer.GetLastFrameTime_ms();
+				float dt = timer->GetLastFrameTime_ms();
 
 
 				//Player Movement
@@ -113,7 +118,7 @@ bool Game::StartGameLoop()
 
 
 					//Update the player movement
-					if (strcmp(actorsInScene[i]->getName(), "Zero") == 0)
+ 					if (strcmp(actorsInScene[i]->getName(), "Zero") == 0)
 					{
 						actorsInScene[i]->getPhysics().Acquire()->Update(force, dt);
 					}
@@ -133,7 +138,9 @@ bool Game::StartGameLoop()
 					//Handle collisions without velocity and with rotations
 					if (actorsInScene.size() > 1)
 					{
+						PROFILE_SCOPE_BEGIN("Engine::Collision::CheckCollisions");
 						Engine::Collision::CheckCollisions(actorsInScene, dt);
+						PROFILE_SCOPE_END();
 					}
 
 				}

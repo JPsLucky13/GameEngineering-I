@@ -30,10 +30,10 @@ private:
 
 	void Game::UpdateNewActors();
 
-	Engine::Timer m_timer;
 	static Engine::Physics * physics;
 	static Engine::Renderer * renderer;
 	static Engine::MessageSystem * messageSystem;
+	static Engine::Timer * timer;
 	bool m_renderSuccess = false;
 
 	//Vectors of actors

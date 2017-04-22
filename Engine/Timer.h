@@ -12,7 +12,10 @@ namespace Engine {
 
 	public:
 
-		Timer();
+		static Timer * Create();
+		static Timer * GetInstance();
+
+		
 		~Timer();
 
 
@@ -23,10 +26,16 @@ namespace Engine {
 
 		double GetCounter();
 		double GetFrequency();
+		double GetTimeDiff_s(double i_currentCounter);
+
 
 	private:
 		double g_LastFrameStartTick;
 		double m_fFrequency;
+
+		static Timer * instance;
+		Timer();
+
 	};
 
 

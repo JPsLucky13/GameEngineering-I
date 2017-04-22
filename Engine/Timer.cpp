@@ -1,13 +1,36 @@
 #include "Timer.h"
 #define CONSTANT_FRAMETIME
+
+Engine::Timer * Engine::Timer::instance = NULL;
+
 Engine::Timer::Timer() : g_LastFrameStartTick(0.0),
 m_fFrequency(0.0)
 {
 }
 
+
 Engine::Timer::~Timer()
 {
 }
+
+Engine::Timer * Engine::Timer::Create()
+{
+	if (instance == nullptr)
+	{
+		instance = new Timer();
+		return instance;
+	}
+	else
+	{
+		return instance;
+	}
+}
+
+Engine::Timer * Engine::Timer::GetInstance()
+{
+	return instance;
+}
+
 
 float Engine::Timer::CalcLastFrameTime_ms()
 {
@@ -60,8 +83,6 @@ float Engine::Timer::GetLastFrameTime_ms()
 
 }
 
-
-
 double Engine::Timer::GetCounter()
 {
 	LARGE_INTEGER counterResult;
@@ -79,4 +100,13 @@ double Engine::Timer::GetFrequency()
 		m_fFrequency = static_cast<double>(counterResult.QuadPart/1000.0);
 	}
 	return m_fFrequency;
+}
+
+double Engine::Timer::GetTimeDiff_s(double i_currentCounter)
+{
+	double counter = Engine::Timer::GetCounter();
+
+	double diff = counter - i_currentCounter;
+
+	return diff;
 }

@@ -37,6 +37,12 @@
     <Filter Include="Source Files\MessageSystem">
       <UniqueIdentifier>{07d31ccd-4307-4e24-80af-3e97ba436c19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Profiling">
+      <UniqueIdentifier>{adcf4c74-0fd8-4df2-b580-84fc1c22dec3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Profiling">
+      <UniqueIdentifier>{940fcb81-abe0-4df5-ad77-1f22d46e986a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlockAllocator.h">
@@ -183,6 +189,18 @@
     <ClInclude Include="MessageSystem.h">
       <Filter>Header Files\MessageSystem</Filter>
     </ClInclude>
+    <ClInclude Include="Profiler.h">
+      <Filter>Header Files\Profiling</Filter>
+    </ClInclude>
+    <ClInclude Include="ScopedTimer.h">
+      <Filter>Header Files\Profiling</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfilerUtils.h">
+      <Filter>Header Files\Profiling</Filter>
+    </ClInclude>
+    <ClInclude Include="Accumulator.h">
+      <Filter>Header Files\Profiling</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlockAllocator.cpp">
@@ -289,6 +307,9 @@
     </ClCompile>
     <ClCompile Include="Vector3.cpp">
       <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Profiler.cpp">
+      <Filter>Source Files\Profiling</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -16,10 +16,12 @@
 #include "GameObject.h"
 #include <Windows.h>
 #include "EngineHandler.h"
+#include "Profiler.h"
+#include "ScopedTimer.h"
+
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
-
 
 
 #ifdef _DEBUG
@@ -27,7 +29,6 @@
 #else
 #define TRACK_NEW
 #endif
-
 
 //Monster Chase Unit Test
 extern void MonsterChase_UnitTest();
@@ -57,9 +58,6 @@ extern size_t StringLength(const char * string);
 
 
 
-
-
-
 int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_lpCmdLine, int i_nCmdShow)
 {
 #ifdef _DEBUG
@@ -69,6 +67,11 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 	//Initialize the engine for memory allocation
 	Engine::EngineHandler m_handler;
 	m_handler.Init();
+
+	//Initialize the profiler utils
+#if defined(ENABLE_PROFILING)
+	//Engine::Profiler * profiler = Engine::Profiler::Create();
+#endif
 
 	bool startGame = true;
 
