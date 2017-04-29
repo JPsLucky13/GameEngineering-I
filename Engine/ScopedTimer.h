@@ -18,11 +18,7 @@ namespace Engine {
 		~ScopedTimer()
 		{
 			*m_pAccumulator += static_cast<float>(Engine::Timer::GetInstance()->GetTimeDiff_s(Engine::Timer::GetInstance()->GetCounter()));
-			const size_t	lenBuffer = 65;
-			char			Buffer[lenBuffer];
-
-			sprintf_s(Buffer, lenBuffer, "Average Time %f", m_pAccumulator->average());
-			OutputDebugStringA(Buffer);
+			
 		}
 
 	};

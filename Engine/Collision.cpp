@@ -10,7 +10,7 @@ namespace Engine
 
 	void Collision::CheckCollisions(std::vector<Engine::SmartPointer<Engine::Actor>>& i_actorsToAdd, float i_LastFrameTime)
 	{
-		PROFILE_SCOPE_BEGIN("Engine::Collision::CheckCollisions");
+		//PROFILE_SCOPE_BEGIN("Engine::Collision::CheckCollisions");
 
 
 		CollisionPair EarliestCollision;
@@ -382,7 +382,7 @@ namespace Engine
 			}
 		}
 
-		PROFILE_SCOPE_END();
+		//PROFILE_SCOPE_END();
 
 	}
 	void Collision::ResolveCollision(CollisionPair & i_Pair, Engine::Vector3 & i_colNormal)

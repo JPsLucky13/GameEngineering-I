@@ -1,0 +1,15 @@
+Results without intrinsics:
+
+
+
+Results with intrinsics:
+
+Custom Profiler
+
+6308.000000 ms
+0.060016 ms
+
+MCVS Profiler:
+
+Elapsed Inclusive Time %: 1.58
+Elapsed Exclusive Time %: 0.89

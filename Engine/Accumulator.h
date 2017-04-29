@@ -1,7 +1,8 @@
 #pragma once
 #include <stdint.h>
 #include <limits>
-
+#include <stdio.h>
+#include "Windows.h"
 namespace Engine
 {
 	struct Accumulator
@@ -19,6 +20,21 @@ namespace Engine
 		{
 			//Engine::Profiler::GetInstance()->RegisterAccumulator(i_pName, *this);
 		}
+
+		~Accumulator()
+		{
+			const size_t	lenBuffer = 65;
+			char			Buffer[lenBuffer];
+
+			sprintf_s(Buffer, lenBuffer, "Total Time %f /n", m_Sum);
+			OutputDebugStringA(Buffer);
+
+
+			sprintf_s(Buffer, lenBuffer, "Average Time %f /n", average());
+			OutputDebugStringA(Buffer);
+		
+		}
+
 
 		void operator+=(float i_time)
 		{
