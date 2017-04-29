@@ -4,12 +4,15 @@
 #include "Vector3.h"
 #include "Debug.h"
 #include "FloatCheck.h"
-
+#include "ProfilerUtils.h"
 namespace Engine
 {
 
 	void Collision::CheckCollisions(std::vector<Engine::SmartPointer<Engine::Actor>>& i_actorsToAdd, float i_LastFrameTime)
 	{
+		PROFILE_SCOPE_BEGIN("Engine::Collision::CheckCollisions");
+
+
 		CollisionPair EarliestCollision;
 		EarliestCollision.m_CollisionTime = i_LastFrameTime;
 
@@ -178,12 +181,6 @@ namespace Engine
 
 			//if (!IsSeparated)
 			//IsSeparated = fabs(ABBCenterInB.y() - i_actorsToAdd[j]->getBoundingBox().center.y()) > i_actorsToAdd[j]->getBoundingBox().extents.y() + AProjectionOntoB_Y;
-
-
-			
-
-			
-
 
 			//Check axis for B in A
 			Engine::Vector4 BBBCenterInWorld = mBToWorld.MultiplyRight(Engine::Vector4(i_actorsToAdd[j]->getBoundingBox().center.x(),i_actorsToAdd[j]->getBoundingBox().center.y(), 0.0f, 1.0f));
@@ -385,8 +382,10 @@ namespace Engine
 			}
 		}
 
+		PROFILE_SCOPE_END();
+
 	}
-	void Collision::ResolveCollision(CollisionPair i_Pair, Engine::Vector3 i_colNormal)
+	void Collision::ResolveCollision(CollisionPair & i_Pair, Engine::Vector3 & i_colNormal)
 	{
 
 		//Objects A and B

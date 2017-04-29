@@ -45,7 +45,6 @@ void Game::InitializeGame(HINSTANCE i_hInstance, int i_nCmdShow)
 
 	//Set up handler for detecting actor creation
 	Engine::MessageSystem::GetInstance()->RegisterMessageHandler("ActorCreated", std::bind(&Game::UpdateNewActors, this));
-
 }
 
 bool Game::StartGameLoop()
@@ -111,7 +110,7 @@ bool Game::StartGameLoop()
 					bQuit = true;
 				}
 
-
+				actorMu.Acquire();
 				//For loop to update the actors
 				for (size_t i = 0; i < actorsInScene.size(); i++)
 				{
@@ -138,13 +137,13 @@ bool Game::StartGameLoop()
 					//Handle collisions without velocity and with rotations
 					if (actorsInScene.size() > 1)
 					{
-						PROFILE_SCOPE_BEGIN("Engine::Collision::CheckCollisions");
+						PROFILE_UNSCOPED("Engine::Collision::CheckCollisions");
 						Engine::Collision::CheckCollisions(actorsInScene, dt);
 						PROFILE_SCOPE_END();
 					}
 
 				}
-
+				actorMu.Release();
 				// Tell GLib we're done rendering sprites
 				GLib::Sprites::EndRendering();
 				// Tell GLib we're done rendering

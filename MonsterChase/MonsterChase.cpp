@@ -41,10 +41,10 @@ extern void FloatChecker_UnitTest();
 extern bool HeapManager_UnitTest();
 
 //String pool unit test
-//extern void StringPool_UnitTest(Engine::BlockAllocator * i_pBlockAllocator);
+extern void StringPool_UnitTest(Engine::BlockAllocator * i_pBlockAllocator);
 
 //FSA Unite test
-//extern void FSA_UnitTest(Engine::FSAManager * i_fsaManager);
+extern void FSA_UnitTest(Engine::FSAManager * i_fsaManager);
 
 
 //The reverse string in place function
@@ -74,11 +74,12 @@ int WINAPI wWinMain(HINSTANCE i_hInstance, HINSTANCE i_hPrevInstance, LPWSTR i_l
 #endif
 
 	bool startGame = true;
+	
 
 	if(startGame)
 	{ 
-		//initialize the game
 		Game game;
+		//initialize the game
 		game.InitializeGame(i_hPrevInstance, i_nCmdShow);
 		if (!game.StartGameLoop())
 		{

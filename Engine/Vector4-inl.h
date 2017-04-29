@@ -74,10 +74,18 @@ namespace Engine {
 
 	inline void Vector4::operator=(const Vector4 & input1)
 	{
+
+#ifdef _WIN64
+		m_vector = { input1.x(),input1.y(),input1.z(),input1.w()};
+#else
 		m_x = input1.x();
 		m_y = input1.y();
 		m_z = input1.z();
 		m_w = input1.w();
+#endif
+
+
+		
 	}
 
 

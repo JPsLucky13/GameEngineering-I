@@ -1,5 +1,5 @@
 #include "Actor.h"
-
+#include "NewDelete.h"
 namespace Engine {
 
 	Actor::Actor(char * i_name, const SmartPointer<GameObject>& i_pObject, const WeakPointer<PhysicsInfo>& i_pPhysics, const WeakPointer<Sprite>& i_pSprite):
@@ -13,6 +13,19 @@ namespace Engine {
 	Actor::~Actor()
 	{
 		free(m_Name);
+	}
+
+	void * Actor::operator new(size_t i_size)
+	{
+		void * pReturn = nullptr;
+
+		pReturn = GetBlockAllocator(nullptr)->_alloc(i_size,16);
+		return pReturn;
+	}
+
+	void Actor::operator delete(void * ptr)
+	{
+		GetBlockAllocator(nullptr)->_free(ptr);
 	}
 		
 

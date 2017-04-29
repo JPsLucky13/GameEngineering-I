@@ -1,7 +1,5 @@
 #pragma once
 
-
-#include <xmmintrin.h>
 #include <smmintrin.h>
 #include "Math.h"
 #include <assert.h>
@@ -11,26 +9,10 @@
 
 namespace Engine {
 
-	class Vector3 {
+	union Vector3 {
 
 	public:
 
-#ifdef _WIN64
-
-		Vector3(float x, float y, float z) :
-			m_vector(_mm_set_ps(0,z,y,x))
-		{
-			assert(!IsNaN(m_x));
-			assert(!IsNaN(m_y));
-			assert(!IsNaN(m_z));
-		}
-		
-		Vector3(const __m128 i_vector):
-			m_vector(i_vector)
-		{
-		
-		}
-#else
 		Vector3(float x, float y, float z) :
 			m_x(x),
 			m_y(y),
@@ -40,7 +22,12 @@ namespace Engine {
 			assert(!IsNaN(m_y));
 			assert(!IsNaN(m_z));
 		}
-#endif
+		
+		Vector3(const __m128 & i_vector):
+			m_vector(i_vector)
+		{
+		
+		}
 
 		Vector3() :
 			m_x(0.0f),
@@ -49,44 +36,37 @@ namespace Engine {
 		{}
 
 
+		
+
+
 		//get
 		float x() const { return m_x; }
 		float y() const { return m_y; }
 		float z() const { return m_z; }
 
-#ifdef _WIN64
-		__m128 vector() const { return m_vector; }
-#endif
+
+		const __m128 & vector() const { return m_vector; }
+
 
 		//set
 		void x(const float x) { assert(!IsNaN(x)); m_x = x; }
 		void y(const float y) { assert(!IsNaN(y)); m_y = y; }
 		void z(const float z) { assert(!IsNaN(z)); m_z = z; }
 
-#ifdef _WIN64
+
 		void vector(const __m128 i_vector) { m_vector = i_vector; }
-#endif
+
 		inline void operator=(const Vector3 & input1);
 		inline bool isZero();
 		//Returns the normalized vector
 		Vector3 normalize();
 
 	private:
-
-
-#ifdef _WIN64
-		union {
-			struct
-			{
-				float m_x, m_y, m_z;
-			};
-			__m128 m_vector;
+		__m128 m_vector;
+		struct
+		{
+			float m_x, m_y, m_z;
 		};
-
-#else 
-		float m_x, m_y, m_z;
-#endif
-
 	};
 
 	inline Vector3 operator+(const Vector3 & input1, const Vector3 & input2);

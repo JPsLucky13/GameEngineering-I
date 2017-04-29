@@ -1,10 +1,8 @@
 #include "GameObject.h"
+#include "NewDelete.h"
 namespace Engine {
 
 	GameObject::GameObject() {
-		m_Position = Engine::Vector2D(0.0f, 0.0f);
-		m_Rotation = Engine::Vector3(0.0f, 0.0f,0.0f);
-		m_Velocity = Engine::Vector2D(0.0f, 0.0f);
 	}
 
 	GameObject::~GameObject()
@@ -23,6 +21,19 @@ namespace Engine {
 		m_Position = i_other.m_Position;
 		m_Rotation = i_other.m_Rotation;
 		return *this;
+	}
+
+	void * GameObject::operator new(size_t i_size)
+	{
+		void * pReturn = nullptr;
+
+		pReturn = GetBlockAllocator(nullptr)->_alloc(i_size,16);
+		return pReturn;
+	}
+
+	void GameObject::operator delete(void * ptr)
+	{
+		GetBlockAllocator(nullptr)->_free(ptr);
 	}
 
 

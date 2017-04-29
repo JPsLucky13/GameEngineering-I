@@ -5,9 +5,10 @@ namespace Engine {
 
 
 	Sprite::Sprite(const WeakPointer<GameObject>& object, const char * i_pFilename)
+		:m_pObject( object), sprite(CreateSprite(i_pFilename))
 	{
-		m_pObject = object;
-		sprite =CreateSprite(i_pFilename);
+		//m_pObject = object;
+		//sprite =CreateSprite(i_pFilename);
 	}
 
 	Sprite::~Sprite()

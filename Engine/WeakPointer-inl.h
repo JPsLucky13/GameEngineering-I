@@ -1,5 +1,7 @@
 #pragma once
 #include "WeakPointer.h"
+#include "Debug.h"
+
 namespace Engine
 {
 	//Standard constructor

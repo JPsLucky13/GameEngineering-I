@@ -43,7 +43,6 @@ namespace Engine {
 
 			result = lua_pcall(pLuaState, 0, 0, 0);
 			assert(result == 0);
-
 	
 			//Find the global table 
 			result = lua_getglobal(pLuaState, i_pFilename);
@@ -124,6 +123,7 @@ namespace Engine {
 			delete[] pFileContents;
 			lua_close(pLuaState);
 
+			
 			//Create the smart pointer with game object
 			Engine::SmartPointer<Engine::GameObject> gameObject(new Engine::GameObject());
 			gameObject->SetPosition(Engine::Vector2D(Position[0], Position[1]));

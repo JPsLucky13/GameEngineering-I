@@ -18,7 +18,7 @@ namespace Engine
 	public:
 
 		static void CheckCollisions(std::vector<Engine::SmartPointer<Engine::Actor>>& i_actorsToAdd, float i_LastFrameTime);
-		static void ResolveCollision(CollisionPair i_Pair, Engine::Vector3 i_colNormal);
+		static void ResolveCollision(CollisionPair & i_Pair, Engine::Vector3 & i_colNormal);
 
 
 	};

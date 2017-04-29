@@ -52,11 +52,15 @@ namespace Engine {
 			return  m_boundingBox;
 		}
 
-		void setBoundingBox(Vector2D i_center, Vector2D i_extents)
+		void setBoundingBox(Vector2D & i_center, Vector2D & i_extents)
 		{
 			m_boundingBox.center = i_center;
 			m_boundingBox.extents = i_extents;
 		}
+
+		void * operator new(size_t i_size);
+		void operator delete(void * ptr);
+
 
 	private:
 		char * m_Name;

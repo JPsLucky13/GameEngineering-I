@@ -6,15 +6,16 @@
 
 namespace Engine {
 	
-		Renderer * Renderer::instance = NULL;
+		Renderer * Renderer::instance = nullptr;
 
 		Renderer::Renderer()
 		{
 		}
 
-		SmartPointer<Sprite>  Renderer::CreateSpriteIcon(SmartPointer<GameObject>& gameObject, const char * i_pFileName)
+		SmartPointer<Sprite>  Renderer::CreateSpriteIcon(SmartPointer<GameObject> &gameObject, const char * i_pFileName)
 		{
 			SmartPointer<Sprite> sprite(new Sprite(gameObject, i_pFileName));
+
 			smartSprites.push_back(sprite);
 			return sprite;
 		}
