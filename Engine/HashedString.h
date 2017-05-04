@@ -45,6 +45,11 @@ namespace Engine {
 			return m_hash == Hash(i_pString);
 		}
 
+		bool operator!=(const char * i_pString)
+		{
+			return m_hash != Hash(i_pString);
+		}
+
 		bool operator<(const HashedString& i_other) const
 		{
 			return m_hash < i_other.m_hash;

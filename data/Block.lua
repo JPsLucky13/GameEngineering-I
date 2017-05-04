@@ -1,14 +1,14 @@
-Monster1 =
+Block =
 {
-	name = "Vile",
-	class = "Monster",
-	controller = "InputController",
-	initial_position = {200.0,200.0},
+	name = "Block",
+	class = "Level",
+	controller = "None",
+	initial_position = {0,0},
 	initial_rotation = {0.0,0.0,0.0},
 
 	physics_settings = {
-		mass = 1.0,
-		drag = 0.05
+		mass = 3.0,
+		drag = 0
 	},
 
 	render_settings = {

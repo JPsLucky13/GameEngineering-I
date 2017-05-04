@@ -38,6 +38,7 @@ namespace Engine {
 		Keys X;
 		Keys Y;
 		Keys Z;
+		Keys SPACE;
 
 		
 

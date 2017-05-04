@@ -24,7 +24,7 @@ namespace Engine
 
 			for(size_t j=i + 1; j < i_actorsToAdd.size(); j++)
 			{ 
-		
+				
 			//Calculate the earliest collision
 			float colTime = 0.0f;
 
@@ -397,19 +397,55 @@ namespace Engine
 		float massB = i_Pair.m_CollisionObjects[1].Acquire()->getPhysics().Acquire()->getMass();
 
 		//Post collision velocities
-		Engine::Vector2D velAPost = velA * ((massA - massB) / (massA + massB)) + velB * ((2 * massB) / (massA + massB));
-		Engine::Vector2D velBPost = velB * ((massB - massA) / (massA + massB)) + velA * ((2 * massA) / (massA + massB));
-
+		Engine::Vector2D velAPost = velA * ((massA - massB) / (massA + massB)) + velB * ((2.0f * massB) / (massA + massB));
+		Engine::Vector2D velBPost = velB * ((massB - massA) / (massA + massB)) + velA * ((2.0f * massA) / (massA + massB));
 
 		Engine::Vector2D colNormal = Engine::Vector2D(i_colNormal.x(), i_colNormal.y());
+		
+		if(!Engine::floatEpsilonEqual(i_colNormal.x(),0.0f) || !Engine::floatEpsilonEqual(i_colNormal.y(), 0.0f))
 		colNormal.normalize();
 
 		//Post collision velocities with normal
 		Engine::Vector2D velAPost2 = velA - (colNormal * Engine::dot(velA,colNormal) * 2.0f);
 		Engine::Vector2D velBPost2 = velB - (colNormal * Engine::dot(velB,colNormal) * 2.0f);
 
+		Engine::Vector2D resVelA = velAPost + velAPost2;
+		Engine::Vector2D resVelB = velBPost + velBPost2;
+
+		////Cap the velocities
+		float maxVelocity = 300.0f;
+
+		if (resVelA.x() >= maxVelocity)
+			resVelA.x(maxVelocity);
+		if(resVelA.x() <= -maxVelocity)
+			resVelA.x(-maxVelocity);
+
+		if (resVelA.y() >= maxVelocity)
+			resVelA.y(maxVelocity);
+		if(resVelA.y() <= -maxVelocity)
+			resVelA.y(-maxVelocity);
+
+		if (resVelB.x() >= maxVelocity)
+			resVelB.x(maxVelocity);
+		if (resVelB.x() <= -maxVelocity)
+			resVelB.x(-maxVelocity);
+
+		if (resVelB.y() >= maxVelocity)
+			resVelB.y(maxVelocity);
+		if (resVelB.y() <= -maxVelocity)
+			resVelB.y(-maxVelocity);
+
 		//Set new velocity
-		i_Pair.m_CollisionObjects[0].Acquire()->getGObject()->SetVelocity(velAPost + velAPost2);
-		i_Pair.m_CollisionObjects[1].Acquire()->getGObject()->SetVelocity(velBPost + velBPost2);
+		if (i_Pair.m_CollisionObjects[0].Acquire()->getType() != "Level")
+		{
+			i_Pair.m_CollisionObjects[0].Acquire()->getGObject()->SetVelocity(resVelA);
+		}
+		
+		if (i_Pair.m_CollisionObjects[1].Acquire()->getType() != "Level")
+		{
+			i_Pair.m_CollisionObjects[1].Acquire()->getGObject()->SetVelocity(resVelB);
+		}
+
+
 	}
 }

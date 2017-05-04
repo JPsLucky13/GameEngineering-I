@@ -71,7 +71,12 @@ namespace Engine {
 		m_y = input1.y();
 	}
 
+	inline void Vector2D::operator+=(const Vector2D & input1)
+	{
 
+		m_x += input1.x();
+		m_y += input1.y();
+	}
 
 	inline bool operator==(const Vector2D & input1, const Vector2D & input2)
 	{

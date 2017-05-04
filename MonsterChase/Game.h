@@ -23,7 +23,7 @@ public:
 
 	void InitializeGame(HINSTANCE i_hInstance, int i_nCmdShow);
 	bool StartGameLoop();
-
+	void LoadLevelPlatforms();
 
 
 private:
@@ -43,6 +43,11 @@ private:
 	//Mutex for actors
 	Engine::Mutex actorMu;
 
+	//The platforms in the level
+	int numberOfPlatforms = 0;
+	int maxNumberOfPlatforms = 11;
+	bool donePlacingPlatforms = false;
+	std::vector<Engine::SmartPointer<Engine::Actor>> platforms;
 
 
 };

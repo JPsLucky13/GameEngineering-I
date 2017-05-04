@@ -61,8 +61,21 @@ namespace Engine {
 			char name[dest_size];
 			strncpy_s(name, dest_size, pName, strlen(pName));
 
-
 			//Done with the name
+			lua_pop(pLuaState, 1);
+
+			//read the class types
+			lua_pushstring(pLuaState, "class");
+
+			//get the associated key
+			type = lua_gettable(pLuaState, -2);
+			assert(type == LUA_TSTRING);
+			const char * pObjectType = lua_tostring(pLuaState, -1);
+
+			char objectType[dest_size];
+			strncpy_s(objectType, dest_size, pObjectType, strlen(pObjectType));
+
+			//Done with the class
 			lua_pop(pLuaState, 1);
 
 			//Read the initial position of the actor
@@ -86,8 +99,13 @@ namespace Engine {
 
 			ReadFloatArray(pLuaState, -1, Rotation, 3);
 
-			//Done with the initial position
+			//Done with the initial rotation
 			lua_pop(pLuaState, 1);
+
+			//Static variables to read mass and drag
+			float mass = 0.0f;
+			float drag = 0.0f;
+
 
 			//Push the key for the field we want on the stack
 			lua_pushstring(pLuaState, "physics_settings");
@@ -103,18 +121,18 @@ namespace Engine {
 			assert(type == LUA_TNUMBER);
 
 
-			float mass = float(lua_tonumber(pLuaState, -1));
+			mass = float(lua_tonumber(pLuaState, -1));
 
 			//Push the key for the field we want on the stack
 			lua_pushstring(pLuaState, "drag");
 			type = lua_gettable(pLuaState, -3);
 			assert(type == LUA_TNUMBER);
 
-			float drag = float (lua_tonumber(pLuaState, -1));
+			drag = float (lua_tonumber(pLuaState, -1));
 
 			lua_pop(pLuaState,3);
 
-			//Pop the player1 table
+			//Pop the table
 			lua_pop(pLuaState,1);
 
 			int stack_items = lua_gettop(pLuaState);
@@ -129,8 +147,8 @@ namespace Engine {
 			gameObject->SetPosition(Engine::Vector2D(Position[0], Position[1]));
 			gameObject->SetRotation(Engine::Vector3(Rotation[0], Rotation[1], Rotation[2]));
 
-			//Create the physics info
-			Engine::WeakPointer<Engine::PhysicsInfo> physicsWeakp(Engine::Physics::GetInstance()->CreatePhysics(gameObject,mass, drag));
+
+			Engine::WeakPointer<Engine::PhysicsInfo> physicsWeakp(Engine::Physics::GetInstance()->CreatePhysics(gameObject, mass, drag));
 
 			//The destination of the file
 			const size_t dest_size = 50;
@@ -146,14 +164,16 @@ namespace Engine {
 			//Create the sprite info
 			Engine::WeakPointer<Engine::Sprite> spriteWeakp(Engine::Renderer::GetInstance()->CreateSpriteIcon(gameObject, destination));
 
-			Actor * new_Actor = new Actor(name,gameObject, physicsWeakp, spriteWeakp);
-
+			Actor * new_Actor = new Actor(name,objectType,gameObject, physicsWeakp, spriteWeakp);
+			
 			//Creating AABB
 			Engine::Vector2D center = Engine::Vector2D(0.0f, spriteWeakp.Acquire()->getHeight() / 2.0f);
 			Engine::Vector2D extents = Engine::Vector2D(spriteWeakp.Acquire()->getWidth() / 2.0f, spriteWeakp.Acquire()->getHeight() / 2.0f);
 			
 			new_Actor->setBoundingBox(center, extents);
 			Engine::SmartPointer<Engine::Actor> actorObject(new_Actor);
+
+
 
 			return actorObject;
 		}

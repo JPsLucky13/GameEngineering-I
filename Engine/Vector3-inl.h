@@ -84,9 +84,14 @@ namespace Engine {
 		m_x = input1.x();
 		m_y = input1.y();
 		m_z = input1.z();
+	}
 
+	inline void Vector3::operator+=(const Vector3 & input1)
+	{
 
-		
+		m_x += input1.x();
+		m_y += input1.y();
+		m_z += input1.z();
 	}
 
 	inline bool operator==(const Vector3 & input1, const Vector3 & input2)

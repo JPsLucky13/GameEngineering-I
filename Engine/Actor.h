@@ -3,7 +3,7 @@
 #include "SmartPointer.h"
 #include "PhysicsInfo.h"
 #include "Sprite.h"
-
+#include "HashedString.h"
 
 namespace Engine {
 
@@ -22,8 +22,7 @@ namespace Engine {
 			Vector2D extents;
 		};
 
-
-		Actor(char * i_name, const SmartPointer<GameObject>& i_pObject, const WeakPointer<PhysicsInfo>& i_pPhysics, const WeakPointer<Sprite>& i_pSprite);
+		Actor(char * i_name, const HashedString & i_type,const SmartPointer<GameObject>& i_pObject, const WeakPointer<PhysicsInfo>& i_pPhysics, const WeakPointer<Sprite>& i_pSprite);
 		~Actor();
 
 		SmartPointer<GameObject>& getGObject()
@@ -47,6 +46,11 @@ namespace Engine {
 			return m_Name;
 		}
 
+		HashedString getType()
+		{
+			return m_Type;
+		}
+
 		AABB getBoundingBox()
 		{
 			return  m_boundingBox;
@@ -64,6 +68,7 @@ namespace Engine {
 
 	private:
 		char * m_Name;
+		HashedString m_Type;
 		SmartPointer<GameObject> m_pObject;
 		WeakPointer<PhysicsInfo> m_pPhysics;
 		WeakPointer<Sprite>  m_pSprite;

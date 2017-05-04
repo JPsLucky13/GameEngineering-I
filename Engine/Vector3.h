@@ -35,10 +35,6 @@ namespace Engine {
 			m_z(0.0f)
 		{}
 
-
-		
-
-
 		//get
 		float x() const { return m_x; }
 		float y() const { return m_y; }
@@ -57,6 +53,7 @@ namespace Engine {
 		void vector(const __m128 i_vector) { m_vector = i_vector; }
 
 		inline void operator=(const Vector3 & input1);
+		inline void operator+=(const Vector3 & input1);
 		inline bool isZero();
 		//Returns the normalized vector
 		Vector3 normalize();

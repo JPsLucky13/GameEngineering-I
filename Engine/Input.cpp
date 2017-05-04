@@ -6,16 +6,15 @@ namespace Engine{
 void TestKeyCallback(unsigned int i_VKeyID, bool bWentDown)
 {
 #ifdef _DEBUG
-	//const size_t	lenBuffer = 65;
-	//char			Buffer[lenBuffer];
+	const size_t	lenBuffer = 65;
+	char			Buffer[lenBuffer];
 
-	//sprintf_s(Buffer, lenBuffer, "VKey %d went %s\n", i_VKeyID, bWentDown ? "down" : "up");
-	//OutputDebugStringA(Buffer);
+	sprintf_s(Buffer, lenBuffer, "VKey %d went %s\n", i_VKeyID, bWentDown ? "down" : "up");
+	OutputDebugStringA(Buffer);
 #endif // __DEBUG
 
 	//set booleans for the keys
-	char key = static_cast<char>(i_VKeyID);
-
+ 	char key = static_cast<char>(i_VKeyID);
 
 	//Check if keys are down
 	if (key == 'A')
@@ -40,6 +39,10 @@ void TestKeyCallback(unsigned int i_VKeyID, bool bWentDown)
 		Input::keyHandler.Q.m_isDown = bWentDown;
 	}
 
+	if (key == 'Z')
+	{
+		Input::keyHandler.Z.m_isDown = bWentDown;
+	}
 
 }
 

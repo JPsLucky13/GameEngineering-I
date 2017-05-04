@@ -12,6 +12,7 @@ namespace Engine {
 
 	GameObject::GameObject(const GameObject & i_other) :
 		m_Position(i_other.m_Position),
+		m_Velocity(i_other.m_Velocity),
 		m_Rotation(i_other.m_Rotation)
 	{
 	}
@@ -19,6 +20,7 @@ namespace Engine {
 	GameObject & GameObject::operator=(const GameObject & i_other)
 	{
 		m_Position = i_other.m_Position;
+		m_Velocity = i_other.m_Velocity;
 		m_Rotation = i_other.m_Rotation;
 		return *this;
 	}

@@ -32,6 +32,7 @@ namespace Engine {
 		//get
 		float x() const { return m_x; }
 		float y() const { return m_y; }
+		float lenght() const { return sqrt(m_x*m_x + m_y*m_y); }
 
 		const __m128 & vector() const { return m_vector; }
 
@@ -43,6 +44,7 @@ namespace Engine {
 		void vector(const __m128 & i_vector) { m_vector = i_vector; }
 
 		inline void operator=(const Vector2D & input1);
+		inline void operator+=(const Vector2D & input1);
 		inline Vector2D operator-()const;
 		
 		inline bool isZero() const;
