@@ -1,5 +1,5 @@
 #include "Timer.h"
-#define CONSTANT_FRAMETIME
+#define CLAMP_FRAMETIME
 
 Engine::Timer * Engine::Timer::instance = NULL;
 
@@ -35,7 +35,7 @@ Engine::Timer * Engine::Timer::GetInstance()
 float Engine::Timer::CalcLastFrameTime_ms()
 {
 
-	float g_LastFrameTime_ms;
+	
 
 	//Grab the CPU Tick Counter
 	double currentTick = GetCounter();

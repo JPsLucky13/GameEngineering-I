@@ -110,7 +110,7 @@ namespace Engine
 		static Matrix4x4 CreateYRotation(float i_RotationRadians);
 		static Matrix4x4 CreateZRotation(float i_RotationRadians);
 
-		static Matrix4x4 CreateTranslation(Vector4 i_trans);
+		static Matrix4x4 CreateTranslation(Vector4 & i_trans);
 		static Matrix4x4 CreateTranslation(float i_transX, float i_transY, float i_transZ);
 		static Matrix4x4 CreateScale(float i_scaleX, float i_scaleY, float i_scaleZ);
 
@@ -133,6 +133,9 @@ namespace Engine
 		Vector4 MultiplyLeft(const Vector4 & i_Vector) const;
 		//return M * v
 		Vector4 MultiplyRight(const Vector4 & i_Vector) const;
+
+		void * operator new(size_t i_size);
+		void operator delete(void * ptr);
 
 	private:
 		//Matrix entries

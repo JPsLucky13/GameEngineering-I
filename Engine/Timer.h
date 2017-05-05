@@ -32,6 +32,7 @@ namespace Engine {
 	private:
 		double g_LastFrameStartTick;
 		double m_fFrequency;
+		float g_LastFrameTime_ms;
 
 		static Timer * instance;
 		Timer();

@@ -32,7 +32,7 @@ namespace Engine {
 		//get
 		float x() const { return m_x; }
 		float y() const { return m_y; }
-		float lenght() const { return sqrt(m_x*m_x + m_y*m_y); }
+		float lenght() const { return static_cast<float>(sqrt(m_x*m_x + m_y*m_y)); }
 
 		const __m128 & vector() const { return m_vector; }
 

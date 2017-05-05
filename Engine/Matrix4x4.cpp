@@ -1,5 +1,5 @@
 #include "Matrix4x4.h"
-
+#include "NewDelete.h"
 namespace Engine {
 
 	//copy constructor
@@ -78,7 +78,7 @@ namespace Engine {
 		return zRot;
 	}
 
-	Matrix4x4 Matrix4x4::CreateTranslation(Vector4 i_trans)
+	Matrix4x4 Matrix4x4::CreateTranslation(Vector4 & i_trans)
 	{
 		Matrix4x4 trans(1.0f, 0.0f, 0.0f, i_trans.x(),
 						0.0f, 1.0f, 0.0f, i_trans.y(),
@@ -251,8 +251,6 @@ namespace Engine {
 					i_Vector.x() * m_13 + i_Vector.y() * m_23 + i_Vector.z() * m_33 + i_Vector.w() * m_43,
 					i_Vector.x() * m_14 + i_Vector.y() * m_24 + i_Vector.z() * m_34 + i_Vector.w() * m_44
 					);*/
-		
-#ifdef _WIN64
 
 		//Columns of matrix 4x4
 		__m128 col1 = _mm_set_ps(m_14, m_13, m_12, m_11);
@@ -280,13 +278,7 @@ namespace Engine {
 
 		return Vector4(sumOp3);
 
-#else
-		return Vector4 (i_Vector.x() * m_11 + i_Vector.y() * m_21 + i_Vector.z() * m_31 + i_Vector.w() * m_41,
-			i_Vector.x() * m_12 + i_Vector.y() * m_22 + i_Vector.z() * m_32 + i_Vector.w() * m_42,
-			i_Vector.x() * m_13 + i_Vector.y() * m_23 + i_Vector.z() * m_33 + i_Vector.w() * m_43,
-			i_Vector.x() * m_14 + i_Vector.y() * m_24 + i_Vector.z() * m_34 + i_Vector.w() * m_44
-		);
-#endif
+
 	}
 
 	//return M * v
@@ -300,7 +292,6 @@ namespace Engine {
 					m_41 * i_Vector.x() + m_42 * i_Vector.y() + m_43 * i_Vector.z() + m_44 * i_Vector.w()
 					);
 					*/
-#ifdef _WIN64
 		//Columns of matrix 4x4
 		__m128 col1 = _mm_set_ps(m_41, m_31, m_21, m_11);
 		__m128 col2 = _mm_set_ps(m_42, m_32, m_22, m_12);
@@ -327,15 +318,19 @@ namespace Engine {
 
 		return Vector4(sumOp3);
 
-#else
+	}
 
-		return Vector4 (m_11 * i_Vector.x() + m_12 * i_Vector.y() + m_13 * i_Vector.z() + m_14 * i_Vector.w(),
-			m_21 * i_Vector.x() + m_22 * i_Vector.y() + m_23 * i_Vector.z() + m_24 * i_Vector.w(),
-			m_31 * i_Vector.x() + m_32 * i_Vector.y() + m_33 * i_Vector.z() + m_34 * i_Vector.w(),
-			m_41 * i_Vector.x() + m_42 * i_Vector.y() + m_43 * i_Vector.z() + m_44 * i_Vector.w()
-		);
+	void * Matrix4x4::operator new(size_t i_size)
+	{
+		void * pReturn = nullptr;
 
-#endif
+		pReturn = GetBlockAllocator(nullptr)->_alloc(i_size, 16);
+		return pReturn;
+	}
+
+	void Matrix4x4::operator delete(void * ptr)
+	{
+		GetBlockAllocator(nullptr)->_free(ptr);
 	}
 
 	void Matrix4x4::Switch(float & i_value1, float & i_value2)

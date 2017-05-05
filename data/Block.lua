@@ -7,7 +7,7 @@ Block =
 	initial_rotation = {0.0,0.0,0.0},
 
 	physics_settings = {
-		mass = 3.0,
+		mass = 100000.0,
 		drag = 0
 	},
 
@@ -15,9 +15,6 @@ Block =
 		sprite = {
 				offset = {0.0,0.0},
 				extents = {-1.0,-1.0,1.0,1.0}
-
-
-
 		},
 		sprite_color = {255,255,255,255}
 	}

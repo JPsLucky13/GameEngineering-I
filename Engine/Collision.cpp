@@ -5,10 +5,11 @@
 #include "Debug.h"
 #include "FloatCheck.h"
 #include "ProfilerUtils.h"
+#include "MessageSystem.h"
 namespace Engine
 {
 
-	void Collision::CheckCollisions(std::vector<Engine::SmartPointer<Engine::Actor>>& i_actorsToAdd, float i_LastFrameTime)
+	void Collision::CheckCollisions(Engine::SmartPointer<Engine::Actor> & i_actorA, Engine::SmartPointer<Engine::Actor> & i_actorB, float i_LastFrameTime)
 	{
 		//PROFILE_SCOPE_BEGIN("Engine::Collision::CheckCollisions");
 
@@ -17,14 +18,7 @@ namespace Engine
 		EarliestCollision.m_CollisionTime = i_LastFrameTime;
 
 		Engine::Vector3 colNormal;
-
-
-		for (size_t i = 0; i < i_actorsToAdd.size(); i++)
-		{
-
-			for(size_t j=i + 1; j < i_actorsToAdd.size(); j++)
-			{ 
-				
+	
 			//Calculate the earliest collision
 			float colTime = 0.0f;
 
@@ -33,8 +27,8 @@ namespace Engine
 			bool IsSeparated = false;
 				
 			//Store temporary matrices for object A
-			Engine::Matrix4x4 mRotA = Engine::Matrix4x4::CreateZRotation(i_actorsToAdd[i]->getGObject()->GetRotation().z());
-			Engine::Matrix4x4 mTransA = Engine::Matrix4x4::CreateTranslation(Engine::Vector4(i_actorsToAdd[i]->getGObject()->GetPosition().x(), i_actorsToAdd[i]->getGObject()->GetPosition().y(), 0.0f, 0.0f));
+			Engine::Matrix4x4 mRotA = Engine::Matrix4x4::CreateZRotation(i_actorA->getGObject()->GetRotation().z());
+			Engine::Matrix4x4 mTransA = Engine::Matrix4x4::CreateTranslation(Engine::Vector4(i_actorA->getGObject()->GetPosition().x(), i_actorA->getGObject()->GetPosition().y(), 0.0f, 0.0f));
 		
 			Engine::Matrix4x4 mAToWorld = mTransA * mRotA;
 			//The inverse matrix
@@ -42,8 +36,8 @@ namespace Engine
 
 		
 			//Store temporary matrices for object B
-			Engine::Matrix4x4 mRotB = Engine::Matrix4x4::CreateZRotation(i_actorsToAdd[j]->getGObject()->GetRotation().z());
-			Engine::Matrix4x4 mTransB = Engine::Matrix4x4::CreateTranslation(Engine::Vector4(i_actorsToAdd[j]->getGObject()->GetPosition().x(), i_actorsToAdd[j]->getGObject()->GetPosition().y(), 0.0f, 0.0f));
+			Engine::Matrix4x4 mRotB = Engine::Matrix4x4::CreateZRotation(i_actorB->getGObject()->GetRotation().z());
+			Engine::Matrix4x4 mTransB = Engine::Matrix4x4::CreateTranslation(Engine::Vector4(i_actorB->getGObject()->GetPosition().x(), i_actorB->getGObject()->GetPosition().y(), 0.0f, 0.0f));
 
 			Engine::Matrix4x4 mBToWorld = mTransB * mRotB;
 			//The inverse matrix
@@ -55,12 +49,12 @@ namespace Engine
 
 
 			//Check axis for A in B
-			Engine::Vector4 ABBCenterInWorld = mAToWorld.MultiplyRight(Engine::Vector4(i_actorsToAdd[i]->getBoundingBox().center.x(),i_actorsToAdd[i]->getBoundingBox().center.y(),0.0f,1.0f));
+			Engine::Vector4 ABBCenterInWorld = mAToWorld.MultiplyRight(Engine::Vector4(i_actorA->getBoundingBox().center.x(), i_actorA->getBoundingBox().center.y(),0.0f,1.0f));
 			Engine::Vector4 ABBCenterInB = mWorldToB.MultiplyRight(Engine::Vector4(ABBCenterInWorld.x(), ABBCenterInWorld.y(), ABBCenterInWorld.z(), 1.0f));
 
 			//Calculate Projection 
-			Engine::Vector4 AExtentsXInB = mAToB.MultiplyRight(Engine::Vector4(i_actorsToAdd[i]->getBoundingBox().extents.x(), 0.0f,0.0f,0.0f));
-			Engine::Vector4 AExtentsYInB = mAToB.MultiplyRight(Engine::Vector4(0.0f,i_actorsToAdd[i]->getBoundingBox().extents.y(),0.0f, 0.0f));
+			Engine::Vector4 AExtentsXInB = mAToB.MultiplyRight(Engine::Vector4(i_actorA->getBoundingBox().extents.x(), 0.0f,0.0f,0.0f));
+			Engine::Vector4 AExtentsYInB = mAToB.MultiplyRight(Engine::Vector4(0.0f, i_actorA->getBoundingBox().extents.y(),0.0f, 0.0f));
 
 			//On X Axis
 			float AProjectionOntoB_X = fabs(AExtentsXInB.x()) + fabs(AExtentsYInB.x());
@@ -69,20 +63,20 @@ namespace Engine
 			float AProjectionOntoB_Y = fabs(AExtentsXInB.y()) + fabs(AExtentsYInB.y());
 			
 			//Velocity calculations for A in B
-			Engine::Vector3 VelARelToB = Engine::Vector3(i_actorsToAdd[i]->getGObject()->GetVelocity().x() - i_actorsToAdd[j]->getGObject()->GetVelocity().x(), i_actorsToAdd[i]->getGObject()->GetVelocity().y() - i_actorsToAdd[j]->getGObject()->GetVelocity().y(), 0.0f);
+			Engine::Vector3 VelARelToB = Engine::Vector3(i_actorA->getGObject()->GetVelocity().x() - i_actorB->getGObject()->GetVelocity().x(), i_actorA->getGObject()->GetVelocity().y() - i_actorB->getGObject()->GetVelocity().y(), 0.0f);
 
 			Engine::Vector4 VelAInB = mWorldToB.MultiplyRight(Engine::Vector4(VelARelToB.x(), VelARelToB.y(), VelAInB.z(), 0.0f));
 
-			float BextentsX = i_actorsToAdd[j]->getBoundingBox().extents.x() + AProjectionOntoB_X;
-			float BextentsY = i_actorsToAdd[j]->getBoundingBox().extents.y() + AProjectionOntoB_Y;
+			float BextentsX = i_actorB->getBoundingBox().extents.x() + AProjectionOntoB_X;
+			float BextentsY = i_actorB->getBoundingBox().extents.y() + AProjectionOntoB_Y;
 
 			//The edges of B
-			float BLeft = i_actorsToAdd[j]->getBoundingBox().center.x() - BextentsX;
-			float BRight = i_actorsToAdd[j]->getBoundingBox().center.x() + BextentsX;
+			float BLeft = i_actorB->getBoundingBox().center.x() - BextentsX;
+			float BRight = i_actorB->getBoundingBox().center.x() + BextentsX;
 
 			//Top edges of B
-			float BBottom = i_actorsToAdd[j]->getBoundingBox().center.y() - BextentsY;
-			float BTop = i_actorsToAdd[j]->getBoundingBox().center.y() + BextentsY;
+			float BBottom = i_actorB->getBoundingBox().center.y() - BextentsY;
+			float BTop = i_actorB->getBoundingBox().center.y() + BextentsY;
 
 			float t_CloseAInBX = 0.0f;
 			float t_OpenAInBX = 0.0f;
@@ -183,12 +177,12 @@ namespace Engine
 			//IsSeparated = fabs(ABBCenterInB.y() - i_actorsToAdd[j]->getBoundingBox().center.y()) > i_actorsToAdd[j]->getBoundingBox().extents.y() + AProjectionOntoB_Y;
 
 			//Check axis for B in A
-			Engine::Vector4 BBBCenterInWorld = mBToWorld.MultiplyRight(Engine::Vector4(i_actorsToAdd[j]->getBoundingBox().center.x(),i_actorsToAdd[j]->getBoundingBox().center.y(), 0.0f, 1.0f));
+			Engine::Vector4 BBBCenterInWorld = mBToWorld.MultiplyRight(Engine::Vector4(i_actorB->getBoundingBox().center.x(), i_actorB->getBoundingBox().center.y(), 0.0f, 1.0f));
 			Engine::Vector4 BBBCenterInA = mWorldToA.MultiplyRight(Engine::Vector4(BBBCenterInWorld.x(), BBBCenterInWorld.y(), BBBCenterInWorld.z(), 1.0f));
 
 			//Calculate Projection 
-			Engine::Vector4 BExtentsXInA = mBToA.MultiplyRight(Engine::Vector4(i_actorsToAdd[j]->getBoundingBox().extents.x(), 0.0f, 0.0f, 0.0f));
-			Engine::Vector4 BExtentsYInA = mBToA.MultiplyRight(Engine::Vector4(0.0f, i_actorsToAdd[j]->getBoundingBox().extents.y(), 0.0f, 0.0f));
+			Engine::Vector4 BExtentsXInA = mBToA.MultiplyRight(Engine::Vector4(i_actorB->getBoundingBox().extents.x(), 0.0f, 0.0f, 0.0f));
+			Engine::Vector4 BExtentsYInA = mBToA.MultiplyRight(Engine::Vector4(0.0f, i_actorB->getBoundingBox().extents.y(), 0.0f, 0.0f));
 
 			//On X Axis
 			float BProjectionOntoA_X = fabs(BExtentsXInA.x()) + fabs(BExtentsYInA.x());
@@ -197,20 +191,20 @@ namespace Engine
 			float BProjectionOntoA_Y = fabs(BExtentsXInA.y()) + fabs(BExtentsYInA.y());
 
 			//Velocity calculations for B in A
-			Engine::Vector3 VelBRelToA = Engine::Vector3(i_actorsToAdd[j]->getGObject()->GetVelocity().x() - i_actorsToAdd[i]->getGObject()->GetVelocity().x(), i_actorsToAdd[j]->getGObject()->GetVelocity().y() - i_actorsToAdd[i]->getGObject()->GetVelocity().y(), 0.0f);
+			Engine::Vector3 VelBRelToA = Engine::Vector3(i_actorB->getGObject()->GetVelocity().x() - i_actorA->getGObject()->GetVelocity().x(), i_actorB->getGObject()->GetVelocity().y() - i_actorA->getGObject()->GetVelocity().y(), 0.0f);
 
 			Engine::Vector4 VelBInA = mWorldToA.MultiplyRight(Engine::Vector4(VelBRelToA.x(), VelBRelToA.y(), VelBRelToA.z(), 0.0f));
 
-			float AextentsX = i_actorsToAdd[i]->getBoundingBox().extents.x() + BProjectionOntoA_X;
-			float AextentsY = i_actorsToAdd[i]->getBoundingBox().extents.y() + BProjectionOntoA_Y;
+			float AextentsX = i_actorA->getBoundingBox().extents.x() + BProjectionOntoA_X;
+			float AextentsY = i_actorA->getBoundingBox().extents.y() + BProjectionOntoA_Y;
 
 			//The edges of A
-			float ALeft = i_actorsToAdd[i]->getBoundingBox().center.x() - AextentsX;
-			float ARight = i_actorsToAdd[i]->getBoundingBox().center.x() + AextentsX;
+			float ALeft = i_actorA->getBoundingBox().center.x() - AextentsX;
+			float ARight = i_actorA->getBoundingBox().center.x() + AextentsX;
 
 			//Top edges of A
-			float ABottom = i_actorsToAdd[i]->getBoundingBox().center.y() - AextentsY;
-			float ATop = i_actorsToAdd[i]->getBoundingBox().center.y() + AextentsY;
+			float ABottom = i_actorA->getBoundingBox().center.y() - AextentsY;
+			float ATop = i_actorA->getBoundingBox().center.y() + AextentsY;
 
 			float t_CloseBInAX = 0.0f;
 			float t_OpenBInAX = 0.0f;
@@ -370,82 +364,22 @@ namespace Engine
 					{
 						EarliestCollision.m_CollisionTime = colTime;
 						EarliestCollision.m_CollisionNormal = colNormal;
-						EarliestCollision.m_CollisionObjects[0] = i_actorsToAdd[i];
-						EarliestCollision.m_CollisionObjects[1] = i_actorsToAdd[j];
+						EarliestCollision.m_CollisionObjects[0] = i_actorA;
+						EarliestCollision.m_CollisionObjects[1] = i_actorB;
 
 						//	Call the collision resolution
-						ResolveCollision(EarliestCollision, colNormal);
+						//Call broadcast that actor was created
+						Engine::MessageSystem::GetInstance()->BroadCastCollision("ResolveCollision", EarliestCollision, colNormal);
+
+						//ResolveCollision(EarliestCollision, colNormal);
 
 					}
 					//DEBUG_LOG_OUTPUT("There was a collision!");
 				}
-			}
-		}
+	
 
 		//PROFILE_SCOPE_END();
 
 	}
-	void Collision::ResolveCollision(CollisionPair & i_Pair, Engine::Vector3 & i_colNormal)
-	{
-
-		//Objects A and B
-		Engine::Vector2D velA = i_Pair.m_CollisionObjects[0].Acquire()->getGObject()->GetVelocity();
-		Engine::Vector2D velB = i_Pair.m_CollisionObjects[1].Acquire()->getGObject()->GetVelocity();
-
-		//The masses of the objects
-		float massA = i_Pair.m_CollisionObjects[0].Acquire()->getPhysics().Acquire()->getMass();
-		float massB = i_Pair.m_CollisionObjects[1].Acquire()->getPhysics().Acquire()->getMass();
-
-		//Post collision velocities
-		Engine::Vector2D velAPost = velA * ((massA - massB) / (massA + massB)) + velB * ((2.0f * massB) / (massA + massB));
-		Engine::Vector2D velBPost = velB * ((massB - massA) / (massA + massB)) + velA * ((2.0f * massA) / (massA + massB));
-
-		Engine::Vector2D colNormal = Engine::Vector2D(i_colNormal.x(), i_colNormal.y());
 		
-		if(!Engine::floatEpsilonEqual(i_colNormal.x(),0.0f) || !Engine::floatEpsilonEqual(i_colNormal.y(), 0.0f))
-		colNormal.normalize();
-
-		//Post collision velocities with normal
-		Engine::Vector2D velAPost2 = velA - (colNormal * Engine::dot(velA,colNormal) * 2.0f);
-		Engine::Vector2D velBPost2 = velB - (colNormal * Engine::dot(velB,colNormal) * 2.0f);
-
-		Engine::Vector2D resVelA = velAPost + velAPost2;
-		Engine::Vector2D resVelB = velBPost + velBPost2;
-
-		////Cap the velocities
-		float maxVelocity = 300.0f;
-
-		if (resVelA.x() >= maxVelocity)
-			resVelA.x(maxVelocity);
-		if(resVelA.x() <= -maxVelocity)
-			resVelA.x(-maxVelocity);
-
-		if (resVelA.y() >= maxVelocity)
-			resVelA.y(maxVelocity);
-		if(resVelA.y() <= -maxVelocity)
-			resVelA.y(-maxVelocity);
-
-		if (resVelB.x() >= maxVelocity)
-			resVelB.x(maxVelocity);
-		if (resVelB.x() <= -maxVelocity)
-			resVelB.x(-maxVelocity);
-
-		if (resVelB.y() >= maxVelocity)
-			resVelB.y(maxVelocity);
-		if (resVelB.y() <= -maxVelocity)
-			resVelB.y(-maxVelocity);
-
-		//Set new velocity
-		if (i_Pair.m_CollisionObjects[0].Acquire()->getType() != "Level")
-		{
-			i_Pair.m_CollisionObjects[0].Acquire()->getGObject()->SetVelocity(resVelA);
-		}
-		
-		if (i_Pair.m_CollisionObjects[1].Acquire()->getType() != "Level")
-		{
-			i_Pair.m_CollisionObjects[1].Acquire()->getGObject()->SetVelocity(resVelB);
-		}
-
-
-	}
 }

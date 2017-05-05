@@ -1,14 +1,14 @@
-Monster1 =
+Bullet =
 {
-	name = "Vile",
-	class = "Monster",
-	controller = "InputController",
-	initial_position = {200.0,200.0},
+	name = "Bullet",
+	class = "Projectile",
+	controller = "None",
+	initial_position = {-1000,-2000},
 	initial_rotation = {0.0,0.0,0.0},
 
 	physics_settings = {
-		mass = 0.08,
-		drag = 0.05
+		mass = 0.4,
+		drag = 0
 	},
 
 	render_settings = {

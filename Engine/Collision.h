@@ -3,9 +3,6 @@
 #include <vector>
 namespace Engine
 {
-
-	class Collision {
-
 		struct CollisionPair
 		{
 			float m_CollisionTime;
@@ -15,10 +12,12 @@ namespace Engine
 
 		};
 
+	class Collision {
+
+
 	public:
 
-		static void CheckCollisions(std::vector<Engine::SmartPointer<Engine::Actor>>& i_actorsToAdd, float i_LastFrameTime);
-		static void ResolveCollision(CollisionPair & i_Pair, Engine::Vector3 & i_colNormal);
+		static void CheckCollisions(Engine::SmartPointer<Engine::Actor> & i_actorA, Engine::SmartPointer<Engine::Actor> & i_actorB, float i_LastFrameTime);
 
 
 	};

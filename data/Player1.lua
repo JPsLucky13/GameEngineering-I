@@ -7,7 +7,7 @@ Player1 =
 	initial_rotation = {0.0,0.0,0.0},
 
 	physics_settings = {
-		mass = 1.0,
+		mass = 0.08,
 		drag = 0.05
 	},
 

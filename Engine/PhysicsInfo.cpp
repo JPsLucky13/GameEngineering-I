@@ -20,9 +20,9 @@ namespace Engine {
 	{
 		Vector2D Acceleration = i_Force / m_Mass;
 
-		Vector2D Gravity = Engine::Vector2D(0.0f,-9.81f);
+		//Vector2D Gravity = Engine::Vector2D(0.0f,-0.05f);
 
-		Vector2D velocity = (m_pObject.Acquire()->GetVelocity() + Gravity) + Acceleration * i_dt;
+		Vector2D velocity = m_pObject.Acquire()->GetVelocity()  + Acceleration * i_dt;
 
 		Vector2D coeff = velocity * -m_Drag;
 

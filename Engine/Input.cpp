@@ -44,6 +44,11 @@ void TestKeyCallback(unsigned int i_VKeyID, bool bWentDown)
 		Input::keyHandler.Z.m_isDown = bWentDown;
 	}
 
+	if (key == 'H')
+	{
+		Input::keyHandler.H.m_isDown = bWentDown;
+	}
+
 }
 
 KeyboardHandler Input::keyHandler;
